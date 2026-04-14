@@ -182,7 +182,23 @@
             body.sidebar-open .main-content { margin-left: var(--sidebar-width); }
             .input-area { padding: 20px 40px 40px 40px; }
         }
-    </style>
+   #node-delete-btn {
+    position: absolute;
+    display: none;
+    background: var(--accent-red);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    font-size: 14px;
+}
+ </style>
 </head>
 <body>
     <div class="app-container">
@@ -217,7 +233,10 @@
             </header>
             
             <div class="chat-container" id="chat-container"></div>
-            <div id="evidence-board"></div>
+            <div id="evidence-board">
+                
+            </div><button id="node-delete-btn"><i class="fas fa-trash"></i></button>
+
             
             <div class="input-area">
                 <div class="input-wrapper">
@@ -394,78 +413,91 @@
             return { name: "ENCRYPTED_ID", image: imgUrl };
         };
 
-        const renderGraph = () => {
-    const currentCase = cases.find(c => c.id === currentCaseId);
-    if (!currentCase) return;
+                const renderGraph = () => {
+            const currentCase = cases.find(c => c.id === currentCaseId);
+            if (!currentCase) return;
 
-    const nodes = new vis.DataSet([{ 
-        id: 'ROOT', label: `CASE:\n${currentCase.id}`, 
-        shape: 'database', color: '#8b0000', 
-        font: { color: '#ffffff', face: 'JetBrains Mono' } 
-    }]);
-    const edges = new vis.DataSet([]);
-    const seenEntities = new Set();
+            const nodes = new vis.DataSet([{ 
+                id: 'ROOT', label: `CASE:\n${currentCase.id}`, 
+                shape: 'database', color: '#8b0000', 
+                font: { color: '#ffffff', face: 'JetBrains Mono' } 
+            }]);
+            const edges = new vis.DataSet([]);
+            const seenEntities = new Set();
+            const delBtn = document.getElementById('node-delete-btn');
 
-    // Regex patterns
-    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-    const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
-    const phoneRegex = /(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
-    const noxRegex = /\[EVIDENCE:\s*(.*?)\]/gi;
+            const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+            const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+            const phoneRegex = /(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
+            const noxRegex = /\[EVIDENCE:\s*(.*?)\]/gi;
 
-    currentCase.messages.forEach(msg => {
-        const text = msg.content;
-        const matches = [
-            ...[...text.matchAll(emailRegex)].map(m => ({ val: m[0], type: 'email', color: '#2c4a5e', shape: 'box' })),
-            ...[...text.matchAll(ipRegex)].map(m => ({ val: m[0], type: 'ip', color: '#4a5e2c', shape: 'ellipse' })),
-            ...[...text.matchAll(phoneRegex)].map(m => ({ val: m[0], type: 'phone', color: '#5e4a2c', shape: 'ellipse' })),
-            ...[...text.matchAll(noxRegex)].map(m => ({ val: m[1], type: 'nox', color: '#8b0000', shape: 'hexagon' }))
-        ];
+            currentCase.messages.forEach(msg => {
+                const text = msg.content;
+                const matches = [
+                    ...[...text.matchAll(emailRegex)].map(m => ({ val: m[0], type: 'email', color: '#2c4a5e', shape: 'box' })),
+                    ...[...text.matchAll(ipRegex)].map(m => ({ val: m[0], type: 'ip', color: '#4a5e2c', shape: 'ellipse' })),
+                    ...[...text.matchAll(phoneRegex)].map(m => ({ val: m[0], type: 'phone', color: '#5e4a2c', shape: 'ellipse' })),
+                    ...[...text.matchAll(noxRegex)].map(m => ({ val: m[1], type: 'nox', color: '#8b0000', shape: 'hexagon' }))
+                ];
 
-        matches.forEach(match => {
-            const id = match.val.trim();
-            // Check if user manually deleted this before (optional logic if you want persistence)
-            if (!id || seenEntities.has(id)) return;
-            
-            seenEntities.add(id);
-            nodes.add({ 
-                id: id, label: id, color: match.color, shape: match.shape,
-                font: { color: '#e0e0e0', face: 'JetBrains Mono' }
+                matches.forEach(match => {
+                    const id = match.val.trim();
+                    if (!id || seenEntities.has(id)) return;
+                    if (currentCase.blacklist && currentCase.blacklist.includes(id)) return;
+                    
+                    seenEntities.add(id);
+                    nodes.add({ 
+                        id: id, label: id, color: match.color, shape: match.shape,
+                        font: { color: '#e0e0e0', face: 'JetBrains Mono' }
+                    });
+                    edges.add({ from: 'ROOT', to: id, color: { color: '#455a64' } });
+                });
             });
-            edges.add({ from: 'ROOT', to: id, color: { color: '#455a64' } });
-        });
-    });
 
-    const container = document.getElementById('evidence-board');
-    const data = { nodes: nodes, edges: edges };
-    const options = {
-        physics: { stabilization: true, barnesHut: { springLength: 150 } },
-        nodes: { borderWidth: 2, shadow: true },
-        edges: { width: 1.5, shadow: true },
-        interaction: { hover: true }
-    };
+            const container = document.getElementById('evidence-board');
+            if (network) network.destroy();
+            network = new vis.Network(container, { nodes, edges }, {
+                physics: { stabilization: true, barnesHut: { springLength: 150 } },
+                nodes: { borderWidth: 2, shadow: true },
+                edges: { width: 1.5, shadow: true }
+            });
 
-    if (network) network.destroy();
-    network = new vis.Network(container, data, options);
+            let selectedNodeId = null;
 
-    // --- HOLD TO DELETE LOGIC ---
-    let pressTimer;
-    
-    network.on("hold", function (params) {
-        if (params.nodes.length > 0) {
-            const nodeId = params.nodes[0];
-            if (nodeId === 'ROOT') return; // Protect the root case node
+            // Hide button on any click outside or movement
+            const hideBtn = () => { delBtn.style.display = 'none'; };
+            network.on("click", hideBtn);
+            network.on("dragStart", hideBtn);
 
-            // Visual feedback: confirm deletion
-            const confirmDelete = confirm(`Purge evidence: "${nodeId}"?`);
-            if (confirmDelete) {
-                nodes.remove(nodeId);
-                // Note: To make this permanent across refreshes, 
-                // you would need to filter the entity out of currentCase.messages
-                // or keep a 'deletedEntities' list in your case object.
-            }
-        }
-    });
-};
+            // Show button on hold
+            network.on("hold", function (params) {
+                if (params.nodes.length > 0) {
+                    const nodeId = params.nodes[0];
+                    if (nodeId === 'ROOT') return;
+
+                    selectedNodeId = nodeId;
+                    
+                    // Convert canvas coordinates to DOM coordinates
+                    const domPos = network.canvasToDOM(network.getPositions([nodeId])[nodeId]);
+                    
+                    delBtn.style.display = 'flex';
+                    delBtn.style.left = (domPos.x - 15) + 'px';
+                    delBtn.style.top = (domPos.y - 45) + 'px'; // Float slightly above
+                }
+            });
+
+            // Delete action
+            delBtn.onclick = (e) => {
+                e.stopPropagation();
+                if (selectedNodeId) {
+                    if (!currentCase.blacklist) currentCase.blacklist = [];
+                    currentCase.blacklist.push(selectedNodeId);
+                    saveState();
+                    nodes.remove(selectedNodeId);
+                    hideBtn();
+                }
+            };
+        };
 
 
         const toggleGraphView = () => {
