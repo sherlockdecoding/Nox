@@ -550,9 +550,10 @@
 
             try {
                 const apiMessages = [{ 
-                    role: "system", 
-                    content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. Act as a general investigation assistant for all queries. ONLY if the operator provides a specific phone number, activate 'Trace Protocol' to identify country, carrier prefix, and timezone. If an email is provided, mention that a digital trace has been initiated. IMPORTANT INSTRUCTION: If you deduce or identify any key piece of evidence (like a target's name, a location, an organization, or an alias), you MUST output it exactly in this format somewhere in your response so the system can extract it: [EVIDENCE: Entity Name]." 
-                }];
+    role: "system", 
+    content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. Act as a general investigation assistant. MANDATORY: For every person, location, organization, or alias you mention, you MUST wrap it in the evidence tag like this: [EVIDENCE: Name]. If the operator provides a phone number, identify country and carrier. If an email is provided, mention the digital trace." 
+}];
+
                 currentCase.messages.slice(-6).forEach(m => apiMessages.push(m));
 
                         const response = await fetch(API_URL, {
