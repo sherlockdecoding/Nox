@@ -555,18 +555,18 @@
                 }];
                 currentCase.messages.slice(-6).forEach(m => apiMessages.push(m));
 
-                const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer nox-access-key' 
-    },
-    body: JSON.stringify({ 
-        model: "nousresearch/hermes-3-llama-3.1-8b", 
-        messages: apiMessages,
-        temperature: 0.7
-    })
-});
+                        const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", 
+                        messages: apiMessages,
+                        temperature: 0.7 
+                    })
+                });
+
 
 
                 if (!isGraphView) typingDiv.remove();
