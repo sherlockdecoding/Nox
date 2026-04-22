@@ -6,8 +6,6 @@
     <title>NOX | Digital Detective Assistant</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         :root {
             --bg-primary: #121212;
@@ -151,6 +149,7 @@
             border-right: 3px solid #666; font-family: var(--font-sans); font-size: 0.95rem;
         }
 
+        /* Gravatar UI components */
         .gravatar-info {
             display: flex; align-items: center; gap: 15px; margin-top: 15px;
             padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 4px;
@@ -184,12 +183,23 @@
             .input-area { padding: 20px 40px 40px 40px; }
         }
         #node-delete-btn {
-            position: absolute; display: none; background: var(--accent-red);
-            color: white; border: none; border-radius: 50%; width: 30px; height: 30px;
-            cursor: pointer; z-index: 100; justify-content: center; align-items: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5); font-size: 14px;
+            position: absolute;
+            display: none;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            font-size: 14px;
         }
 
+        /* --- CALL MODE OVERLAY STYLES --- */
         .call-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(18, 18, 18, 0.96); z-index: 9999;
@@ -197,28 +207,39 @@
             opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
             backdrop-filter: blur(8px);
         }
-        .call-overlay.active { opacity: 1; pointer-events: auto; }
+        .call-overlay.active {
+            opacity: 1; pointer-events: auto;
+        }
         .call-status {
             font-family: var(--font-mono); color: var(--text-secondary);
             margin-bottom: 50px; letter-spacing: 2px; text-transform: uppercase;
             font-size: 1rem;
         }
-        .spectrum-container { display: flex; align-items: center; gap: 10px; height: 120px; margin-bottom: 80px; }
+        .spectrum-container {
+            display: flex; align-items: center; gap: 10px; height: 120px; margin-bottom: 80px;
+        }
         .spectrum-bar {
             width: 14px; height: 20px; background-color: var(--accent-red);
             border-radius: 8px; transition: height 0.15s ease;
             box-shadow: 0 0 15px rgba(139, 0, 0, 0.8);
         }
-        .spectrum-container.active .spectrum-bar { animation: pulse-wave 1.2s ease-in-out infinite; }
+        .spectrum-container.active .spectrum-bar {
+            animation: pulse-wave 1.2s ease-in-out infinite;
+        }
         .spectrum-container.active .spectrum-bar:nth-child(1) { animation-delay: 0.0s; }
         .spectrum-container.active .spectrum-bar:nth-child(2) { animation-delay: 0.15s; }
         .spectrum-container.active .spectrum-bar:nth-child(3) { animation-delay: 0.3s; }
         .spectrum-container.active .spectrum-bar:nth-child(4) { animation-delay: 0.45s; }
         .spectrum-container.active .spectrum-bar:nth-child(5) { animation-delay: 0.6s; }
         
-        @keyframes pulse-wave { 0%, 100% { height: 20px; } 50% { height: 100px; } }
+        @keyframes pulse-wave {
+            0%, 100% { height: 20px; }
+            50% { height: 100px; }
+        }
 
-        .call-controls { display: flex; gap: 50px; align-items: center; }
+        .call-controls {
+            display: flex; gap: 50px; align-items: center;
+        }
         .call-btn {
             width: 70px; height: 70px; border-radius: 50%; border: none;
             display: flex; align-items: center; justify-content: center;
@@ -226,13 +247,19 @@
             color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         .call-btn-end { background-color: #333; }
+        .call-btn-end:hover { background-color: #555; }
         .call-btn-mic { background-color: var(--accent-red); }
+        .call-btn-mic:hover { background-color: #a00000; }
         .call-btn-mic.listening { 
             background-color: #ff2222; 
             box-shadow: 0 0 25px rgba(255, 34, 34, 0.6); 
             animation: pulse-mic 1.5s infinite;
         }
-        @keyframes pulse-mic { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes pulse-mic {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -268,9 +295,11 @@
             </header>
             
             <div class="chat-container" id="chat-container"></div>
-            <div id="evidence-board"></div>
-            <button id="node-delete-btn"><i class="fas fa-trash"></i></button>
+            <div id="evidence-board">
+                
+            </div><button id="node-delete-btn"><i class="fas fa-trash"></i></button>
 
+            
             <div class="input-area">
                 <div class="input-wrapper">
                     <textarea id="user-input" placeholder="Operator query..." rows="1"></textarea>
@@ -283,8 +312,10 @@
     <div class="call-overlay" id="call-overlay">
         <div class="call-status" id="call-status">SECURE LINE ESTABLISHED</div>
         <div class="spectrum-container" id="call-spectrum">
-            <div class="spectrum-bar"></div><div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div><div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
             <div class="spectrum-bar"></div>
         </div>
         <div class="call-controls">
@@ -312,6 +343,7 @@
         const exportBtn = document.getElementById('export-btn');
         const graphToggleBtn = document.getElementById('graph-toggle-btn');
         
+        // Call UI Elements
         const callOverlay = document.getElementById('call-overlay');
         const callSpectrum = document.getElementById('call-spectrum');
         const callMicBtn = document.getElementById('call-btn-mic');
@@ -323,94 +355,6 @@
         let isGraphView = false;
         let isCallMode = false;
         let network = null;
-
-        // --- SPATIAL INTERCEPT LOGIC ---
-        const getOverpassTag = (clue) => {
-            const map = {
-                'fountain': 'amenity=fountain',
-                'library': 'amenity=library',
-                'pharmacy': 'amenity=pharmacy',
-                'post office': 'amenity=post_office',
-                'bank': 'amenity=bank',
-                'hospital': 'amenity=hospital',
-                'police': 'amenity=police',
-                'cafe': 'amenity=cafe'
-            };
-            return map[clue.toLowerCase()] || null;
-        };
-
-        const triggerSpatialTrace = async (text) => {
-            const cityMatch = text.match(/in\s+\[EVIDENCE:\s*([^\]]+)\]/i);
-            const evidenceMatches = [...text.matchAll(/\[EVIDENCE:\s*([^\]]+)\]/gi)].map(m => m[1]);
-
-            if (cityMatch && evidenceMatches.length >= 2) {
-                const city = cityMatch[1];
-                const clues = evidenceMatches.filter(e => e.toLowerCase() !== city.toLowerCase());
-                
-                const tagA = getOverpassTag(clues[0]);
-                const tagB = getOverpassTag(clues[1]);
-
-                if (tagA && tagB) {
-                    const ql = `[out:json];
-                        area["name"="${city}"]->.searchArea;
-                        node["${tagA}"](area.searchArea)->.pts;
-                        node["${tagB}"](around.pts:500);
-                        out body;`;
-
-                    try {
-                        const response = await fetch("https://overpass-api.de/api/interpreter", {
-                            method: "POST",
-                            body: ql
-                        });
-                        const data = await response.json();
-                        
-                        if (data.elements && data.elements.length > 0) {
-                            const firstMatch = data.elements[0];
-                            renderMapInChat(firstMatch.lat, firstMatch.lon, `${clues[0]} x ${clues[1]}`);
-                            
-                            if (network) {
-                                const locId = `LOC-${firstMatch.id}`;
-                                network.body.data.nodes.add({
-                                    id: locId, 
-                                    label: `INTERCEPT:\n${city}`, 
-                                    shape: 'dot', 
-                                    color: '#ff2222',
-                                    font: { color: '#ffffff' }
-                                });
-                                network.body.data.edges.add({ from: 'ROOT', to: locId });
-                            }
-                        }
-                    } catch (e) { console.error("SPATIAL_ERROR", e); }
-                }
-            }
-        };
-
-        const renderMapInChat = (lat, lon, label) => {
-            const mapId = 'map-' + Date.now();
-            const mapDiv = document.createElement('div');
-            mapDiv.className = 'message assistant-msg';
-            mapDiv.innerHTML = `
-                <div class="msg-header">SPATIAL_INTERCEPT</div>
-                <div class="msg-content" style="padding:0; overflow:hidden;">
-                    <div id="${mapId}" style="height: 200px; width: 100%;"></div>
-                    <div style="padding: 10px; font-family:var(--font-mono); font-size:0.7rem; color:var(--accent-red)">
-                        COORDS: ${lat.toFixed(4)}, ${lon.toFixed(4)} | TAG: ${label}
-                    </div>
-                </div>
-            `;
-            chatContainer.appendChild(mapDiv);
-            
-            const map = L.map(mapId, { zoomControl: false }).setView([lat, lon], 15);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap'
-            }).addTo(map);
-
-            L.circle([lat, lon], {
-                color: '#8b0000', fillColor: '#8b0000', fillOpacity: 0.5, radius: 100
-            }).addTo(map);
-            
-            scrollToBottom();
-        };
 
         const init = () => {
             loadState();
@@ -474,36 +418,51 @@
             caseListEl.innerHTML = '';
             cases.forEach(c => {
                 if (!c || !c.id) return; 
+
                 const li = document.createElement('li');
                 li.className = `case-item ${c.id === currentCaseId ? 'active' : ''}`;
+                
                 const textSpan = document.createElement('span');
                 textSpan.className = 'case-item-text';
                 textSpan.textContent = c.title;
+
                 const delBtn = document.createElement('button');
                 delBtn.className = 'case-delete-btn';
                 delBtn.innerHTML = '<i class="fas fa-trash"></i>';
 
                 let pressTimer;
-                const startPress = (e) => { pressTimer = setTimeout(() => {
-                    document.querySelectorAll('.case-item').forEach(item => item.classList.remove('show-delete'));
-                    li.classList.add('show-delete');
-                }, 600);};
+                const startPress = (e) => {
+                    pressTimer = setTimeout(() => {
+                        document.querySelectorAll('.case-item').forEach(item => item.classList.remove('show-delete'));
+                        li.classList.add('show-delete');
+                    }, 600);
+                };
                 const cancelPress = () => clearTimeout(pressTimer);
+
                 li.addEventListener('touchstart', startPress, {passive: true});
                 li.addEventListener('mousedown', startPress);
                 li.addEventListener('touchend', cancelPress);
                 li.addEventListener('mouseup', cancelPress);
                 li.addEventListener('contextmenu', (e) => e.preventDefault());
+
                 li.addEventListener('click', (e) => {
                     if (e.target.closest('.case-delete-btn')) return;
-                    if (li.classList.contains('show-delete')) { li.classList.remove('show-delete'); return; }
+                    if (li.classList.contains('show-delete')) {
+                        li.classList.remove('show-delete');
+                        return;
+                    }
                     currentCaseId = c.id;
                     saveState();
                     if (isGraphView) { renderGraph(); caseIdDisplay.textContent = currentCaseId; }
                     else renderChat();
                     if (window.innerWidth < 768) toggleSidebar();
                 });
-                delBtn.addEventListener('click', (e) => { e.stopPropagation(); deleteCase(c.id); });
+
+                delBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteCase(c.id);
+                });
+
                 li.appendChild(textSpan);
                 li.appendChild(delBtn);
                 caseListEl.appendChild(li);
@@ -512,8 +471,9 @@
 
         const deleteCase = (id) => {
             cases = cases.filter(c => c.id !== id);
-            if (cases.length === 0) createNewCase();
-            else if (currentCaseId === id) {
+            if (cases.length === 0) {
+                createNewCase();
+            } else if (currentCaseId === id) {
                 currentCaseId = cases[0].id;
                 if (isGraphView) renderGraph(); else renderChat();
             }
@@ -528,7 +488,10 @@
                 if (response.ok) {
                     const data = await response.json();
                     const profile = data.entry[0];
-                    return { name: profile.displayName || profile.preferredUsername || "ID_REDACTED", image: profile.thumbnailUrl || imgUrl };
+                    return {
+                        name: profile.displayName || profile.preferredUsername || "ID_REDACTED",
+                        image: profile.thumbnailUrl || imgUrl
+                    };
                 }
             } catch (e) {}
             return { name: "ENCRYPTED_ID", image: imgUrl };
@@ -537,10 +500,16 @@
         const renderGraph = () => {
             const currentCase = cases.find(c => c.id === currentCaseId);
             if (!currentCase) return;
-            const nodes = new vis.DataSet([{ id: 'ROOT', label: `CASE:\n${currentCase.id}`, shape: 'database', color: '#8b0000', font: { color: '#ffffff', face: 'JetBrains Mono' } }]);
+
+            const nodes = new vis.DataSet([{ 
+                id: 'ROOT', label: `CASE:\n${currentCase.id}`, 
+                shape: 'database', color: '#8b0000', 
+                font: { color: '#ffffff', face: 'JetBrains Mono' } 
+            }]);
             const edges = new vis.DataSet([]);
             const seenEntities = new Set();
             const delBtn = document.getElementById('node-delete-btn');
+
             const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
             const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
             const phoneRegex = /(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
@@ -549,38 +518,59 @@
             currentCase.messages.forEach(msg => {
                 const text = msg.content;
                 const matches = [
-                    ...[...text.matchAll(emailRegex)].map(m => ({ val: m[0], color: '#2c4a5e', shape: 'box' })),
-                    ...[...text.matchAll(ipRegex)].map(m => ({ val: m[0], color: '#4a5e2c', shape: 'ellipse' })),
-                    ...[...text.matchAll(phoneRegex)].map(m => ({ val: m[0], color: '#5e4a2c', shape: 'ellipse' })),
-                    ...[...text.matchAll(noxRegex)].map(m => ({ val: m[1], color: '#8b0000', shape: 'hexagon' }))
+                    ...[...text.matchAll(emailRegex)].map(m => ({ val: m[0], type: 'email', color: '#2c4a5e', shape: 'box' })),
+                    ...[...text.matchAll(ipRegex)].map(m => ({ val: m[0], type: 'ip', color: '#4a5e2c', shape: 'ellipse' })),
+                    ...[...text.matchAll(phoneRegex)].map(m => ({ val: m[0], type: 'phone', color: '#5e4a2c', shape: 'ellipse' })),
+                    ...[...text.matchAll(noxRegex)].map(m => ({ val: m[1], type: 'nox', color: '#8b0000', shape: 'hexagon' }))
                 ];
+
                 matches.forEach(match => {
                     const id = match.val.trim();
                     if (!id || seenEntities.has(id)) return;
                     if (currentCase.blacklist && currentCase.blacklist.includes(id)) return;
+                    
                     seenEntities.add(id);
-                    nodes.add({ id: id, label: id, color: match.color, shape: match.shape, font: { color: '#e0e0e0', face: 'JetBrains Mono' } });
+                    nodes.add({ 
+                        id: id, label: id, color: match.color, shape: match.shape,
+                        font: { color: '#e0e0e0', face: 'JetBrains Mono' }
+                    });
                     edges.add({ from: 'ROOT', to: id, color: { color: '#455a64' } });
                 });
             });
+
             const container = document.getElementById('evidence-board');
             if (network) network.destroy();
-            network = new vis.Network(container, { nodes, edges }, { physics: { stabilization: true, barnesHut: { springLength: 150 } }, nodes: { borderWidth: 2, shadow: true }, edges: { width: 1.5, shadow: true } });
+            network = new vis.Network(container, { nodes, edges }, {
+                physics: { stabilization: true, barnesHut: { springLength: 150 } },
+                nodes: { borderWidth: 2, shadow: true },
+                edges: { width: 1.5, shadow: true }
+            });
+
             let selectedNodeId = null;
+
+            // Hide button on any click outside or movement
             const hideBtn = () => { delBtn.style.display = 'none'; };
             network.on("click", hideBtn);
             network.on("dragStart", hideBtn);
+
+            // Show button on hold
             network.on("hold", function (params) {
                 if (params.nodes.length > 0) {
                     const nodeId = params.nodes[0];
                     if (nodeId === 'ROOT') return;
+
                     selectedNodeId = nodeId;
+                    
+                    // Convert canvas coordinates to DOM coordinates
                     const domPos = network.canvasToDOM(network.getPositions([nodeId])[nodeId]);
+                    
                     delBtn.style.display = 'flex';
                     delBtn.style.left = (domPos.x - 15) + 'px';
-                    delBtn.style.top = (domPos.y - 45) + 'px';
+                    delBtn.style.top = (domPos.y - 45) + 'px'; // Float slightly above
                 }
             });
+
+            // Delete action
             delBtn.onclick = (e) => {
                 e.stopPropagation();
                 if (selectedNodeId) {
@@ -592,6 +582,7 @@
                 }
             };
         };
+
 
         const toggleGraphView = () => {
             isGraphView = !isGraphView;
@@ -615,20 +606,31 @@
             if (currentCase.messages.length <= 1) currentCase.title = message.substring(0, 30);
             
             currentCase.messages.push({ role: 'user', content: message });
+            
             if (!isGraphView) appendMessageUI('user', message);
             userInput.value = '';
             userInput.style.height = 'auto';
+
             if (isGraphView) renderGraph();
 
             const typingDiv = document.createElement('div');
             typingDiv.className = 'message assistant-msg';
+            
             const emailMatch = message.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
             const isPhone = /^\+?(\d[\d-. ]+)?(\([\d-. ]+\))?[\d-. ]+\d$/.test(message) && message.replace(/\D/g,'').length >= 7;
+            
             const status = emailMatch ? 'Intercepting digital footprint...' : (isPhone ? 'Tracing signal origin...' : 'Analyzing...');
             typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">${status}</div>`;
             
-            if (!isGraphView) { chatContainer.appendChild(typingDiv); scrollToBottom(); }
-            if (isCallMode) { callStatus.textContent = "ANALYZING..."; callSpectrum.classList.remove('active'); }
+            if (!isGraphView) {
+                chatContainer.appendChild(typingDiv);
+                scrollToBottom();
+            }
+
+            if (isCallMode) {
+                callStatus.textContent = "ANALYZING...";
+                callSpectrum.classList.remove('active');
+            }
 
             let injectionHTML = "";
             if (emailMatch) {
@@ -637,13 +639,23 @@
             }
 
             try {
-                const apiMessages = [{ role: "system", content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. Act as a general investigation assistant. MANDATORY: For every person, location, organization, or alias you mention, you MUST wrap it in the evidence tag like this: [EVIDENCE: Name]. If the operator provides a phone number, identify country and carrier. If an email is provided, mention the digital trace." }];
+                const apiMessages = [{ 
+                    role: "system", 
+                    content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. Act as a general investigation assistant. MANDATORY: For every person, location, organization, or alias you mention, you MUST wrap it in the evidence tag like this: [EVIDENCE: Name]. If the operator provides a phone number, identify country and carrier. If an email is provided, mention the digital trace." 
+                }];
+
                 currentCase.messages.slice(-6).forEach(m => apiMessages.push(m));
 
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages: apiMessages, temperature: 0.7 })
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", 
+                        messages: apiMessages,
+                        temperature: 0.7 
+                    })
                 });
 
                 if (!isGraphView) typingDiv.remove();
@@ -656,40 +668,78 @@
                 if (isGraphView) renderGraph();
                 else appendMessageUI('assistant', reply);
 
-                // --- TRIGGER SPATIAL INTERCEPT ---
-                await triggerSpatialTrace(replyText);
+            // --- TEXT TO SPEECH UPGRADE (Synced with Call Mode) ---
+            if (isCallMode && 'speechSynthesis' in window) {
+                const cleanSpeech = replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi, '$1').replace(/<[^>]*>?/gm, '');
+                const utterance = new SpeechSynthesisUtterance(cleanSpeech);
+                utterance.pitch = 0.7; 
+                utterance.rate = 0.95; 
 
-                if (isCallMode && 'speechSynthesis' in window) {
-                    const cleanSpeech = replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi, '$1').replace(/<[^>]*>?/gm, '');
-                    const utterance = new SpeechSynthesisUtterance(cleanSpeech);
-                    utterance.pitch = 0.7; utterance.rate = 0.95; 
-                    utterance.onstart = () => { if (isCallMode) { callSpectrum.classList.add('active'); callStatus.textContent = "NOX_UNIT TRANSMITTING"; } };
-                    utterance.onend = () => { if (isCallMode) { callSpectrum.classList.remove('active'); callStatus.textContent = "AWAITING INPUT..."; } };
-                    window.speechSynthesis.speak(utterance);
-                } else if (isCallMode) { callStatus.textContent = "AWAITING INPUT..."; }
-            } catch (e) {
-                if (!isGraphView) { typingDiv.remove(); appendMessageUI('assistant', 'SIGNAL LOST: Link unstable.'); }
-                if (isCallMode) callStatus.textContent = "SIGNAL INTERRUPTED";
+                utterance.onstart = () => {
+                    if (isCallMode) {
+                        callSpectrum.classList.add('active');
+                        callStatus.textContent = "NOX_UNIT TRANSMITTING";
+                    }
+                };
+
+                utterance.onend = () => {
+                    if (isCallMode) {
+                        callSpectrum.classList.remove('active');
+                        callStatus.textContent = "AWAITING INPUT...";
+                    }
+                };
+
+                window.speechSynthesis.speak(utterance);
+            } else if (isCallMode) {
+                callStatus.textContent = "AWAITING INPUT...";
             }
-        };
+
+        } catch (e) {
+            if (!isGraphView) {
+                typingDiv.remove();
+                appendMessageUI('assistant', 'SIGNAL LOST: Link unstable.');
+            }
+            if (isCallMode) {
+                callStatus.textContent = "SIGNAL INTERRUPTED";
+            }
+        }
+    }; // This closes the sendMessage function
+
 
         const downloadLog = () => {
             const currentCase = cases.find(c => c.id === currentCaseId);
             if (!currentCase) return;
-            let logContent = `NOX DIGITAL DETECTIVE | LOG\nCASE_ID: ${currentCase.id}\n\n`;
+
+            let logContent = `NOX DIGITAL DETECTIVE | INVESTIGATION LOG\n`;
+            logContent += `===========================================\n`;
+            logContent += `CASE_ID:   ${currentCase.id}\n`;
+            logContent += `TITLE:     ${currentCase.title}\n`;
+            logContent += `TIMESTAMP: ${new Date(currentCase.timestamp).toLocaleString()}\n`;
+            logContent += `===========================================\n\n`;
+
             currentCase.messages.forEach(msg => {
                 const label = msg.role === 'assistant' ? '[NOX_UNIT]' : '[OPERATOR]';
-                logContent += `${label}\n${msg.content.replace(/<[^>]*>?/gm, '')}\n\n`;
+                const cleanContent = msg.content.replace(/<[^>]*>?/gm, '');
+                logContent += `${label}\n${cleanContent}\n\n`;
             });
+
             const blob = new Blob([logContent], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = url; a.download = `${currentCase.id}.txt`;
-            document.body.appendChild(a); a.click();
-            document.body.removeChild(a); URL.revokeObjectURL(url);
+            a.href = url;
+            a.download = `${currentCase.id}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         };
 
-        const toggleSidebar = () => { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); document.body.classList.toggle('sidebar-open'); };
+        const toggleSidebar = () => {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('active');
+            document.body.classList.toggle('sidebar-open');
+        };
+
         menuBtn.addEventListener('click', toggleSidebar);
         closeSidebarBtn.addEventListener('click', toggleSidebar);
         sidebarOverlay.addEventListener('click', toggleSidebar);
@@ -701,22 +751,81 @@
         userInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
         clearBtn.addEventListener('click', () => { if(confirm('Purge logs?')) deleteCase(currentCaseId); });
 
+        // --- SPEECH RECOGNITION & CALL OVERLAY UPGRADE ---
         const setupCallMode = () => {
+            // Inject Call Button into the Header
             const callTriggerBtn = document.createElement('button');
             callTriggerBtn.className = 'icon-btn';
             callTriggerBtn.innerHTML = '<i class="fas fa-phone-alt"></i>';
+            callTriggerBtn.title = "Call Mode";
             document.querySelector('.header-right').prepend(callTriggerBtn);
+
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             let recognition = null;
+
             if (SpeechRecognition) {
                 recognition = new SpeechRecognition();
-                callTriggerBtn.addEventListener('click', () => { isCallMode = true; callOverlay.classList.add('active'); });
-                callEndBtn.addEventListener('click', () => { isCallMode = false; callOverlay.classList.remove('active'); recognition.stop(); window.speechSynthesis.cancel(); });
-                callMicBtn.addEventListener('click', () => { if (callMicBtn.classList.contains('listening')) recognition.stop(); else { window.speechSynthesis.cancel(); recognition.start(); } });
-                recognition.onstart = () => { callMicBtn.classList.add('listening'); callSpectrum.classList.add('active'); callStatus.textContent = "LISTENING..."; };
-                recognition.onresult = (event) => { userInput.value = event.results[0][0].transcript; sendMessage(); };
-                recognition.onend = () => { callMicBtn.classList.remove('listening'); if (isCallMode) { callStatus.textContent = "AWAITING INPUT..."; callSpectrum.classList.remove('active'); } };
-            } else callTriggerBtn.style.display = 'none';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+
+                // Open Call Interface
+                callTriggerBtn.addEventListener('click', () => {
+                    isCallMode = true;
+                    callOverlay.classList.add('active');
+                    callStatus.textContent = "SECURE LINE ESTABLISHED";
+                });
+
+                // Close Call Interface
+                callEndBtn.addEventListener('click', () => {
+                    isCallMode = false;
+                    callOverlay.classList.remove('active');
+                    recognition.stop();
+                    window.speechSynthesis.cancel();
+                    callSpectrum.classList.remove('active');
+                    callMicBtn.classList.remove('listening');
+                });
+
+                // Toggle Mic
+                callMicBtn.addEventListener('click', () => {
+                    if (callMicBtn.classList.contains('listening')) {
+                        recognition.stop();
+                    } else {
+                        window.speechSynthesis.cancel(); // Stop NOX from speaking if user interrupts
+                        recognition.start();
+                    }
+                });
+
+                recognition.onstart = () => {
+                    callMicBtn.classList.add('listening');
+                    callSpectrum.classList.add('active');
+                    callStatus.textContent = "LISTENING...";
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    userInput.value = transcript;
+                    callStatus.textContent = "TRANSMITTING...";
+                    sendMessage(); 
+                };
+
+                recognition.onerror = (e) => {
+                    callMicBtn.classList.remove('listening');
+                    callSpectrum.classList.remove('active');
+                    callStatus.textContent = "SIGNAL INTERRUPTED";
+                    console.error("NOX_VOICE_ERROR: Signal Interrupted.", e);
+                };
+                
+                recognition.onend = () => {
+                    callMicBtn.classList.remove('listening');
+                    if (isCallMode && callStatus.textContent !== "TRANSMITTING...") {
+                        callStatus.textContent = "AWAITING INPUT...";
+                        callSpectrum.classList.remove('active');
+                    }
+                };
+            } else {
+                callTriggerBtn.style.display = 'none';
+            }
         };
 
         setupCallMode();
