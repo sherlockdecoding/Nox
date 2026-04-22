@@ -182,23 +182,85 @@
             body.sidebar-open .main-content { margin-left: var(--sidebar-width); }
             .input-area { padding: 20px 40px 40px 40px; }
         }
-   #node-delete-btn {
-    position: absolute;
-    display: none;
-    background: var(--accent-red);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    z-index: 100;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    font-size: 14px;
-}
- </style>
+        #node-delete-btn {
+            position: absolute;
+            display: none;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            font-size: 14px;
+        }
+
+        /* --- CALL MODE OVERLAY STYLES --- */
+        .call-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(18, 18, 18, 0.96); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+        .call-overlay.active {
+            opacity: 1; pointer-events: auto;
+        }
+        .call-status {
+            font-family: var(--font-mono); color: var(--text-secondary);
+            margin-bottom: 50px; letter-spacing: 2px; text-transform: uppercase;
+            font-size: 1rem;
+        }
+        .spectrum-container {
+            display: flex; align-items: center; gap: 10px; height: 120px; margin-bottom: 80px;
+        }
+        .spectrum-bar {
+            width: 14px; height: 20px; background-color: var(--accent-red);
+            border-radius: 8px; transition: height 0.15s ease;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.8);
+        }
+        .spectrum-container.active .spectrum-bar {
+            animation: pulse-wave 1.2s ease-in-out infinite;
+        }
+        .spectrum-container.active .spectrum-bar:nth-child(1) { animation-delay: 0.0s; }
+        .spectrum-container.active .spectrum-bar:nth-child(2) { animation-delay: 0.15s; }
+        .spectrum-container.active .spectrum-bar:nth-child(3) { animation-delay: 0.3s; }
+        .spectrum-container.active .spectrum-bar:nth-child(4) { animation-delay: 0.45s; }
+        .spectrum-container.active .spectrum-bar:nth-child(5) { animation-delay: 0.6s; }
+        
+        @keyframes pulse-wave {
+            0%, 100% { height: 20px; }
+            50% { height: 100px; }
+        }
+
+        .call-controls {
+            display: flex; gap: 50px; align-items: center;
+        }
+        .call-btn {
+            width: 70px; height: 70px; border-radius: 50%; border: none;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; cursor: pointer; transition: all 0.2s;
+            color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .call-btn-end { background-color: #333; }
+        .call-btn-end:hover { background-color: #555; }
+        .call-btn-mic { background-color: var(--accent-red); }
+        .call-btn-mic:hover { background-color: #a00000; }
+        .call-btn-mic.listening { 
+            background-color: #ff2222; 
+            box-shadow: 0 0 25px rgba(255, 34, 34, 0.6); 
+            animation: pulse-mic 1.5s infinite;
+        }
+        @keyframes pulse-mic {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -247,6 +309,21 @@
         </main>
     </div>
 
+    <div class="call-overlay" id="call-overlay">
+        <div class="call-status" id="call-status">SECURE LINE ESTABLISHED</div>
+        <div class="spectrum-container" id="call-spectrum">
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+        </div>
+        <div class="call-controls">
+            <button class="call-btn call-btn-end" id="call-btn-end" title="End Call"><i class="fas fa-times"></i></button>
+            <button class="call-btn call-btn-mic" id="call-btn-mic" title="Push to Talk"><i class="fas fa-microphone"></i></button>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script>
@@ -265,10 +342,18 @@
         const clearBtn = document.getElementById('clear-btn');
         const exportBtn = document.getElementById('export-btn');
         const graphToggleBtn = document.getElementById('graph-toggle-btn');
+        
+        // Call UI Elements
+        const callOverlay = document.getElementById('call-overlay');
+        const callSpectrum = document.getElementById('call-spectrum');
+        const callMicBtn = document.getElementById('call-btn-mic');
+        const callEndBtn = document.getElementById('call-btn-end');
+        const callStatus = document.getElementById('call-status');
 
         let cases = [];
         let currentCaseId = null;
         let isGraphView = false;
+        let isCallMode = false;
         let network = null;
 
         const init = () => {
@@ -412,7 +497,7 @@
             return { name: "ENCRYPTED_ID", image: imgUrl };
         };
 
-                const renderGraph = () => {
+        const renderGraph = () => {
             const currentCase = cases.find(c => c.id === currentCaseId);
             if (!currentCase) return;
 
@@ -542,6 +627,11 @@
                 scrollToBottom();
             }
 
+            if (isCallMode) {
+                callStatus.textContent = "ANALYZING...";
+                callSpectrum.classList.remove('active');
+            }
+
             let injectionHTML = "";
             if (emailMatch) {
                 const profile = await fetchGravatar(emailMatch[0]);
@@ -550,21 +640,13 @@
 
             try {
                 const apiMessages = [{ 
-    role: "system", 
-    content: `You are NOX, a cold, analytical digital detective. Tone: noir, concise, clinical.
-
-    INVESTIGATION PARAMETERS:
-    1. MISSION: Analyze data points provided by the Operator. Use logic to connect dots.
-    2. CAPABILITIES: You specialize in digital footprints, metadata analysis, and pattern recognition. You can discuss technical details like carrier regions, email domains, and investigative methodology.
-    3. THE "GOLDEN RULE": Never invent crimes, warrants, or "shady pasts." If an identity is unknown, do not call them a suspect; call them a "Subject of Interest" or "Unverified Entity."
-    4. PROMPTNESS: Do not wait for instructions. If the Operator gives you a data point, immediately begin technical analysis of that point.
-    5. FORMATTING: Every entity MUST be wrapped in [EVIDENCE: EntityName].` 
-}];
-
+                    role: "system", 
+                    content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. Act as a general investigation assistant. MANDATORY: For every person, location, organization, or alias you mention, you MUST wrap it in the evidence tag like this: [EVIDENCE: Name]. If the operator provides a phone number, identify country and carrier. If an email is provided, mention the digital trace." 
+                }];
 
                 currentCase.messages.slice(-6).forEach(m => apiMessages.push(m));
 
-                        const response = await fetch(API_URL, {
+                const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json'
@@ -576,23 +658,53 @@
                     })
                 });
 
-
-
                 if (!isGraphView) typingDiv.remove();
                 const data = await response.json();
-                const reply = data.choices[0].message.content + injectionHTML;
+                const replyText = data.choices[0].message.content;
+                const reply = replyText + injectionHTML;
                 currentCase.messages.push({ role: 'assistant', content: reply });
                 saveState();
                 
                 if (isGraphView) renderGraph();
                 else appendMessageUI('assistant', reply);
-            } catch (e) {
-                if (!isGraphView) {
-                    typingDiv.remove();
-                    appendMessageUI('assistant', 'SIGNAL LOST: Link unstable.');
-                }
+
+            // --- TEXT TO SPEECH UPGRADE (Synced with Call Mode) ---
+            if (isCallMode && 'speechSynthesis' in window) {
+                const cleanSpeech = replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi, '$1').replace(/<[^>]*>?/gm, '');
+                const utterance = new SpeechSynthesisUtterance(cleanSpeech);
+                utterance.pitch = 0.7; 
+                utterance.rate = 0.95; 
+
+                utterance.onstart = () => {
+                    if (isCallMode) {
+                        callSpectrum.classList.add('active');
+                        callStatus.textContent = "NOX_UNIT TRANSMITTING";
+                    }
+                };
+
+                utterance.onend = () => {
+                    if (isCallMode) {
+                        callSpectrum.classList.remove('active');
+                        callStatus.textContent = "AWAITING INPUT...";
+                    }
+                };
+
+                window.speechSynthesis.speak(utterance);
+            } else if (isCallMode) {
+                callStatus.textContent = "AWAITING INPUT...";
             }
-        };
+
+        } catch (e) {
+            if (!isGraphView) {
+                typingDiv.remove();
+                appendMessageUI('assistant', 'SIGNAL LOST: Link unstable.');
+            }
+            if (isCallMode) {
+                callStatus.textContent = "SIGNAL INTERRUPTED";
+            }
+        }
+    }; // This closes the sendMessage function
+
 
         const downloadLog = () => {
             const currentCase = cases.find(c => c.id === currentCaseId);
@@ -639,7 +751,85 @@
         userInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
         clearBtn.addEventListener('click', () => { if(confirm('Purge logs?')) deleteCase(currentCaseId); });
 
+        // --- SPEECH RECOGNITION & CALL OVERLAY UPGRADE ---
+        const setupCallMode = () => {
+            // Inject Call Button into the Header
+            const callTriggerBtn = document.createElement('button');
+            callTriggerBtn.className = 'icon-btn';
+            callTriggerBtn.innerHTML = '<i class="fas fa-phone-alt"></i>';
+            callTriggerBtn.title = "Call Mode";
+            document.querySelector('.header-right').prepend(callTriggerBtn);
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let recognition = null;
+
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+
+                // Open Call Interface
+                callTriggerBtn.addEventListener('click', () => {
+                    isCallMode = true;
+                    callOverlay.classList.add('active');
+                    callStatus.textContent = "SECURE LINE ESTABLISHED";
+                });
+
+                // Close Call Interface
+                callEndBtn.addEventListener('click', () => {
+                    isCallMode = false;
+                    callOverlay.classList.remove('active');
+                    recognition.stop();
+                    window.speechSynthesis.cancel();
+                    callSpectrum.classList.remove('active');
+                    callMicBtn.classList.remove('listening');
+                });
+
+                // Toggle Mic
+                callMicBtn.addEventListener('click', () => {
+                    if (callMicBtn.classList.contains('listening')) {
+                        recognition.stop();
+                    } else {
+                        window.speechSynthesis.cancel(); // Stop NOX from speaking if user interrupts
+                        recognition.start();
+                    }
+                });
+
+                recognition.onstart = () => {
+                    callMicBtn.classList.add('listening');
+                    callSpectrum.classList.add('active');
+                    callStatus.textContent = "LISTENING...";
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    userInput.value = transcript;
+                    callStatus.textContent = "TRANSMITTING...";
+                    sendMessage(); 
+                };
+
+                recognition.onerror = (e) => {
+                    callMicBtn.classList.remove('listening');
+                    callSpectrum.classList.remove('active');
+                    callStatus.textContent = "SIGNAL INTERRUPTED";
+                    console.error("NOX_VOICE_ERROR: Signal Interrupted.", e);
+                };
+                
+                recognition.onend = () => {
+                    callMicBtn.classList.remove('listening');
+                    if (isCallMode && callStatus.textContent !== "TRANSMITTING...") {
+                        callStatus.textContent = "AWAITING INPUT...";
+                        callSpectrum.classList.remove('active');
+                    }
+                };
+            } else {
+                callTriggerBtn.style.display = 'none';
+            }
+        };
+
+        setupCallMode();
         init();
     </script>
 </body>
-                        </html>
+</html>
