@@ -190,6 +190,25 @@
         .nox-map-footer .alt-line { color: var(--text-secondary); }
         .nox-map-footer .alt-line span { color: #c8a96e; }
 
+        /* ── IP LOOKUP CARD ── */
+        .ip-card {
+            margin-top: 15px; border: 1px solid var(--accent-color); border-radius: 3px;
+            background: rgba(0,0,0,0.3); overflow: hidden; font-family: var(--font-mono);
+        }
+        .ip-card-header {
+            display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+            background: rgba(69,90,100,0.2); border-bottom: 1px solid var(--border-color);
+        }
+        .ip-flag { border: 1px solid var(--border-color); border-radius: 2px; flex-shrink: 0; }
+        .ip-address { font-size: 0.85rem; color: #7fba8a; letter-spacing: 1px; flex-grow: 1; }
+        .ip-tag { font-size: 0.65rem; padding: 2px 6px; border-radius: 2px; letter-spacing: 1px; }
+        .ip-tag.proxy   { background: rgba(139,0,0,0.4); color: #ff6b6b; border: 1px solid #8b0000; }
+        .ip-tag.hosting { background: rgba(69,90,100,0.4); color: #aac; border: 1px solid #455a64; }
+        .ip-grid { padding: 10px 14px; display: flex; flex-direction: column; gap: 5px; }
+        .ip-row { display: flex; gap: 12px; font-size: 0.72rem; }
+        .ip-k { color: var(--accent-red); min-width: 72px; flex-shrink: 0; }
+        .ip-v { color: var(--text-primary); word-break: break-all; }
+
         /* Custom Leaflet dark overrides */
         .leaflet-container { background: #0d0d0d !important; }
         .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(0.75) contrast(1.1); }
@@ -666,6 +685,43 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
     };
 
     // ─────────────────────────────────────────────
+    //  IP LOOKUP  (ip-api.com — free, no key needed)
+    // ─────────────────────────────────────────────
+    const IP_REGEX = /\b((?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))\b/g;
+    const PRIVATE_IP = /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|127\.|0\.0\.0\.0|::1)/;
+
+    const lookupIP = async (ip) => {
+        try {
+            const r = await fetch(`https://ip-api.com/json/${ip}?fields=status,message,country,countryCode,regionName,city,zip,lat,lon,isp,org,as,proxy,hosting,query`);
+            const d = await r.json();
+            if (d.status !== 'success') return null;
+            return d;
+        } catch(e) { return null; }
+    };
+
+    const buildIPCard = (d) => {
+        const flag = `https://flagcdn.com/24x18/${d.countryCode.toLowerCase()}.png`;
+        const tags = [
+            d.proxy   ? '<span class="ip-tag proxy">PROXY</span>'   : '',
+            d.hosting ? '<span class="ip-tag hosting">HOSTING</span>' : '',
+        ].filter(Boolean).join('');
+        return `<div class="ip-card">
+            <div class="ip-card-header">
+                <img src="${flag}" class="ip-flag" onerror="this.style.display='none'">
+                <span class="ip-address">${d.query}</span>
+                ${tags}
+            </div>
+            <div class="ip-grid">
+                <div class="ip-row"><span class="ip-k">LOCATION</span><span class="ip-v">${d.city}, ${d.regionName}, ${d.country}</span></div>
+                <div class="ip-row"><span class="ip-k">COORDS</span><span class="ip-v">${d.lat.toFixed(4)}, ${d.lon.toFixed(4)}</span></div>
+                <div class="ip-row"><span class="ip-k">ISP</span><span class="ip-v">${d.isp}</span></div>
+                <div class="ip-row"><span class="ip-k">ORG</span><span class="ip-v">${d.org}</span></div>
+                <div class="ip-row"><span class="ip-k">ASN</span><span class="ip-v">${d.as}</span></div>
+            </div>
+        </div>`;
+    };
+
+    // ─────────────────────────────────────────────
     //  SEND MESSAGE
     // ─────────────────────────────────────────────
     const sendMessage = async () => {
@@ -684,37 +740,57 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
         const typingDiv = document.createElement('div');
         typingDiv.className = 'message assistant-msg';
         const emailMatch = message.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-        const isPhone    = /^\+?(\d[\d-. ]+)?(\([\d-. ]+\))?[\d-. ]+\d$/.test(message) && message.replace(/\D/g,'').length >= 7;
+        // Collect all public IPs in message
+        const ipMatches = [...message.matchAll(IP_REGEX)].map(m => m[1]).filter(ip => !PRIVATE_IP.test(ip));
 
         typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">Analyzing...</div>`;
         if (!isGraphView) { chatContainer.appendChild(typingDiv); scrollToBottom(); }
         if (isCallMode) { callStatus.textContent = "ANALYZING..."; callSpectrum.classList.remove('active'); }
 
-        // Run email/phone enrichment and spatial intent detection in parallel
         let injectionHTML = "";
         let mapData = null;
 
-        // Step 1: detect spatial intent via AI (runs alongside gravatar fetch)
-        const [gravatarResult, spatialIntent] = await Promise.all([
+        // Run gravatar, IP lookups, and spatial intent detection all in parallel
+        const [gravatarResult, spatialIntent, ...ipResults] = await Promise.all([
             emailMatch ? fetchGravatar(emailMatch[0]) : Promise.resolve(null),
-            detectSpatialIntent(message)
+            detectSpatialIntent(message),
+            ...ipMatches.map(ip => lookupIP(ip))
         ]);
 
         if (gravatarResult) {
             injectionHTML += `\n\n<div class="gravatar-info"><img src="${gravatarResult.image}" class="gravatar-img"><div class="gravatar-name">IDENTITY_MATCH: ${gravatarResult.name}</div></div>`;
         }
 
-        // Step 2: if spatial intent found, update status and run Overpass
+        // Build IP cards + collect map data from first geolocatable IP
+        let ipContext = '';
+        ipResults.forEach((d, i) => {
+            if (!d) return;
+            injectionHTML += `\n\n${buildIPCard(d)}`;
+            if (i === 0) {
+                ipContext = `IP_GEOLOCATION: ${d.query} resolves to ${d.city}, ${d.regionName}, ${d.country}. ISP: ${d.isp}. Org: ${d.org}. Coordinates: ${d.lat}, ${d.lon}.${d.proxy?' Flagged as PROXY/VPN.':''}${d.hosting?' Flagged as HOSTING/DATACENTER.':''}`;
+                // If no map from spatial search, pin the IP location
+                if (!mapData) {
+                    mapData = {
+                        query: `IP ${d.query}`,
+                        primary: { name: `${d.city}, ${d.country} — ${d.isp}`, lat: d.lat, lon: d.lon, type: 'ip_geolocation', address: `${d.city}, ${d.regionName}, ${d.country}` },
+                        alternates: []
+                    };
+                }
+            }
+        });
+
+        // Spatial intent map (overrides IP map if both present)
         if (spatialIntent) {
             if (!isGraphView && typingDiv.querySelector('.msg-content')) {
                 typingDiv.querySelector('.msg-content').textContent = 'Running spatial intercept...';
             }
-            mapData = await runSpatialIntercept(spatialIntent);
+            const spatialMap = await runSpatialIntercept(spatialIntent);
+            if (spatialMap) mapData = spatialMap;
         }
 
         try {
-            let spatialContext = '';
-            if (mapData) {
+            let spatialContext = ipContext;
+            if (mapData && !ipContext) {
                 spatialContext = `\n\nSPATIAL_DATA_RETRIEVED: Primary target coordinates: ${mapData.primary.name} at LAT ${mapData.primary.lat.toFixed(5)}, LON ${mapData.primary.lon.toFixed(5)}. `;
                 if (mapData.alternates.length) {
                     spatialContext += `Alternate sites: ${mapData.alternates.map(a => `${a.name} (${a.lat.toFixed(4)},${a.lon.toFixed(4)})`).join('; ')}.`;
@@ -724,7 +800,7 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
 
             const apiMessages = [{
                 role: "system",
-                content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. Act as a general investigation assistant. MANDATORY: For every person, location, organization, or alias you mention, you MUST wrap it in the evidence tag like this: [EVIDENCE: Name]. If the operator provides a phone number, identify country and carrier. If an email is provided, mention the digital trace. If spatial data is provided in the query, reference the coordinates and location naturally in your noir detective style." + spatialContext
+                content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. Act as a general investigation assistant. MANDATORY: For every person, location, organization, or alias you mention, you MUST wrap it in the evidence tag like this: [EVIDENCE: Name]. If the operator provides a phone number, identify country and carrier. If an email is provided, mention the digital trace. If an IP address is provided, reference the geolocation and ISP data naturally. If spatial data is provided, reference coordinates in your noir detective style." + (spatialContext ? '\n\n' + spatialContext : '')
             }];
             currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role: m.role, content: m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'') }));
 
