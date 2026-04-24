@@ -161,7 +161,6 @@
             margin-top: 16px;
             border: 1px solid var(--accent-color);
             border-radius: 3px;
-            overflow: hidden;
             background: #0d0d0d;
         }
         .nox-map-header {
@@ -179,6 +178,7 @@
         @keyframes blink-dot { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
         .nox-map-canvas {
             width: 100%; height: 220px;
+            position: relative; z-index: 1;
         }
         .nox-map-footer {
             padding: 10px 14px;
@@ -497,8 +497,8 @@
             }
 
             mapInstances[mapId] = m;
-            m.invalidateSize();
-        }, 100);
+            setTimeout(() => m.invalidateSize(), 300);
+        }, 400);
 
         return block;
     };
@@ -633,20 +633,22 @@
         return { type: 'overpass_global', tags: tagFilters };
     };
 
-    // Nominatim geocode a city name → bbox
+    // Nominatim geocode a city name → bbox (via Vercel proxy to avoid CORS)
     const geocodeCity = async (city) => {
-        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`;
-        const r = await fetch(url, { headers: {'Accept-Language':'en', 'User-Agent':'NOX-Detective/1.0'} });
+        const r = await fetch(`/api/geocode?q=${encodeURIComponent(city)}`);
         const d = await r.json();
         if (!d.length) return null;
-        const b = d[0].boundingbox; // [minlat, maxlat, minlon, maxlon]
+        const b = d[0].boundingbox;
         return { lat: parseFloat(d[0].lat), lon: parseFloat(d[0].lon), bbox: b, name: d[0].display_name };
     };
 
-    // Overpass API fetch
+    // Overpass API fetch (via Vercel proxy to avoid CORS)
     const overpassFetch = async (ql) => {
-        const url = 'https://overpass-api.de/api/interpreter';
-        const r = await fetch(url, { method:'POST', body: 'data=' + encodeURIComponent(ql) });
+        const r = await fetch('/api/overpass', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ql })
+        });
         return await r.json();
     };
 
