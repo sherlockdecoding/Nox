@@ -692,19 +692,41 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
 
     const lookupIP = async (ip) => {
         try {
-            const r = await fetch(`https://ip-api.com/json/${ip}?fields=status,message,country,countryCode,regionName,city,zip,lat,lon,isp,org,as,proxy,hosting,query`);
+            // ipwho.is — free, no key, proper CORS headers
+            const r = await fetch(`https://ipwho.is/${ip}`);
+            if (!r.ok) return null;
             const d = await r.json();
-            if (d.status !== 'success') return null;
-            return d;
+            if (!d.success) return null;
+            // Normalise to a consistent shape
+            return {
+                query:       d.ip,
+                country:     d.country      || 'Unknown',
+                countryCode: d.country_code || 'xx',
+                regionName:  d.region       || 'Unknown',
+                city:        d.city         || 'Unknown',
+                lat:         parseFloat(d.latitude)  || 0,
+                lon:         parseFloat(d.longitude) || 0,
+                isp:         d.connection?.isp  || d.org || 'Unknown',
+                org:         d.org              || 'Unknown',
+                as:          d.connection?.asn  ? `AS${d.connection.asn} ${d.connection.org || ''}`.trim() : 'Unknown',
+                proxy:       d.security?.proxy  || false,
+                hosting:     d.security?.hosting || false,
+                vpn:         d.security?.vpn     || false,
+                tor:         d.security?.tor     || false,
+            };
         } catch(e) { return null; }
     };
 
     const buildIPCard = (d) => {
-        const flag = `https://flagcdn.com/24x18/${d.countryCode.toLowerCase()}.png`;
+        const flag = `https://flagcdn.com/24x18/${(d.countryCode||'xx').toLowerCase()}.png`;
         const tags = [
-            d.proxy   ? '<span class="ip-tag proxy">PROXY</span>'   : '',
-            d.hosting ? '<span class="ip-tag hosting">HOSTING</span>' : '',
+            d.proxy   ? '<span class="ip-tag proxy">PROXY</span>'     : '',
+            d.vpn     ? '<span class="ip-tag proxy">VPN</span>'       : '',
+            d.tor     ? '<span class="ip-tag proxy">TOR</span>'       : '',
+            d.hosting ? '<span class="ip-tag hosting">DATACENTER</span>' : '',
         ].filter(Boolean).join('');
+        const lat = typeof d.lat === 'number' ? d.lat.toFixed(4) : '—';
+        const lon = typeof d.lon === 'number' ? d.lon.toFixed(4) : '—';
         return `<div class="ip-card">
             <div class="ip-card-header">
                 <img src="${flag}" class="ip-flag" onerror="this.style.display='none'">
@@ -713,7 +735,7 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
             </div>
             <div class="ip-grid">
                 <div class="ip-row"><span class="ip-k">LOCATION</span><span class="ip-v">${d.city}, ${d.regionName}, ${d.country}</span></div>
-                <div class="ip-row"><span class="ip-k">COORDS</span><span class="ip-v">${d.lat.toFixed(4)}, ${d.lon.toFixed(4)}</span></div>
+                <div class="ip-row"><span class="ip-k">COORDS</span><span class="ip-v">${lat}, ${lon}</span></div>
                 <div class="ip-row"><span class="ip-k">ISP</span><span class="ip-v">${d.isp}</span></div>
                 <div class="ip-row"><span class="ip-k">ORG</span><span class="ip-v">${d.org}</span></div>
                 <div class="ip-row"><span class="ip-k">ASN</span><span class="ip-v">${d.as}</span></div>
