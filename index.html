@@ -370,7 +370,7 @@
     let isGraphView   = false;
     let isCallMode    = false;
     let network       = null;
-    let mapInstances  = {};   // keyed by unique map div id, stores leaflet map refs
+    let mapInstances  = {};
 
     // ─────────────────────────────────────────────
     //  STATE
@@ -421,7 +421,6 @@
         msgDiv.className = `message ${role}-msg`;
         const label = role === 'assistant' ? 'NOX_UNIT' : 'OPERATOR';
 
-        // Separate map-block JSON from prose
         const mapMatch = content.match(/<!--NOXMAP:([\s\S]*?)-->/);
         let prose = content.replace(/<!--NOXMAP:[\s\S]*?-->/g, '').trim();
 
@@ -443,7 +442,6 @@
     //  MAP BLOCK BUILDER
     // ─────────────────────────────────────────────
     const buildMapBlock = (data) => {
-        // data: { query, primary: {name,lat,lon,type,address}, alternates: [{name,lat,lon,type}] }
         const mapId = 'nox-map-' + Date.now() + '-' + Math.random().toString(36).slice(2,6);
 
         const block = document.createElement('div');
@@ -467,14 +465,12 @@
                 ${altsHtml}
             </div>`;
 
-        // Leaflet needs to render after the element is in the DOM
         setTimeout(() => {
             const mapEl = document.getElementById(mapId);
             if (!mapEl) return;
             const m = L.map(mapId, { zoomControl: true, attributionControl: false }).setView([data.primary.lat, data.primary.lon], 16);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
 
-            // Red primary marker
             const redIcon = L.divIcon({
                 className: '',
                 html: `<div style="width:14px;height:14px;border-radius:50%;background:#8b0000;border:2px solid #ff4444;box-shadow:0 0 10px rgba(139,0,0,0.8);"></div>`,
@@ -484,7 +480,6 @@
              .addTo(m)
              .bindPopup(`<b>${data.primary.name}</b><br>${data.primary.type||''}<br>${data.primary.address||''}`);
 
-            // Grey alternate markers
             if (data.alternates) {
                 data.alternates.forEach(a => {
                     const greyIcon = L.divIcon({
@@ -507,49 +502,156 @@
     const scrollToBottom = () => chatContainer.scrollTop = chatContainer.scrollHeight;
 
     // ─────────────────────────────────────────────
-    //  ARCHIVE
+    //  AI-DRIVEN SPATIAL INTENT DETECTION
+    //  Replaces all the rigid regex/keyword logic.
+    //  NOX asks a small model call: "does this need a map?"
+    //  Returns null or { query, osm_tags, city, search_text }
     // ─────────────────────────────────────────────
-    const renderArchive = () => {
-        caseListEl.innerHTML = '';
-        cases.forEach(c => {
-            if (!c || !c.id) return;
-            const li = document.createElement('li');
-            li.className = `case-item ${c.id === currentCaseId ? 'active' : ''}`;
-            const textSpan = document.createElement('span');
-            textSpan.className = 'case-item-text';
-            textSpan.textContent = c.title;
-            const delBtn = document.createElement('button');
-            delBtn.className = 'case-delete-btn';
-            delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+    const detectSpatialIntent = async (userText) => {
+        const systemPrompt = `You are a spatial intent classifier for a detective app.
+Given the operator's message, decide if a map/location lookup is needed.
+If yes, extract what to search for on OpenStreetMap.
 
-            let pressTimer;
-            const startPress  = () => { pressTimer = setTimeout(() => { document.querySelectorAll('.case-item').forEach(i => i.classList.remove('show-delete')); li.classList.add('show-delete'); }, 600); };
-            const cancelPress = () => clearTimeout(pressTimer);
-            li.addEventListener('touchstart', startPress, {passive:true});
-            li.addEventListener('mousedown',  startPress);
-            li.addEventListener('touchend',   cancelPress);
-            li.addEventListener('mouseup',    cancelPress);
-            li.addEventListener('contextmenu', e => e.preventDefault());
-            li.addEventListener('click', e => {
-                if (e.target.closest('.case-delete-btn')) return;
-                if (li.classList.contains('show-delete')) { li.classList.remove('show-delete'); return; }
-                currentCaseId = c.id;
-                saveState();
-                if (isGraphView) { renderGraph(); caseIdDisplay.textContent = currentCaseId; } else renderChat();
-                if (window.innerWidth < 768) toggleSidebar();
+Reply ONLY with a JSON object, no markdown, no explanation:
+{
+  "needs_map": true or false,
+  "query": "human-readable search label, e.g. 'coffee shops in Berlin'",
+  "city": "city or region name, or null",
+  "osm_tags": { "amenity": "cafe" }  // one or more OSM key=value pairs, or {} if just a named place
+}
+
+OSM tag examples:
+- cafe/coffee shop → {"amenity":"cafe"}
+- restaurant → {"amenity":"restaurant"}
+- hospital → {"amenity":"hospital"}
+- park → {"leisure":"park"}
+- museum → {"tourism":"museum"}
+- hotel → {"tourism":"hotel"}
+- bar/pub → {"amenity":"bar"}
+- pharmacy → {"amenity":"pharmacy"}
+- police station → {"amenity":"police"}
+- library → {"amenity":"library"}
+- school → {"amenity":"school"}
+- church/mosque/temple → {"amenity":"place_of_worship"}
+- beach → {"natural":"beach"}
+- supermarket → {"shop":"supermarket"}
+- cinema → {"amenity":"cinema"}
+- stadium → {"leisure":"stadium"}
+- train station → {"railway":"station"}
+- airport → {"aeroway":"aerodrome"}
+- bank → {"amenity":"bank"}
+- atm → {"amenity":"atm"}
+- petrol/gas station → {"amenity":"fuel"}
+- parking → {"amenity":"parking"}
+- castle → {"historic":"castle"}
+- monument → {"historic":"monument"}
+- market → {"amenity":"marketplace"}
+If nothing geographic is implied, set needs_map to false.`;
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: userText }
+                    ],
+                    temperature: 0.1,
+                    max_tokens: 200
+                })
             });
-            delBtn.addEventListener('click', e => { e.stopPropagation(); deleteCase(c.id); });
-            li.appendChild(textSpan);
-            li.appendChild(delBtn);
-            caseListEl.appendChild(li);
-        });
+            const data = await response.json();
+            const raw = data.choices[0].message.content.trim();
+            // Strip any accidental markdown fences
+            const clean = raw.replace(/```json|```/g, '').trim();
+            const parsed = JSON.parse(clean);
+            if (!parsed.needs_map) return null;
+            return parsed;
+        } catch(e) {
+            console.error('NOX_INTENT_ERR', e);
+            return null;
+        }
     };
 
-    const deleteCase = (id) => {
-        cases = cases.filter(c => c.id !== id);
-        if (cases.length === 0) createNewCase();
-        else if (currentCaseId === id) { currentCaseId = cases[0].id; if (isGraphView) renderGraph(); else renderChat(); }
-        saveState();
+    // ─────────────────────────────────────────────
+    //  SPATIAL INTERCEPT PIPELINE (Overpass + Nominatim)
+    // ─────────────────────────────────────────────
+    const geocodeCity = async (city) => {
+        const r = await fetch(`/api/geocode?q=${encodeURIComponent(city)}`);
+        const d = await r.json();
+        if (!d.length) return null;
+        const b = d[0].boundingbox;
+        return { lat: parseFloat(d[0].lat), lon: parseFloat(d[0].lon), bbox: b, name: d[0].display_name };
+    };
+
+    const overpassFetch = async (ql) => {
+        const r = await fetch('/api/overpass', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ql })
+        });
+        return await r.json();
+    };
+
+    // Takes the intent object from detectSpatialIntent and fetches real locations
+    const runSpatialIntercept = async (intent) => {
+        const { query, city, osm_tags } = intent;
+        let elements = [];
+
+        try {
+            const tagFilters = Object.entries(osm_tags || {}).map(([k,v]) => `["${k}"="${v}"]`).join('');
+
+            if (city) {
+                const geo = await geocodeCity(city);
+                if (!geo) return null;
+                const [s,n,w,e] = geo.bbox;
+
+                let ql;
+                if (tagFilters) {
+                    ql = `[out:json][timeout:15];(node${tagFilters}(${s},${w},${n},${e});way${tagFilters}(${s},${w},${n},${e}););out center 10;`;
+                } else {
+                    // No tags — just geocode the city itself as the primary pin
+                    return {
+                        query,
+                        primary: { name: geo.name.split(',')[0], lat: geo.lat, lon: geo.lon, type: '', address: '' },
+                        alternates: []
+                    };
+                }
+                const data = await overpassFetch(ql);
+                elements = data.elements || [];
+            } else if (tagFilters) {
+                // Global search without a city
+                const ql = `[out:json][timeout:15];node${tagFilters};out 5;`;
+                const data = await overpassFetch(ql);
+                elements = data.elements || [];
+            } else {
+                // Nothing to search
+                return null;
+            }
+        } catch(e) {
+            console.error('NOX_OVERPASS_ERR', e);
+            return null;
+        }
+
+        if (!elements.length) return null;
+
+        const normalised = elements.map(el => ({
+            name: el.tags?.name || el.tags?.['name:en'] || query,
+            lat:  el.lat || el.center?.lat,
+            lon:  el.lon || el.center?.lon,
+            type: Object.entries(el.tags||{}).filter(([k]) => ['amenity','tourism','leisure','natural','shop','railway','aeroway','historic'].includes(k)).map(([k,v])=>`${k}=${v}`).join(' '),
+            address: [el.tags?.['addr:street'], el.tags?.['addr:housenumber'], el.tags?.['addr:city']].filter(Boolean).join(' ')
+        })).filter(el => el.lat && el.lon);
+
+        if (!normalised.length) return null;
+
+        return {
+            query,
+            primary:    normalised[0],
+            alternates: normalised.slice(1, 4)
+        };
     };
 
     // ─────────────────────────────────────────────
@@ -563,156 +665,6 @@
             if (r.ok) { const d = await r.json(); const p = d.entry[0]; return { name: p.displayName||p.preferredUsername||"ID_REDACTED", image: p.thumbnailUrl||imgUrl }; }
         } catch(e) {}
         return { name: "ENCRYPTED_ID", image: imgUrl };
-    };
-
-    // ─────────────────────────────────────────────
-    //  SPATIAL INTERCEPT — CORE FEATURE
-    // ─────────────────────────────────────────────
-
-    // Keyword sets for OSM tag detection
-    const OSM_AMENITY = ['fountain','library','hospital','school','university','bank','restaurant','cafe','bar','pub','police','fire_station','pharmacy','cinema','theatre','museum','park','church','mosque','synagogue','temple','stadium','marketplace','prison','courthouse','embassy','post_office','fuel','parking','atm'];
-    const OSM_TOURISM = ['hotel','museum','attraction','monument','viewpoint','gallery','zoo','theme_park','hostel','camp_site'];
-    const OSM_LEISURE = ['park','stadium','sports_centre','swimming_pool','golf_course','marina','garden'];
-    const OSM_NATURAL = ['beach','cliff','peak','waterfall','cave_entrance','spring','wood','forest'];
-    const OSM_SHOP    = ['supermarket','mall','market','bakery','butcher','florist','bookshop','hardware'];
-    const OSM_BUILDING= ['cathedral','chapel','castle','tower','bridge','lighthouse','windmill'];
-
-    const SPATIAL_TRIGGERS = [
-        /last seen/i, /spotted at/i, /located (at|near|in)/i, /location:/i,
-        /spatial intercept/i, /coordinates (of|for)/i, /find.*on.*map/i,
-        /where is\b/i, /whereabouts/i, /ran.*search.*(?:on|for|at)/i,
-        /trace.*location/i, /track.*to\b/i, /near\b.*\bin\b/i, /\bat\b.*\bin\b/i,
-        /show.*map/i, /map.*location/i, /place.*\bin\b/i
-    ];
-
-    const isSpatialQuery = (text) => SPATIAL_TRIGGERS.some(r => r.test(text));
-
-    // Extract OSM tags from free text
-    const extractOSMTags = (text) => {
-        const lower = text.toLowerCase();
-        const tags = {};
-
-        OSM_AMENITY.forEach(a => { if (lower.includes(a)) tags.amenity = a; });
-        OSM_TOURISM.forEach(a => { if (lower.includes(a)) tags.tourism = a; });
-        OSM_LEISURE.forEach(a => { if (lower.includes(a)) tags.leisure = a; });
-        OSM_NATURAL.forEach(a => { if (lower.includes(a)) tags['natural'] = a; });
-        OSM_SHOP.forEach(a    => { if (lower.includes(a)) tags.shop = a; });
-        OSM_BUILDING.forEach(a => { if (lower.includes(a)) tags.building = a; });
-
-        // Fallback: named place
-        const nameMatch = text.match(/(?:called|named|known as)\s+["']?([A-Z][^,."']+)["']?/i);
-        if (nameMatch) tags.name = nameMatch[1].trim();
-
-        return tags;
-    };
-
-    // Extract city/region/country from text
-    const extractLocation = (text) => {
-        // Common city patterns
-        const patterns = [
-            /\bin\s+([A-Z][a-zA-Z\s]+?)(?:\.|,|\s+near|\s+at|\s*$)/m,
-            /([A-Z][a-zA-Z]+(?:\s[A-Z][a-zA-Z]+)?)\s+(?:city|district|borough|county|region)/i,
-            /(?:city|district|area)\s+of\s+([A-Z][a-zA-Z\s]+)/i
-        ];
-        for (const p of patterns) {
-            const m = text.match(p);
-            if (m) return m[1].trim();
-        }
-        return null;
-    };
-
-    // Build Overpass QL query
-    const buildOverpassQuery = (tags, cityName, radiusKm = 5) => {
-        const tagFilters = Object.entries(tags).map(([k,v]) => `["${k}"="${v}"]`).join('');
-        if (!tagFilters) return null;
-
-        if (cityName) {
-            // Use Nominatim first to get city bbox, then query within it
-            return { type: 'nominatim_then_overpass', tags: tagFilters, city: cityName };
-        }
-        return { type: 'overpass_global', tags: tagFilters };
-    };
-
-    // Nominatim geocode a city name → bbox
-    const geocodeCity = async (city) => {
-    const r = await fetch(`/api/geocode?q=${encodeURIComponent(city)}`);
-    const d = await r.json();
-    if (!d.length) return null;
-    const b = d[0].boundingbox;
-    return { lat: parseFloat(d[0].lat), lon: parseFloat(d[0].lon), bbox: b, name: d[0].display_name };
-};
-
-    // Overpass API fetch
-    const overpassFetch = async (ql) => {
-    const r = await fetch('/api/overpass', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ql })
-    });
-    return await r.json();
-};
-
-    // Main spatial intercept pipeline
-    const runSpatialIntercept = async (userText) => {
-        const tags   = extractOSMTags(userText);
-        const city   = extractLocation(userText);
-
-        if (!Object.keys(tags).length && !city) return null; // nothing to map
-
-        let elements = [];
-        let queryLabel = Object.values(tags).join(' + ') + (city ? ` in ${city}` : '');
-
-        try {
-            if (city) {
-                const geo = await geocodeCity(city);
-                if (!geo) return null;
-                const [s,n,w,e] = geo.bbox;
-                const tagFilters = Object.entries(tags).map(([k,v]) => `["${k}"="${v}"]`).join('');
-                
-                // If we have tag filters, search within bbox; otherwise search by name
-                let ql;
-                if (tagFilters) {
-                    ql = `[out:json][timeout:15];(node${tagFilters}(${s},${w},${n},${e});way${tagFilters}(${s},${w},${n},${e}););out center 10;`;
-                } else {
-                    // fallback: search named place
-                    ql = `[out:json][timeout:15];(node["name"~"${city}",i](${s},${w},${n},${e});way["name"~"${city}",i](${s},${w},${n},${e}););out center 5;`;
-                }
-                const data = await overpassFetch(ql);
-                elements = data.elements || [];
-            } else {
-                // No city: global search limited to 5 results
-                const tagFilters = Object.entries(tags).map(([k,v]) => `["${k}"="${v}"]`).join('');
-                const ql = `[out:json][timeout:15];node${tagFilters};out 5;`;
-                const data = await overpassFetch(ql);
-                elements = data.elements || [];
-            }
-        } catch(e) {
-            console.error('NOX_OVERPASS_ERR', e);
-            return null;
-        }
-
-        if (!elements.length) return null;
-
-        // Normalise elements (ways have 'center', nodes have lat/lon directly)
-        const normalised = elements.map(el => ({
-            name: el.tags?.name || el.tags?.['name:en'] || queryLabel,
-            lat:  el.lat || el.center?.lat,
-            lon:  el.lon || el.center?.lon,
-            type: Object.entries(el.tags||{}).filter(([k]) => ['amenity','tourism','leisure','natural','shop'].includes(k)).map(([k,v])=>`${k}=${v}`).join(' '),
-            address: [el.tags?.['addr:street'], el.tags?.['addr:housenumber'], el.tags?.['addr:city']].filter(Boolean).join(' ')
-        })).filter(el => el.lat && el.lon);
-
-        if (!normalised.length) return null;
-
-        // Scoring: prefer named matches, else top result is primary
-        const scored = normalised.map((el, i) => ({ ...el, score: i === 0 ? 100 : 50 }));
-        scored.sort((a,b) => b.score - a.score);
-
-        return {
-            query:      queryLabel,
-            primary:    scored[0],
-            alternates: scored.slice(1, 4)
-        };
     };
 
     // ─────────────────────────────────────────────
@@ -735,30 +687,34 @@
         typingDiv.className = 'message assistant-msg';
         const emailMatch = message.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
         const isPhone    = /^\+?(\d[\d-. ]+)?(\([\d-. ]+\))?[\d-. ]+\d$/.test(message) && message.replace(/\D/g,'').length >= 7;
-        const isSpatial  = isSpatialQuery(message);
-        const status     = isSpatial ? 'Running spatial intercept...' : emailMatch ? 'Intercepting digital footprint...' : isPhone ? 'Tracing signal origin...' : 'Analyzing...';
-        typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">${status}</div>`;
+
+        typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">Analyzing...</div>`;
         if (!isGraphView) { chatContainer.appendChild(typingDiv); scrollToBottom(); }
         if (isCallMode) { callStatus.textContent = "ANALYZING..."; callSpectrum.classList.remove('active'); }
 
-        // Run spatial intercept & AI in parallel
+        // Run email/phone enrichment and spatial intent detection in parallel
         let injectionHTML = "";
         let mapData = null;
 
-        const [gravatarResult, spatialResult] = await Promise.all([
+        // Step 1: detect spatial intent via AI (runs alongside gravatar fetch)
+        const [gravatarResult, spatialIntent] = await Promise.all([
             emailMatch ? fetchGravatar(emailMatch[0]) : Promise.resolve(null),
-            isSpatial  ? runSpatialIntercept(message)  : Promise.resolve(null)
+            detectSpatialIntent(message)
         ]);
 
         if (gravatarResult) {
             injectionHTML += `\n\n<div class="gravatar-info"><img src="${gravatarResult.image}" class="gravatar-img"><div class="gravatar-name">IDENTITY_MATCH: ${gravatarResult.name}</div></div>`;
         }
-        if (spatialResult) {
-            mapData = spatialResult;
+
+        // Step 2: if spatial intent found, update status and run Overpass
+        if (spatialIntent) {
+            if (!isGraphView && typingDiv.querySelector('.msg-content')) {
+                typingDiv.querySelector('.msg-content').textContent = 'Running spatial intercept...';
+            }
+            mapData = await runSpatialIntercept(spatialIntent);
         }
 
         try {
-            // Build spatial context for the AI prompt if we have map data
             let spatialContext = '';
             if (mapData) {
                 spatialContext = `\n\nSPATIAL_DATA_RETRIEVED: Primary target coordinates: ${mapData.primary.name} at LAT ${mapData.primary.lat.toFixed(5)}, LON ${mapData.primary.lon.toFixed(5)}. `;
@@ -784,7 +740,6 @@
             const data      = await response.json();
             const replyText = data.choices[0].message.content;
 
-            // Embed map JSON as hidden comment in the stored message
             const mapComment = mapData ? `<!--NOXMAP:${JSON.stringify(mapData)}-->` : '';
             const fullReply  = replyText + injectionHTML + mapComment;
 
@@ -794,7 +749,6 @@
             if (isGraphView) renderGraph();
             else appendMessageUI('assistant', fullReply);
 
-            // TTS in call mode
             if (isCallMode && 'speechSynthesis' in window) {
                 const cleanSpeech = replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi, '$1').replace(/<[^>]*>?/gm, '');
                 const utterance   = new SpeechSynthesisUtterance(cleanSpeech);
@@ -932,6 +886,52 @@
     userInput.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
 
     // ─────────────────────────────────────────────
+    //  ARCHIVE
+    // ─────────────────────────────────────────────
+    const renderArchive = () => {
+        caseListEl.innerHTML = '';
+        cases.forEach(c => {
+            if (!c || !c.id) return;
+            const li = document.createElement('li');
+            li.className = `case-item ${c.id === currentCaseId ? 'active' : ''}`;
+            const textSpan = document.createElement('span');
+            textSpan.className = 'case-item-text';
+            textSpan.textContent = c.title;
+            const delBtn = document.createElement('button');
+            delBtn.className = 'case-delete-btn';
+            delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+
+            let pressTimer;
+            const startPress  = () => { pressTimer = setTimeout(() => { document.querySelectorAll('.case-item').forEach(i => i.classList.remove('show-delete')); li.classList.add('show-delete'); }, 600); };
+            const cancelPress = () => clearTimeout(pressTimer);
+            li.addEventListener('touchstart', startPress, {passive:true});
+            li.addEventListener('mousedown',  startPress);
+            li.addEventListener('touchend',   cancelPress);
+            li.addEventListener('mouseup',    cancelPress);
+            li.addEventListener('contextmenu', e => e.preventDefault());
+            li.addEventListener('click', e => {
+                if (e.target.closest('.case-delete-btn')) return;
+                if (li.classList.contains('show-delete')) { li.classList.remove('show-delete'); return; }
+                currentCaseId = c.id;
+                saveState();
+                if (isGraphView) { renderGraph(); caseIdDisplay.textContent = currentCaseId; } else renderChat();
+                if (window.innerWidth < 768) toggleSidebar();
+            });
+            delBtn.addEventListener('click', e => { e.stopPropagation(); deleteCase(c.id); });
+            li.appendChild(textSpan);
+            li.appendChild(delBtn);
+            caseListEl.appendChild(li);
+        });
+    };
+
+    const deleteCase = (id) => {
+        cases = cases.filter(c => c.id !== id);
+        if (cases.length === 0) createNewCase();
+        else if (currentCaseId === id) { currentCaseId = cases[0].id; if (isGraphView) renderGraph(); else renderChat(); }
+        saveState();
+    };
+
+    // ─────────────────────────────────────────────
     //  CALL MODE
     // ─────────────────────────────────────────────
     const setupCallMode = () => {
@@ -966,4 +966,4 @@
     init();
     </script>
 </body>
-                                          </html>
+</html>
