@@ -503,50 +503,40 @@
 
     // ─────────────────────────────────────────────
     //  AI-DRIVEN SPATIAL INTENT DETECTION
-    //  Replaces all the rigid regex/keyword logic.
-    //  NOX asks a small model call: "does this need a map?"
-    //  Returns null or { query, osm_tags, city, search_text }
+    //  Returns null or { query, city, places: [{label, osm_tags}] }
+    //  Supports multiple place types mentioned in one message
     // ─────────────────────────────────────────────
     const detectSpatialIntent = async (userText) => {
-        const systemPrompt = `You are a spatial intent classifier for a detective app.
-Given the operator's message, decide if a map/location lookup is needed.
-If yes, extract what to search for on OpenStreetMap.
+        const systemPrompt = `You are a spatial intent classifier for a detective investigation app.
+Analyse the operator message and decide if any real-world places need to be looked up on a map.
+Extract EVERY distinct place type mentioned, even if described indirectly or in any word order.
 
-Reply ONLY with a JSON object, no markdown, no explanation:
+Reply ONLY with raw JSON, no markdown fences, no explanation:
 {
-  "needs_map": true or false,
-  "query": "human-readable search label, e.g. 'coffee shops in Berlin'",
-  "city": "city or region name, or null",
-  "osm_tags": { "amenity": "cafe" }  // one or more OSM key=value pairs, or {} if just a named place
+  "needs_map": true,
+  "query": "short human label, e.g. 'fountain and library in London'",
+  "city": "city/region name or null",
+  "places": [
+    { "label": "fountain", "osm_tags": {"amenity":"fountain"} },
+    { "label": "library",  "osm_tags": {"amenity":"library"} }
+  ]
 }
 
-OSM tag examples:
-- cafe/coffee shop → {"amenity":"cafe"}
-- restaurant → {"amenity":"restaurant"}
-- hospital → {"amenity":"hospital"}
-- park → {"leisure":"park"}
-- museum → {"tourism":"museum"}
-- hotel → {"tourism":"hotel"}
-- bar/pub → {"amenity":"bar"}
-- pharmacy → {"amenity":"pharmacy"}
-- police station → {"amenity":"police"}
-- library → {"amenity":"library"}
-- school → {"amenity":"school"}
-- church/mosque/temple → {"amenity":"place_of_worship"}
-- beach → {"natural":"beach"}
-- supermarket → {"shop":"supermarket"}
-- cinema → {"amenity":"cinema"}
-- stadium → {"leisure":"stadium"}
-- train station → {"railway":"station"}
-- airport → {"aeroway":"aerodrome"}
-- bank → {"amenity":"bank"}
-- atm → {"amenity":"atm"}
-- petrol/gas station → {"amenity":"fuel"}
-- parking → {"amenity":"parking"}
-- castle → {"historic":"castle"}
-- monument → {"historic":"monument"}
-- market → {"amenity":"marketplace"}
-If nothing geographic is implied, set needs_map to false.`;
+If no real place lookup is needed set needs_map to false and places to [].
+
+Common OSM tag mappings (use these exactly):
+fountain→{"amenity":"fountain"}, cafe→{"amenity":"cafe"}, restaurant→{"amenity":"restaurant"},
+hospital→{"amenity":"hospital"}, park→{"leisure":"park"}, museum→{"tourism":"museum"},
+hotel→{"tourism":"hotel"}, bar/pub→{"amenity":"bar"}, pharmacy→{"amenity":"pharmacy"},
+police→{"amenity":"police"}, library→{"amenity":"library"}, school→{"amenity":"school"},
+church/mosque/temple/synagogue→{"amenity":"place_of_worship"}, beach→{"natural":"beach"},
+supermarket→{"shop":"supermarket"}, cinema→{"amenity":"cinema"}, stadium→{"leisure":"stadium"},
+train station→{"railway":"station"}, airport→{"aeroway":"aerodrome"}, bank→{"amenity":"bank"},
+atm→{"amenity":"atm"}, petrol/gas→{"amenity":"fuel"}, parking→{"amenity":"parking"},
+castle→{"historic":"castle"}, monument→{"historic":"monument"}, market→{"amenity":"marketplace"},
+post office→{"amenity":"post_office"}, prison→{"amenity":"prison"}, embassy→{"amenity":"embassy"},
+harbour/marina→{"leisure":"marina"}, bridge→{"man_made":"bridge"}, tower→{"man_made":"tower"},
+zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amenity":"college"}`;
 
         try {
             const response = await fetch(API_URL, {
@@ -558,16 +548,14 @@ If nothing geographic is implied, set needs_map to false.`;
                         { role: "system", content: systemPrompt },
                         { role: "user", content: userText }
                     ],
-                    temperature: 0.1,
-                    max_tokens: 200
+                    temperature: 0.0,
+                    max_tokens: 300
                 })
             });
             const data = await response.json();
-            const raw = data.choices[0].message.content.trim();
-            // Strip any accidental markdown fences
-            const clean = raw.replace(/```json|```/g, '').trim();
-            const parsed = JSON.parse(clean);
-            if (!parsed.needs_map) return null;
+            const raw = data.choices[0].message.content.trim().replace(/```json|```/g, '').trim();
+            const parsed = JSON.parse(raw);
+            if (!parsed.needs_map || !parsed.places?.length) return null;
             return parsed;
         } catch(e) {
             console.error('NOX_INTENT_ERR', e);
@@ -595,62 +583,72 @@ If nothing geographic is implied, set needs_map to false.`;
         return await r.json();
     };
 
+    const normaliseElements = (elements, fallbackLabel) =>
+        elements.map(el => ({
+            name: el.tags?.name || el.tags?.['name:en'] || fallbackLabel,
+            lat:  el.lat || el.center?.lat,
+            lon:  el.lon || el.center?.lon,
+            type: Object.entries(el.tags||{})
+                    .filter(([k]) => ['amenity','tourism','leisure','natural','shop','railway','aeroway','historic','man_made'].includes(k))
+                    .map(([k,v]) => `${k}=${v}`).join(' '),
+            address: [el.tags?.['addr:street'], el.tags?.['addr:housenumber'], el.tags?.['addr:city']].filter(Boolean).join(' ')
+        })).filter(el => el.lat && el.lon);
+
     // Takes the intent object from detectSpatialIntent and fetches real locations
+    // Runs one Overpass query per place type, merges all results
     const runSpatialIntercept = async (intent) => {
-        const { query, city, osm_tags } = intent;
-        let elements = [];
+        const { query, city, places } = intent;
+        let allElements = [];
 
         try {
-            const tagFilters = Object.entries(osm_tags || {}).map(([k,v]) => `["${k}"="${v}"]`).join('');
-
+            let geo = null;
+            let bbox = null;
             if (city) {
-                const geo = await geocodeCity(city);
-                if (!geo) return null;
-                const [s,n,w,e] = geo.bbox;
-
-                let ql;
-                if (tagFilters) {
-                    ql = `[out:json][timeout:15];(node${tagFilters}(${s},${w},${n},${e});way${tagFilters}(${s},${w},${n},${e}););out center 10;`;
-                } else {
-                    // No tags — just geocode the city itself as the primary pin
-                    return {
-                        query,
-                        primary: { name: geo.name.split(',')[0], lat: geo.lat, lon: geo.lon, type: '', address: '' },
-                        alternates: []
-                    };
-                }
-                const data = await overpassFetch(ql);
-                elements = data.elements || [];
-            } else if (tagFilters) {
-                // Global search without a city
-                const ql = `[out:json][timeout:15];node${tagFilters};out 5;`;
-                const data = await overpassFetch(ql);
-                elements = data.elements || [];
-            } else {
-                // Nothing to search
-                return null;
+                geo = await geocodeCity(city);
+                if (geo) bbox = geo.bbox;
             }
+
+            // No tags at all — just pin the city
+            if (!places.length) {
+                if (!geo) return null;
+                return {
+                    query,
+                    primary: { name: geo.name.split(',')[0], lat: geo.lat, lon: geo.lon, type: '', address: '' },
+                    alternates: []
+                };
+            }
+
+            // Run one Overpass query per place type in parallel
+            const queries = places.map(place => {
+                const tf = Object.entries(place.osm_tags || {}).map(([k,v]) => `["${k}"="${v}"]`).join('');
+                if (!tf) return Promise.resolve([]);
+                let ql;
+                if (bbox) {
+                    const [s,n,w,e] = bbox;
+                    ql = `[out:json][timeout:15];(node${tf}(${s},${w},${n},${e});way${tf}(${s},${w},${n},${e}););out center 5;`;
+                } else {
+                    ql = `[out:json][timeout:15];node${tf};out 5;`;
+                }
+                return overpassFetch(ql)
+                    .then(d => normaliseElements(d.elements || [], place.label))
+                    .catch(() => []);
+            });
+
+            const results = await Promise.all(queries);
+            // Flatten: first result of each type becomes a pin; rest are alternates
+            results.forEach(group => { allElements.push(...group.slice(0, 3)); });
+
         } catch(e) {
             console.error('NOX_OVERPASS_ERR', e);
             return null;
         }
 
-        if (!elements.length) return null;
-
-        const normalised = elements.map(el => ({
-            name: el.tags?.name || el.tags?.['name:en'] || query,
-            lat:  el.lat || el.center?.lat,
-            lon:  el.lon || el.center?.lon,
-            type: Object.entries(el.tags||{}).filter(([k]) => ['amenity','tourism','leisure','natural','shop','railway','aeroway','historic'].includes(k)).map(([k,v])=>`${k}=${v}`).join(' '),
-            address: [el.tags?.['addr:street'], el.tags?.['addr:housenumber'], el.tags?.['addr:city']].filter(Boolean).join(' ')
-        })).filter(el => el.lat && el.lon);
-
-        if (!normalised.length) return null;
+        if (!allElements.length) return null;
 
         return {
             query,
-            primary:    normalised[0],
-            alternates: normalised.slice(1, 4)
+            primary:    allElements[0],
+            alternates: allElements.slice(1, 6)   // show up to 5 alternates across all types
         };
     };
 
