@@ -25,76 +25,230 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: var(--bg-primary); color: var(--text-primary); font-family: var(--font-sans); height: 100dvh; display: flex; overflow: hidden; position: fixed; width: 100%; }
-        .nox-brand { font-family: var(--font-serif); font-weight: 700; font-size: 1.4rem; letter-spacing: 4px; color: #ffffff; text-shadow: 0 0 8px rgba(139,0,0,0.4); text-transform: uppercase; }
+        
+        body { 
+            background-color: var(--bg-primary); 
+            color: var(--text-primary); 
+            font-family: var(--font-sans); 
+            height: 100dvh; 
+            display: flex; 
+            overflow: hidden; 
+            position: fixed; 
+            width: 100%;
+        }
+        
+        .nox-brand {
+            font-family: var(--font-serif);
+            font-weight: 700;
+            font-size: 1.4rem;
+            letter-spacing: 4px;
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(139, 0, 0, 0.4);
+            text-transform: uppercase;
+        }
+
         .app-container { display: flex; width: 100%; height: 100%; position: relative; overflow: hidden; }
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10; display: none; opacity: 0; transition: opacity 0.3s ease; }
+        
+        .sidebar-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 10; display: none; opacity: 0;
+            transition: opacity 0.3s ease;
+        }
         .sidebar-overlay.active { display: block; opacity: 1; }
-        .sidebar { position: fixed; left: -100%; top: 0; width: var(--sidebar-width); height: 100%; background-color: var(--bg-secondary); border-right: 1px solid var(--border-color); z-index: 20; display: flex; flex-direction: column; transition: left 0.3s ease; }
+
+        .sidebar {
+            position: fixed; left: -100%; top: 0; width: var(--sidebar-width); height: 100%;
+            background-color: var(--bg-secondary); border-right: 1px solid var(--border-color);
+            z-index: 20; display: flex; flex-direction: column; transition: left 0.3s ease;
+        }
         .sidebar.open { left: 0; }
-        .sidebar-header { height: var(--header-height); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); }
+        
+        .sidebar-header {
+            height: var(--header-height); padding: 0 20px; display: flex;
+            align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color);
+        }
         .close-sidebar-btn { background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; }
-        .new-case-btn { margin: 20px; padding: 12px; background-color: transparent; border: 1px solid var(--accent-color); color: var(--text-primary); font-family: var(--font-sans); border-radius: 4px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        .new-case-btn {
+            margin: 20px; padding: 12px; background-color: transparent;
+            border: 1px solid var(--accent-color); color: var(--text-primary);
+            font-family: var(--font-sans); border-radius: 4px; cursor: pointer;
+            transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
         .new-case-btn:hover { background-color: var(--accent-color); }
+
         .archive-section { flex-grow: 1; overflow-y: auto; padding: 0 10px; }
-        .archive-title { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-red); padding: 0 10px; margin-bottom: 10px; letter-spacing: 1px; }
+        .archive-title {
+            font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-red);
+            padding: 0 10px; margin-bottom: 10px; letter-spacing: 1px;
+        }
+        
         .case-list { list-style: none; min-height: 20px; }
-        .case-item { padding: 12px 10px; margin-bottom: 5px; border-radius: 4px; cursor: pointer; transition: background 0.2s; position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; user-select: none; -webkit-user-select: none; }
+        .case-item {
+            padding: 12px 10px; margin-bottom: 5px; border-radius: 4px; cursor: pointer;
+            transition: background 0.2s; position: relative; overflow: hidden;
+            display: flex; justify-content: space-between; align-items: center;
+            user-select: none; -webkit-user-select: none;
+        }
         .case-item:hover { background-color: var(--bg-tertiary); }
         .case-item.active { background-color: var(--bg-tertiary); border-left: 3px solid var(--accent-red); }
-        .case-item-text { font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; pointer-events: none; }
-        .case-delete-btn { background: none; border: none; color: var(--accent-red); cursor: pointer; font-size: 1rem; padding: 5px; display: none; margin-left: 10px; }
+        .case-item-text {
+            font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1;
+            pointer-events: none;
+        }
+        .case-delete-btn {
+            background: none; border: none; color: var(--accent-red); cursor: pointer;
+            font-size: 1rem; padding: 5px; display: none; margin-left: 10px;
+        }
         .case-item.show-delete .case-delete-btn { display: block; }
-        .main-content { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; transition: margin-left 0.3s ease; width: 100%; min-width: 0; }
-        .main-header { height: var(--header-height); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); background-color: var(--bg-primary); flex-shrink: 0; }
+
+        .main-content {
+            flex: 1; display: flex; flex-direction: column; height: 100%; 
+            position: relative; transition: margin-left 0.3s ease; width: 100%; min-width: 0;
+        }
+
+        .main-header {
+            height: var(--header-height); padding: 0 20px; display: flex;
+            align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border-color); background-color: var(--bg-primary);
+            flex-shrink: 0;
+        }
         .header-left, .header-right { display: flex; align-items: center; gap: 15px; }
         .icon-btn { background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; transition: color 0.2s; }
         .icon-btn:hover { color: var(--text-primary); }
         .icon-btn.active { color: var(--accent-red); }
+        
         .case-info { font-family: var(--font-mono); font-size: 0.85rem; text-align: center; }
-        .chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 25px; scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
-        #evidence-board { display: none; flex: 1; width: 100%; height: 100%; background-color: var(--bg-primary); position: relative; }
+
+        .chat-container {
+            flex: 1; padding: 20px; overflow-y: auto; display: flex;
+            flex-direction: column; gap: 25px; scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        #evidence-board {
+            display: none; flex: 1; width: 100%; height: 100%; 
+            background-color: var(--bg-primary); position: relative;
+        }
+        
         .message { max-width: 85%; line-height: 1.6; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .msg-header { font-family: var(--font-mono); font-size: 0.7rem; margin-bottom: 5px; letter-spacing: 1px; color: var(--accent-red); }
-        .msg-content { background-color: var(--bg-secondary); padding: 15px 20px; border-radius: 2px; border-left: 3px solid var(--accent-color); font-family: var(--font-serif); font-size: 1.05rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); white-space: pre-wrap; }
+        .msg-content {
+            background-color: var(--bg-secondary); padding: 15px 20px; border-radius: 2px;
+            border-left: 3px solid var(--accent-color); font-family: var(--font-serif);
+            font-size: 1.05rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); white-space: pre-wrap;
+        }
+        
         .message.user-msg { align-self: flex-end; }
         .message.user-msg .msg-header { color: var(--text-secondary); text-align: right; }
-        .message.user-msg .msg-content { background-color: var(--bg-tertiary); border-left: none; border-right: 3px solid #666; font-family: var(--font-sans); font-size: 0.95rem; }
-        .gravatar-info { display: flex; align-items: center; gap: 15px; margin-top: 15px; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 4px; }
+        .message.user-msg .msg-content {
+            background-color: var(--bg-tertiary); border-left: none;
+            border-right: 3px solid #666; font-family: var(--font-sans); font-size: 0.95rem;
+        }
+
+        /* Gravatar UI */
+        .gravatar-info {
+            display: flex; align-items: center; gap: 15px; margin-top: 15px;
+            padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 4px;
+        }
         .gravatar-img { width: 50px; height: 50px; border-radius: 4px; border: 1px solid var(--accent-color); }
         .gravatar-name { font-family: var(--font-mono); font-size: 0.8rem; color: #fff; letter-spacing: 1px; }
 
-        /* SPATIAL INTERCEPT MAP */
-        .nox-map-block { margin-top: 16px; border: 1px solid var(--accent-color); border-radius: 3px; background: #0d0d0d; }
-        .nox-map-header { background: rgba(139,0,0,0.15); border-bottom: 1px solid var(--accent-color); padding: 8px 14px; display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 1.5px; color: var(--accent-red); }
-        .nox-map-header .blink { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-red); animation: blink-dot 1.2s infinite; }
+        /* ── SPATIAL INTERCEPT MAP ── */
+        .nox-map-block {
+            margin-top: 16px;
+            border: 1px solid var(--accent-color);
+            border-radius: 3px;
+            overflow: hidden;
+            background: #0d0d0d;
+        }
+        .nox-map-header {
+            background: rgba(139,0,0,0.15);
+            border-bottom: 1px solid var(--accent-color);
+            padding: 8px 14px;
+            display: flex; align-items: center; gap: 10px;
+            font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 1.5px;
+            color: var(--accent-red);
+        }
+        .nox-map-header .blink {
+            width: 7px; height: 7px; border-radius: 50%; background: var(--accent-red);
+            animation: blink-dot 1.2s infinite;
+        }
         @keyframes blink-dot { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
-        .nox-map-canvas { width: 100%; height: 220px; position: relative; z-index: 1; }
-        .nox-map-footer { padding: 10px 14px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary); border-top: 1px solid var(--border-color); line-height: 1.7; }
+        .nox-map-canvas {
+            width: 100%; height: 220px;
+        }
+        .nox-map-footer {
+            padding: 10px 14px;
+            font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            line-height: 1.7;
+        }
         .nox-map-footer .coord-line { color: #7fba8a; }
         .nox-map-footer .alt-line { color: var(--text-secondary); }
         .nox-map-footer .alt-line span { color: #c8a96e; }
+
+        /* Custom Leaflet dark overrides */
         .leaflet-container { background: #0d0d0d !important; }
         .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(0.75) contrast(1.1); }
         .leaflet-control-zoom a { background: var(--bg-secondary) !important; color: var(--text-primary) !important; border-color: var(--border-color) !important; }
 
-        .input-area { flex-shrink: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); background-color: var(--bg-primary); border-top: 1px solid var(--border-color); width: 100%; }
-        .input-wrapper { background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 10px 15px; display: flex; gap: 12px; align-items: center; border-radius: 4px; }
-        textarea { flex-grow: 1; background: transparent; border: none; color: var(--text-primary); font-family: var(--font-sans); font-size: 16px; resize: none; max-height: 120px; outline: none; padding: 5px 0; line-height: 1.4; }
-        #send-btn { background: transparent; border: none; color: var(--accent-color); font-size: 1.3rem; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; }
+        .input-area { 
+            flex-shrink: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); 
+            background-color: var(--bg-primary); border-top: 1px solid var(--border-color); width: 100%;
+        }
+        .input-wrapper {
+            background-color: var(--bg-secondary); border: 1px solid var(--border-color);
+            padding: 10px 15px; display: flex; gap: 12px; align-items: center; border-radius: 4px;
+        }
+        textarea {
+            flex-grow: 1; background: transparent; border: none; color: var(--text-primary);
+            font-family: var(--font-sans); font-size: 16px; resize: none; 
+            max-height: 120px; outline: none; padding: 5px 0; line-height: 1.4;
+        }
+        #send-btn {
+            background: transparent; border: none; color: var(--accent-color);
+            font-size: 1.3rem; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center;
+        }
+
         @media (min-width: 768px) {
             .sidebar { left: -var(--sidebar-width); }
             body.sidebar-open .sidebar { left: 0; }
             body.sidebar-open .main-content { margin-left: var(--sidebar-width); }
             .input-area { padding: 20px 40px 40px 40px; }
         }
-        #node-delete-btn { position: absolute; display: none; background: var(--accent-red); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; z-index: 100; justify-content: center; align-items: center; box-shadow: 0 0 10px rgba(0,0,0,0.5); font-size: 14px; }
-        .call-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(18,18,18,0.96); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(8px); }
+
+        #node-delete-btn {
+            position: absolute; display: none;
+            background: var(--accent-red); color: white; border: none; border-radius: 50%;
+            width: 30px; height: 30px; cursor: pointer; z-index: 100;
+            justify-content: center; align-items: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); font-size: 14px;
+        }
+
+        /* CALL MODE */
+        .call-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(18,18,18,0.96); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
         .call-overlay.active { opacity: 1; pointer-events: auto; }
-        .call-status { font-family: var(--font-mono); color: var(--text-secondary); margin-bottom: 50px; letter-spacing: 2px; text-transform: uppercase; font-size: 1rem; }
-        .spectrum-container { display: flex; align-items: center; gap: 10px; height: 120px; margin-bottom: 80px; }
-        .spectrum-bar { width: 14px; height: 20px; background-color: var(--accent-red); border-radius: 8px; transition: height 0.15s ease; box-shadow: 0 0 15px rgba(139,0,0,0.8); }
+        .call-status {
+            font-family: var(--font-mono); color: var(--text-secondary);
+            margin-bottom: 50px; letter-spacing: 2px; text-transform: uppercase; font-size: 1rem;
+        }
+        .spectrum-container {
+            display: flex; align-items: center; gap: 10px; height: 120px; margin-bottom: 80px;
+        }
+        .spectrum-bar {
+            width: 14px; height: 20px; background-color: var(--accent-red);
+            border-radius: 8px; transition: height 0.15s ease;
+            box-shadow: 0 0 15px rgba(139,0,0,0.8);
+        }
         .spectrum-container.active .spectrum-bar { animation: pulse-wave 1.2s ease-in-out infinite; }
         .spectrum-container.active .spectrum-bar:nth-child(1) { animation-delay: 0.0s; }
         .spectrum-container.active .spectrum-bar:nth-child(2) { animation-delay: 0.15s; }
@@ -102,13 +256,23 @@
         .spectrum-container.active .spectrum-bar:nth-child(4) { animation-delay: 0.45s; }
         .spectrum-container.active .spectrum-bar:nth-child(5) { animation-delay: 0.6s; }
         @keyframes pulse-wave { 0%,100%{height:20px;} 50%{height:100px;} }
+
         .call-controls { display: flex; gap: 50px; align-items: center; }
-        .call-btn { width: 70px; height: 70px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .call-btn {
+            width: 70px; height: 70px; border-radius: 50%; border: none;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; cursor: pointer; transition: all 0.2s;
+            color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
         .call-btn-end { background-color: #333; }
         .call-btn-end:hover { background-color: #555; }
         .call-btn-mic { background-color: var(--accent-red); }
         .call-btn-mic:hover { background-color: #a00000; }
-        .call-btn-mic.listening { background-color: #ff2222; box-shadow: 0 0 25px rgba(255,34,34,0.6); animation: pulse-mic 1.5s infinite; }
+        .call-btn-mic.listening { 
+            background-color: #ff2222; 
+            box-shadow: 0 0 25px rgba(255,34,34,0.6); 
+            animation: pulse-mic 1.5s infinite;
+        }
         @keyframes pulse-mic { 0%{transform:scale(1);} 50%{transform:scale(1.05);} 100%{transform:scale(1);} }
     </style>
 </head>
@@ -126,6 +290,7 @@
                 <ul class="case-list" id="case-list"></ul>
             </div>
         </aside>
+
         <main class="main-content">
             <header class="main-header">
                 <div class="header-left">
@@ -142,9 +307,11 @@
                     <button class="icon-btn danger" id="clear-btn" title="Delete Current Log"><i class="fas fa-trash"></i></button>
                 </div>
             </header>
+            
             <div class="chat-container" id="chat-container"></div>
             <div id="evidence-board"></div>
             <button id="node-delete-btn"><i class="fas fa-trash"></i></button>
+
             <div class="input-area">
                 <div class="input-wrapper">
                     <textarea id="user-input" placeholder="Operator query..." rows="1"></textarea>
@@ -157,74 +324,95 @@
     <div class="call-overlay" id="call-overlay">
         <div class="call-status" id="call-status">SECURE LINE ESTABLISHED</div>
         <div class="spectrum-container" id="call-spectrum">
-            <div class="spectrum-bar"></div><div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div><div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
             <div class="spectrum-bar"></div>
         </div>
         <div class="call-controls">
-            <button class="call-btn call-btn-end" id="call-btn-end"><i class="fas fa-times"></i></button>
-            <button class="call-btn call-btn-mic" id="call-btn-mic"><i class="fas fa-microphone"></i></button>
+            <button class="call-btn call-btn-end" id="call-btn-end" title="End Call"><i class="fas fa-times"></i></button>
+            <button class="call-btn call-btn-mic" id="call-btn-mic" title="Push to Talk"><i class="fas fa-microphone"></i></button>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script>
+    // ─────────────────────────────────────────────
+    //  CONFIG
+    // ─────────────────────────────────────────────
     const API_URL = "https://hermes.ai.unturf.com/v1/chat/completions";
 
-    const chatContainer   = document.getElementById('chat-container');
-    const evidenceBoard   = document.getElementById('evidence-board');
-    const userInput       = document.getElementById('user-input');
-    const sendBtn         = document.getElementById('send-btn');
-    const caseIdDisplay   = document.getElementById('case-id-display');
-    const caseListEl      = document.getElementById('case-list');
-    const sidebar         = document.getElementById('sidebar');
-    const sidebarOverlay  = document.getElementById('sidebar-overlay');
-    const menuBtn         = document.getElementById('menu-btn');
-    const closeSidebarBtn = document.getElementById('close-sidebar');
-    const newCaseBtn      = document.getElementById('new-case-btn');
-    const clearBtn        = document.getElementById('clear-btn');
-    const exportBtn       = document.getElementById('export-btn');
-    const graphToggleBtn  = document.getElementById('graph-toggle-btn');
-    const callOverlay     = document.getElementById('call-overlay');
-    const callSpectrum    = document.getElementById('call-spectrum');
-    const callMicBtn      = document.getElementById('call-btn-mic');
-    const callEndBtn      = document.getElementById('call-btn-end');
-    const callStatus      = document.getElementById('call-status');
+    const chatContainer     = document.getElementById('chat-container');
+    const evidenceBoard     = document.getElementById('evidence-board');
+    const userInput         = document.getElementById('user-input');
+    const sendBtn           = document.getElementById('send-btn');
+    const caseIdDisplay     = document.getElementById('case-id-display');
+    const caseListEl        = document.getElementById('case-list');
+    const sidebar           = document.getElementById('sidebar');
+    const sidebarOverlay    = document.getElementById('sidebar-overlay');
+    const menuBtn           = document.getElementById('menu-btn');
+    const closeSidebarBtn   = document.getElementById('close-sidebar');
+    const newCaseBtn        = document.getElementById('new-case-btn');
+    const clearBtn          = document.getElementById('clear-btn');
+    const exportBtn         = document.getElementById('export-btn');
+    const graphToggleBtn    = document.getElementById('graph-toggle-btn');
+    const callOverlay       = document.getElementById('call-overlay');
+    const callSpectrum      = document.getElementById('call-spectrum');
+    const callMicBtn        = document.getElementById('call-btn-mic');
+    const callEndBtn        = document.getElementById('call-btn-end');
+    const callStatus        = document.getElementById('call-status');
 
     let cases         = [];
     let currentCaseId = null;
     let isGraphView   = false;
     let isCallMode    = false;
     let network       = null;
-    let mapInstances  = {};
+    let mapInstances  = {};   // keyed by unique map div id, stores leaflet map refs
 
-    // ─── STATE ───────────────────────────────────
+    // ─────────────────────────────────────────────
+    //  STATE
+    // ─────────────────────────────────────────────
     const init = () => {
         loadState();
         if (cases.length === 0) createNewCase();
-        else { currentCaseId = localStorage.getItem('nox_active_case') || cases[0].id; renderChat(); renderArchive(); }
+        else {
+            currentCaseId = localStorage.getItem('nox_active_case') || cases[0].id;
+            renderChat();
+            renderArchive();
+        }
     };
-    const loadState = () => { const s = localStorage.getItem('nox_cases'); if (s) cases = JSON.parse(s); };
-    const saveState = () => { localStorage.setItem('nox_cases', JSON.stringify(cases)); localStorage.setItem('nox_active_case', currentCaseId); renderArchive(); };
+    const loadState  = () => { const s = localStorage.getItem('nox_cases'); if (s) cases = JSON.parse(s); };
+    const saveState  = () => { localStorage.setItem('nox_cases', JSON.stringify(cases)); localStorage.setItem('nox_active_case', currentCaseId); renderArchive(); };
     const generateCaseId = () => 'NX-' + Math.floor(Math.random() * 9000 + 1000) + '-LOG';
 
     const createNewCase = () => {
-        const c = { id: generateCaseId(), title: 'New Investigation...', messages: [{ role: 'assistant', content: 'System active. Neural links established. How can I assist with your investigation?' }], timestamp: Date.now() };
-        cases.unshift(c);
-        currentCaseId = c.id;
+        const newCase = {
+            id: generateCaseId(),
+            title: 'New Investigation...',
+            messages: [{ role: 'assistant', content: 'System active. Neural links established. How can I assist with your investigation?' }],
+            timestamp: Date.now()
+        };
+        cases.unshift(newCase);
+        currentCaseId = newCase.id;
         saveState();
         if (isGraphView) renderGraph(); else renderChat();
         if (sidebar.classList.contains('open')) toggleSidebar();
     };
 
-    // ─── RENDER ──────────────────────────────────
+    // ─────────────────────────────────────────────
+    //  RENDER CHAT
+    // ─────────────────────────────────────────────
     const renderChat = () => {
         chatContainer.innerHTML = '';
         mapInstances = {};
-        const c = cases.find(c => c.id === currentCaseId);
-        if (c) { caseIdDisplay.textContent = c.id; c.messages.forEach(m => appendMessageUI(m.role, m.content, false)); }
+        const currentCase = cases.find(c => c.id === currentCaseId);
+        if (currentCase) {
+            caseIdDisplay.textContent = currentCase.id;
+            currentCase.messages.forEach(msg => appendMessageUI(msg.role, msg.content, false));
+        }
         scrollToBottom();
     };
 
@@ -232,54 +420,95 @@
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${role}-msg`;
         const label = role === 'assistant' ? 'NOX_UNIT' : 'OPERATOR';
+
+        // Separate map-block JSON from prose
         const mapMatch = content.match(/<!--NOXMAP:([\s\S]*?)-->/);
-        const prose = content.replace(/<!--NOXMAP:[\s\S]*?-->/g, '').trim();
+        let prose = content.replace(/<!--NOXMAP:[\s\S]*?-->/g, '').trim();
+
         msgDiv.innerHTML = `<div class="msg-header">${label}</div><div class="msg-content">${prose}</div>`;
         chatContainer.appendChild(msgDiv);
+
         if (mapMatch) {
-            try { msgDiv.querySelector('.msg-content').appendChild(buildMapBlock(JSON.parse(mapMatch[1]))); }
-            catch(e) { console.error('NOX_MAP_PARSE_ERR', e); }
+            try {
+                const mapData = JSON.parse(mapMatch[1]);
+                const mapBlock = buildMapBlock(mapData);
+                msgDiv.querySelector('.msg-content').appendChild(mapBlock);
+            } catch(e) { console.error('NOX_MAP_PARSE_ERR', e); }
         }
+
         scrollToBottom();
     };
 
-    // ─── MAP BLOCK ───────────────────────────────
+    // ─────────────────────────────────────────────
+    //  MAP BLOCK BUILDER
+    // ─────────────────────────────────────────────
     const buildMapBlock = (data) => {
+        // data: { query, primary: {name,lat,lon,type,address}, alternates: [{name,lat,lon,type}] }
         const mapId = 'nox-map-' + Date.now() + '-' + Math.random().toString(36).slice(2,6);
+
         const block = document.createElement('div');
         block.className = 'nox-map-block';
+
         const altsHtml = data.alternates && data.alternates.length
-            ? data.alternates.map((a,i) => `<div class="alt-line">ALT_${String(i+1).padStart(2,'0')}: <span>${escHtml(a.name)}</span> — ${a.lat.toFixed(5)}, ${a.lon.toFixed(5)}</div>`).join('')
+            ? data.alternates.map((a,i) =>
+                `<div class="alt-line">ALT_${String(i+1).padStart(2,'0')}: <span>${escHtml(a.name)}</span> — ${a.lat.toFixed(5)}, ${a.lon.toFixed(5)}</div>`
+              ).join('')
             : '<div class="alt-line">NO_ALTERNATES_FOUND</div>';
+
         block.innerHTML = `
-            <div class="nox-map-header"><div class="blink"></div>SPATIAL_INTERCEPT :: ${escHtml(data.query.toUpperCase())}</div>
+            <div class="nox-map-header">
+                <div class="blink"></div>
+                SPATIAL_INTERCEPT :: ${escHtml(data.query.toUpperCase())}
+            </div>
             <div class="nox-map-canvas" id="${mapId}"></div>
             <div class="nox-map-footer">
                 <div class="coord-line">▸ PRIMARY TARGET: ${escHtml(data.primary.name)}</div>
                 <div class="coord-line">  LAT: ${data.primary.lat.toFixed(6)} | LON: ${data.primary.lon.toFixed(6)}</div>
                 ${altsHtml}
             </div>`;
+
+        // Leaflet needs to render after the element is in the DOM
         setTimeout(() => {
-            const el = document.getElementById(mapId);
-            if (!el) return;
+            const mapEl = document.getElementById(mapId);
+            if (!mapEl) return;
             const m = L.map(mapId, { zoomControl: true, attributionControl: false }).setView([data.primary.lat, data.primary.lon], 16);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
-            const redIcon = L.divIcon({ className: '', html: `<div style="width:14px;height:14px;border-radius:50%;background:#8b0000;border:2px solid #ff4444;box-shadow:0 0 10px rgba(139,0,0,0.8);"></div>`, iconSize:[14,14], iconAnchor:[7,7] });
-            L.marker([data.primary.lat, data.primary.lon], {icon: redIcon}).addTo(m).bindPopup(`<b>${data.primary.name}</b><br>${data.primary.type||''}<br>${data.primary.address||''}`);
-            if (data.alternates) data.alternates.forEach(a => {
-                const gi = L.divIcon({ className: '', html: `<div style="width:10px;height:10px;border-radius:50%;background:#455a64;border:1.5px solid #7a9aaa;"></div>`, iconSize:[10,10], iconAnchor:[5,5] });
-                L.marker([a.lat, a.lon], {icon: gi}).addTo(m).bindPopup(`<b>${a.name}</b>`);
+
+            // Red primary marker
+            const redIcon = L.divIcon({
+                className: '',
+                html: `<div style="width:14px;height:14px;border-radius:50%;background:#8b0000;border:2px solid #ff4444;box-shadow:0 0 10px rgba(139,0,0,0.8);"></div>`,
+                iconSize: [14,14], iconAnchor:[7,7]
             });
+            L.marker([data.primary.lat, data.primary.lon], {icon: redIcon})
+             .addTo(m)
+             .bindPopup(`<b>${data.primary.name}</b><br>${data.primary.type||''}<br>${data.primary.address||''}`);
+
+            // Grey alternate markers
+            if (data.alternates) {
+                data.alternates.forEach(a => {
+                    const greyIcon = L.divIcon({
+                        className: '',
+                        html: `<div style="width:10px;height:10px;border-radius:50%;background:#455a64;border:1.5px solid #7a9aaa;"></div>`,
+                        iconSize:[10,10], iconAnchor:[5,5]
+                    });
+                    L.marker([a.lat, a.lon], {icon: greyIcon}).addTo(m).bindPopup(`<b>${a.name}</b>`);
+                });
+            }
+
             mapInstances[mapId] = m;
-            setTimeout(() => m.invalidateSize(), 300);
-        }, 400);
+            m.invalidateSize();
+        }, 100);
+
         return block;
     };
 
     const escHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     const scrollToBottom = () => chatContainer.scrollTop = chatContainer.scrollHeight;
 
-    // ─── ARCHIVE ─────────────────────────────────
+    // ─────────────────────────────────────────────
+    //  ARCHIVE
+    // ─────────────────────────────────────────────
     const renderArchive = () => {
         caseListEl.innerHTML = '';
         cases.forEach(c => {
@@ -292,13 +521,14 @@
             const delBtn = document.createElement('button');
             delBtn.className = 'case-delete-btn';
             delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+
             let pressTimer;
             const startPress  = () => { pressTimer = setTimeout(() => { document.querySelectorAll('.case-item').forEach(i => i.classList.remove('show-delete')); li.classList.add('show-delete'); }, 600); };
             const cancelPress = () => clearTimeout(pressTimer);
             li.addEventListener('touchstart', startPress, {passive:true});
-            li.addEventListener('mousedown', startPress);
-            li.addEventListener('touchend', cancelPress);
-            li.addEventListener('mouseup', cancelPress);
+            li.addEventListener('mousedown',  startPress);
+            li.addEventListener('touchend',   cancelPress);
+            li.addEventListener('mouseup',    cancelPress);
             li.addEventListener('contextmenu', e => e.preventDefault());
             li.addEventListener('click', e => {
                 if (e.target.closest('.case-delete-btn')) return;
@@ -309,7 +539,9 @@
                 if (window.innerWidth < 768) toggleSidebar();
             });
             delBtn.addEventListener('click', e => { e.stopPropagation(); deleteCase(c.id); });
-            li.appendChild(textSpan); li.appendChild(delBtn); caseListEl.appendChild(li);
+            li.appendChild(textSpan);
+            li.appendChild(delBtn);
+            caseListEl.appendChild(li);
         });
     };
 
@@ -320,7 +552,9 @@
         saveState();
     };
 
-    // ─── GRAVATAR ────────────────────────────────
+    // ─────────────────────────────────────────────
+    //  GRAVATAR
+    // ─────────────────────────────────────────────
     const fetchGravatar = async (email) => {
         const hash = CryptoJS.MD5(email.trim().toLowerCase()).toString();
         const imgUrl = `https://www.gravatar.com/avatar/${hash}?s=200&d=identicon`;
@@ -331,97 +565,124 @@
         return { name: "ENCRYPTED_ID", image: imgUrl };
     };
 
-    // ─── AI-DRIVEN SPATIAL INTERCEPT ─────────────
-    // Step 1: Ask the AI to analyse the message and decide if a map search is needed.
-    // It returns JSON with the OSM tags and city — or spatial:false if no map needed.
-    const SPATIAL_ANALYST_PROMPT = `You are a spatial analysis module for a detective AI. 
-Analyse the operator's message and determine if it references a physical location that should be searched on a map.
+    // ─────────────────────────────────────────────
+    //  SPATIAL INTERCEPT — CORE FEATURE
+    // ─────────────────────────────────────────────
 
-Respond ONLY with a JSON object. No explanation, no markdown, no extra text.
+    // Keyword sets for OSM tag detection
+    const OSM_AMENITY = ['fountain','library','hospital','school','university','bank','restaurant','cafe','bar','pub','police','fire_station','pharmacy','cinema','theatre','museum','park','church','mosque','synagogue','temple','stadium','marketplace','prison','courthouse','embassy','post_office','fuel','parking','atm'];
+    const OSM_TOURISM = ['hotel','museum','attraction','monument','viewpoint','gallery','zoo','theme_park','hostel','camp_site'];
+    const OSM_LEISURE = ['park','stadium','sports_centre','swimming_pool','golf_course','marina','garden'];
+    const OSM_NATURAL = ['beach','cliff','peak','waterfall','cave_entrance','spring','wood','forest'];
+    const OSM_SHOP    = ['supermarket','mall','market','bakery','butcher','florist','bookshop','hardware'];
+    const OSM_BUILDING= ['cathedral','chapel','castle','tower','bridge','lighthouse','windmill'];
 
-If a map search IS needed:
-{"spatial":true,"tags":{"amenity":"fountain"},"city":"London","query":"fountain in London"}
+    const SPATIAL_TRIGGERS = [
+        /last seen/i, /spotted at/i, /located (at|near|in)/i, /location:/i,
+        /spatial intercept/i, /coordinates (of|for)/i, /find.*on.*map/i,
+        /where is\b/i, /whereabouts/i, /ran.*search.*(?:on|for|at)/i,
+        /trace.*location/i, /track.*to\b/i, /near\b.*\bin\b/i, /\bat\b.*\bin\b/i,
+        /show.*map/i, /map.*location/i, /place.*\bin\b/i
+    ];
 
-The "tags" object must use valid OpenStreetMap keys:
-- amenity: fountain, library, hospital, school, university, bank, restaurant, cafe, bar, pub, police, pharmacy, cinema, theatre, museum, marketplace, prison, courthouse, embassy, post_office, fuel, parking, atm, place_of_worship
-- tourism: hotel, museum, attraction, monument, viewpoint, gallery, zoo, theme_park
-- leisure: park, stadium, sports_centre, swimming_pool, golf_course, marina, garden
-- natural: beach, cliff, peak, waterfall, wood, forest
-- shop: supermarket, mall, bakery
-- historic: castle, monument, ruins, memorial
-- building: cathedral, chapel, tower, bridge, lighthouse
+    const isSpatialQuery = (text) => SPATIAL_TRIGGERS.some(r => r.test(text));
 
-If multiple place types are mentioned, pick the most specific/unusual one as the primary tag.
-The "city" field should be the city, region or country mentioned. If no location is mentioned, omit it.
-The "query" field is a short human-readable label like "fountain in London".
+    // Extract OSM tags from free text
+    const extractOSMTags = (text) => {
+        const lower = text.toLowerCase();
+        const tags = {};
 
-If NO map search is needed (general conversation, analysis, no physical place):
-{"spatial":false}`;
+        OSM_AMENITY.forEach(a => { if (lower.includes(a)) tags.amenity = a; });
+        OSM_TOURISM.forEach(a => { if (lower.includes(a)) tags.tourism = a; });
+        OSM_LEISURE.forEach(a => { if (lower.includes(a)) tags.leisure = a; });
+        OSM_NATURAL.forEach(a => { if (lower.includes(a)) tags['natural'] = a; });
+        OSM_SHOP.forEach(a    => { if (lower.includes(a)) tags.shop = a; });
+        OSM_BUILDING.forEach(a => { if (lower.includes(a)) tags.building = a; });
 
-    const analyseForSpatial = async (message) => {
-        try {
-            const r = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",
-                    messages: [
-                        { role: "system", content: SPATIAL_ANALYST_PROMPT },
-                        { role: "user", content: message }
-                    ],
-                    temperature: 0.1,
-                    max_tokens: 150
-                })
-            });
-            const d = await r.json();
-            const raw = d.choices[0].message.content.trim();
-            // Strip any accidental markdown fences
-            const clean = raw.replace(/```json|```/g, '').trim();
-            return JSON.parse(clean);
-        } catch(e) {
-            console.error('NOX_SPATIAL_ANALYST_ERR', e);
-            return { spatial: false };
+        // Fallback: named place
+        const nameMatch = text.match(/(?:called|named|known as)\s+["']?([A-Z][^,."']+)["']?/i);
+        if (nameMatch) tags.name = nameMatch[1].trim();
+
+        return tags;
+    };
+
+    // Extract city/region/country from text
+    const extractLocation = (text) => {
+        // Common city patterns
+        const patterns = [
+            /\bin\s+([A-Z][a-zA-Z\s]+?)(?:\.|,|\s+near|\s+at|\s*$)/m,
+            /([A-Z][a-zA-Z]+(?:\s[A-Z][a-zA-Z]+)?)\s+(?:city|district|borough|county|region)/i,
+            /(?:city|district|area)\s+of\s+([A-Z][a-zA-Z\s]+)/i
+        ];
+        for (const p of patterns) {
+            const m = text.match(p);
+            if (m) return m[1].trim();
         }
+        return null;
     };
 
-    // Step 2: Geocode city via Vercel proxy
-    const geocodeCity = async (city) => {
-        const r = await fetch(`/api/geocode?q=${encodeURIComponent(city)}`);
-        const d = await r.json();
-        if (!d.length) return null;
-        const b = d[0].boundingbox;
-        return { lat: parseFloat(d[0].lat), lon: parseFloat(d[0].lon), bbox: b };
-    };
-
-    // Step 3: Overpass search via Vercel proxy
-    const overpassFetch = async (ql) => {
-        const r = await fetch('/api/overpass', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ql })
-        });
-        return await r.json();
-    };
-
-    // Step 4: Full spatial pipeline using AI-extracted tags
-    const runSpatialIntercept = async (message) => {
-        const analysis = await analyseForSpatial(message);
-        if (!analysis.spatial || !analysis.tags) return null;
-
-        const tagFilters = Object.entries(analysis.tags).map(([k,v]) => `["${k}"="${v}"]`).join('');
+    // Build Overpass QL query
+    const buildOverpassQuery = (tags, cityName, radiusKm = 5) => {
+        const tagFilters = Object.entries(tags).map(([k,v]) => `["${k}"="${v}"]`).join('');
         if (!tagFilters) return null;
 
+        if (cityName) {
+            // Use Nominatim first to get city bbox, then query within it
+            return { type: 'nominatim_then_overpass', tags: tagFilters, city: cityName };
+        }
+        return { type: 'overpass_global', tags: tagFilters };
+    };
+
+    // Nominatim geocode a city name → bbox
+    const geocodeCity = async (city) => {
+    const r = await fetch(`/api/geocode?q=${encodeURIComponent(city)}`);
+    const d = await r.json();
+    if (!d.length) return null;
+    const b = d[0].boundingbox;
+    return { lat: parseFloat(d[0].lat), lon: parseFloat(d[0].lon), bbox: b, name: d[0].display_name };
+};
+
+    // Overpass API fetch
+    const overpassFetch = async (ql) => {
+    const r = await fetch('/api/overpass', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ql })
+    });
+    return await r.json();
+};
+
+    // Main spatial intercept pipeline
+    const runSpatialIntercept = async (userText) => {
+        const tags   = extractOSMTags(userText);
+        const city   = extractLocation(userText);
+
+        if (!Object.keys(tags).length && !city) return null; // nothing to map
+
         let elements = [];
+        let queryLabel = Object.values(tags).join(' + ') + (city ? ` in ${city}` : '');
+
         try {
-            if (analysis.city) {
-                const geo = await geocodeCity(analysis.city);
+            if (city) {
+                const geo = await geocodeCity(city);
                 if (!geo) return null;
                 const [s,n,w,e] = geo.bbox;
-                const ql = `[out:json][timeout:25];(node${tagFilters}(${s},${w},${n},${e});way${tagFilters}(${s},${w},${n},${e}););out center 10;`;
+                const tagFilters = Object.entries(tags).map(([k,v]) => `["${k}"="${v}"]`).join('');
+                
+                // If we have tag filters, search within bbox; otherwise search by name
+                let ql;
+                if (tagFilters) {
+                    ql = `[out:json][timeout:15];(node${tagFilters}(${s},${w},${n},${e});way${tagFilters}(${s},${w},${n},${e}););out center 10;`;
+                } else {
+                    // fallback: search named place
+                    ql = `[out:json][timeout:15];(node["name"~"${city}",i](${s},${w},${n},${e});way["name"~"${city}",i](${s},${w},${n},${e}););out center 5;`;
+                }
                 const data = await overpassFetch(ql);
                 elements = data.elements || [];
             } else {
-                const ql = `[out:json][timeout:25];node${tagFilters};out 5;`;
+                // No city: global search limited to 5 results
+                const tagFilters = Object.entries(tags).map(([k,v]) => `["${k}"="${v}"]`).join('');
+                const ql = `[out:json][timeout:15];node${tagFilters};out 5;`;
                 const data = await overpassFetch(ql);
                 elements = data.elements || [];
             }
@@ -432,66 +693,84 @@ If NO map search is needed (general conversation, analysis, no physical place):
 
         if (!elements.length) return null;
 
+        // Normalise elements (ways have 'center', nodes have lat/lon directly)
         const normalised = elements.map(el => ({
-            name: el.tags?.name || el.tags?.['name:en'] || analysis.query,
+            name: el.tags?.name || el.tags?.['name:en'] || queryLabel,
             lat:  el.lat || el.center?.lat,
             lon:  el.lon || el.center?.lon,
-            type: Object.entries(el.tags||{}).filter(([k]) => ['amenity','tourism','leisure','natural','shop','historic'].includes(k)).map(([k,v])=>`${k}=${v}`).join(' '),
+            type: Object.entries(el.tags||{}).filter(([k]) => ['amenity','tourism','leisure','natural','shop'].includes(k)).map(([k,v])=>`${k}=${v}`).join(' '),
             address: [el.tags?.['addr:street'], el.tags?.['addr:housenumber'], el.tags?.['addr:city']].filter(Boolean).join(' ')
         })).filter(el => el.lat && el.lon);
 
         if (!normalised.length) return null;
 
+        // Scoring: prefer named matches, else top result is primary
+        const scored = normalised.map((el, i) => ({ ...el, score: i === 0 ? 100 : 50 }));
+        scored.sort((a,b) => b.score - a.score);
+
         return {
-            query:      analysis.query,
-            primary:    normalised[0],
-            alternates: normalised.slice(1, 4)
+            query:      queryLabel,
+            primary:    scored[0],
+            alternates: scored.slice(1, 4)
         };
     };
 
-    // ─── SEND MESSAGE ────────────────────────────
+    // ─────────────────────────────────────────────
+    //  SEND MESSAGE
+    // ─────────────────────────────────────────────
     const sendMessage = async () => {
         const message = userInput.value.trim();
         if (!message) return;
         const currentCase = cases.find(c => c.id === currentCaseId);
         if (currentCase.messages.length <= 1) currentCase.title = message.substring(0, 30);
+
         currentCase.messages.push({ role: 'user', content: message });
         if (!isGraphView) appendMessageUI('user', message);
         userInput.value = '';
         userInput.style.height = 'auto';
         if (isGraphView) renderGraph();
 
+        // Typing indicator
         const typingDiv = document.createElement('div');
         typingDiv.className = 'message assistant-msg';
-        typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">Analyzing...</div>`;
+        const emailMatch = message.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+        const isPhone    = /^\+?(\d[\d-. ]+)?(\([\d-. ]+\))?[\d-. ]+\d$/.test(message) && message.replace(/\D/g,'').length >= 7;
+        const isSpatial  = isSpatialQuery(message);
+        const status     = isSpatial ? 'Running spatial intercept...' : emailMatch ? 'Intercepting digital footprint...' : isPhone ? 'Tracing signal origin...' : 'Analyzing...';
+        typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">${status}</div>`;
         if (!isGraphView) { chatContainer.appendChild(typingDiv); scrollToBottom(); }
         if (isCallMode) { callStatus.textContent = "ANALYZING..."; callSpectrum.classList.remove('active'); }
 
-        const emailMatch = message.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-
-        // Run spatial analysis + gravatar in parallel with the main AI response
+        // Run spatial intercept & AI in parallel
         let injectionHTML = "";
         let mapData = null;
 
         const [gravatarResult, spatialResult] = await Promise.all([
             emailMatch ? fetchGravatar(emailMatch[0]) : Promise.resolve(null),
-            runSpatialIntercept(message)   // AI decides — no more regex guessing
+            isSpatial  ? runSpatialIntercept(message)  : Promise.resolve(null)
         ]);
 
-        if (gravatarResult) injectionHTML += `\n\n<div class="gravatar-info"><img src="${gravatarResult.image}" class="gravatar-img"><div class="gravatar-name">IDENTITY_MATCH: ${gravatarResult.name}</div></div>`;
-        if (spatialResult) mapData = spatialResult;
+        if (gravatarResult) {
+            injectionHTML += `\n\n<div class="gravatar-info"><img src="${gravatarResult.image}" class="gravatar-img"><div class="gravatar-name">IDENTITY_MATCH: ${gravatarResult.name}</div></div>`;
+        }
+        if (spatialResult) {
+            mapData = spatialResult;
+        }
 
         try {
+            // Build spatial context for the AI prompt if we have map data
             let spatialContext = '';
             if (mapData) {
-                spatialContext = `\n\nSPATIAL_DATA_RETRIEVED: Primary target: ${mapData.primary.name} at LAT ${mapData.primary.lat.toFixed(5)}, LON ${mapData.primary.lon.toFixed(5)}.`;
-                if (mapData.alternates.length) spatialContext += ` Alternates: ${mapData.alternates.map(a=>`${a.name} (${a.lat.toFixed(4)},${a.lon.toFixed(4)})`).join('; ')}.`;
-                spatialContext += ' Reference these coordinates naturally in your noir response.';
+                spatialContext = `\n\nSPATIAL_DATA_RETRIEVED: Primary target coordinates: ${mapData.primary.name} at LAT ${mapData.primary.lat.toFixed(5)}, LON ${mapData.primary.lon.toFixed(5)}. `;
+                if (mapData.alternates.length) {
+                    spatialContext += `Alternate sites: ${mapData.alternates.map(a => `${a.name} (${a.lat.toFixed(4)},${a.lon.toFixed(4)})`).join('; ')}.`;
+                }
+                spatialContext += ' Incorporate these coordinates naturally into your response.';
             }
 
             const apiMessages = [{
                 role: "system",
-                content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: wrap every person, location, organization or alias in [EVIDENCE: Name] tags. If a phone number is given, identify country and carrier. If an email is given, note the digital trace." + spatialContext
+                content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. Act as a general investigation assistant. MANDATORY: For every person, location, organization, or alias you mention, you MUST wrap it in the evidence tag like this: [EVIDENCE: Name]. If the operator provides a phone number, identify country and carrier. If an email is provided, mention the digital trace. If spatial data is provided in the query, reference the coordinates and location naturally in your noir detective style." + spatialContext
             }];
             currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role: m.role, content: m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'') }));
 
@@ -504,21 +783,29 @@ If NO map search is needed (general conversation, analysis, no physical place):
             if (!isGraphView) typingDiv.remove();
             const data      = await response.json();
             const replyText = data.choices[0].message.content;
+
+            // Embed map JSON as hidden comment in the stored message
             const mapComment = mapData ? `<!--NOXMAP:${JSON.stringify(mapData)}-->` : '';
             const fullReply  = replyText + injectionHTML + mapComment;
 
             currentCase.messages.push({ role: 'assistant', content: fullReply });
             saveState();
-            if (isGraphView) renderGraph(); else appendMessageUI('assistant', fullReply);
 
+            if (isGraphView) renderGraph();
+            else appendMessageUI('assistant', fullReply);
+
+            // TTS in call mode
             if (isCallMode && 'speechSynthesis' in window) {
-                const clean = replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi,'$1').replace(/<[^>]*>?/gm,'');
-                const utt = new SpeechSynthesisUtterance(clean);
-                utt.pitch = 0.7; utt.rate = 0.95;
-                utt.onstart = () => { if (isCallMode) { callSpectrum.classList.add('active'); callStatus.textContent = "NOX_UNIT TRANSMITTING"; } };
-                utt.onend   = () => { if (isCallMode) { callSpectrum.classList.remove('active'); callStatus.textContent = "AWAITING INPUT..."; } };
-                window.speechSynthesis.speak(utt);
-            } else if (isCallMode) callStatus.textContent = "AWAITING INPUT...";
+                const cleanSpeech = replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi, '$1').replace(/<[^>]*>?/gm, '');
+                const utterance   = new SpeechSynthesisUtterance(cleanSpeech);
+                utterance.pitch   = 0.7;
+                utterance.rate    = 0.95;
+                utterance.onstart = () => { if (isCallMode) { callSpectrum.classList.add('active'); callStatus.textContent = "NOX_UNIT TRANSMITTING"; } };
+                utterance.onend   = () => { if (isCallMode) { callSpectrum.classList.remove('active'); callStatus.textContent = "AWAITING INPUT..."; } };
+                window.speechSynthesis.speak(utterance);
+            } else if (isCallMode) {
+                callStatus.textContent = "AWAITING INPUT...";
+            }
 
         } catch(e) {
             if (!isGraphView) { typingDiv.remove(); appendMessageUI('assistant', 'SIGNAL LOST: Link unstable.'); }
@@ -526,38 +813,48 @@ If NO map search is needed (general conversation, analysis, no physical place):
         }
     };
 
-    // ─── GRAPH VIEW ──────────────────────────────
+    // ─────────────────────────────────────────────
+    //  GRAPH VIEW
+    // ─────────────────────────────────────────────
     const renderGraph = () => {
         const currentCase = cases.find(c => c.id === currentCaseId);
         if (!currentCase) return;
         const nodes = new vis.DataSet([{ id:'ROOT', label:`CASE:\n${currentCase.id}`, shape:'database', color:'#8b0000', font:{color:'#ffffff',face:'JetBrains Mono'} }]);
         const edges = new vis.DataSet([]);
-        const seen  = new Set();
+        const seenEntities = new Set();
         const delBtn = document.getElementById('node-delete-btn');
-        const emailR = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-        const ipR    = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
-        const phoneR = /(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
-        const noxR   = /\[EVIDENCE:\s*(.*?)\]/gi;
+
+        const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+        const ipRegex    = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+        const phoneRegex = /(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
+        const noxRegex   = /\[EVIDENCE:\s*(.*?)\]/gi;
+
         currentCase.messages.forEach(msg => {
             const text = msg.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'');
             const matches = [
-                ...[...text.matchAll(emailR)].map(m => ({ val:m[0], color:'#2c4a5e', shape:'box' })),
-                ...[...text.matchAll(ipR)].map(m    => ({ val:m[0], color:'#4a5e2c', shape:'ellipse' })),
-                ...[...text.matchAll(phoneR)].map(m => ({ val:m[0], color:'#5e4a2c', shape:'ellipse' })),
-                ...[...text.matchAll(noxR)].map(m   => ({ val:m[1], color:'#8b0000', shape:'hexagon' }))
+                ...[...text.matchAll(emailRegex)].map(m => ({ val:m[0], color:'#2c4a5e', shape:'box' })),
+                ...[...text.matchAll(ipRegex)].map(m    => ({ val:m[0], color:'#4a5e2c', shape:'ellipse' })),
+                ...[...text.matchAll(phoneRegex)].map(m => ({ val:m[0], color:'#5e4a2c', shape:'ellipse' })),
+                ...[...text.matchAll(noxRegex)].map(m   => ({ val:m[1], color:'#8b0000', shape:'hexagon' }))
             ];
             matches.forEach(match => {
                 const id = match.val.trim();
-                if (!id || seen.has(id)) return;
+                if (!id || seenEntities.has(id)) return;
                 if (currentCase.blacklist && currentCase.blacklist.includes(id)) return;
-                seen.add(id);
+                seenEntities.add(id);
                 nodes.add({ id, label:id, color:match.color, shape:match.shape, font:{color:'#e0e0e0',face:'JetBrains Mono'} });
                 edges.add({ from:'ROOT', to:id, color:{color:'#455a64'} });
             });
         });
+
         const container = document.getElementById('evidence-board');
         if (network) network.destroy();
-        network = new vis.Network(container, {nodes,edges}, { physics:{stabilization:true,barnesHut:{springLength:150}}, nodes:{borderWidth:2,shadow:true}, edges:{width:1.5,shadow:true} });
+        network = new vis.Network(container, {nodes,edges}, {
+            physics: { stabilization:true, barnesHut:{springLength:150} },
+            nodes: { borderWidth:2, shadow:true },
+            edges: { width:1.5, shadow:true }
+        });
+
         let selectedNodeId = null;
         const hideBtn = () => { delBtn.style.display='none'; };
         network.on("click", hideBtn);
@@ -568,9 +865,9 @@ If NO map search is needed (general conversation, analysis, no physical place):
                 if (nodeId === 'ROOT') return;
                 selectedNodeId = nodeId;
                 const domPos = network.canvasToDOM(network.getPositions([nodeId])[nodeId]);
-                delBtn.style.display = 'flex';
-                delBtn.style.left = (domPos.x-15)+'px';
-                delBtn.style.top  = (domPos.y-45)+'px';
+                delBtn.style.display  = 'flex';
+                delBtn.style.left = (domPos.x - 15) + 'px';
+                delBtn.style.top  = (domPos.y - 45) + 'px';
             }
         });
         delBtn.onclick = e => {
@@ -585,25 +882,42 @@ If NO map search is needed (general conversation, analysis, no physical place):
 
     const toggleGraphView = () => {
         isGraphView = !isGraphView;
-        if (isGraphView) { chatContainer.style.display='none'; evidenceBoard.style.display='block'; graphToggleBtn.classList.add('active'); renderGraph(); }
-        else { chatContainer.style.display='flex'; evidenceBoard.style.display='none'; graphToggleBtn.classList.remove('active'); scrollToBottom(); }
+        if (isGraphView) {
+            chatContainer.style.display = 'none';
+            evidenceBoard.style.display = 'block';
+            graphToggleBtn.classList.add('active');
+            renderGraph();
+        } else {
+            chatContainer.style.display = 'flex';
+            evidenceBoard.style.display = 'none';
+            graphToggleBtn.classList.remove('active');
+            scrollToBottom();
+        }
     };
 
-    // ─── EXPORT ──────────────────────────────────
+    // ─────────────────────────────────────────────
+    //  EXPORT
+    // ─────────────────────────────────────────────
     const downloadLog = () => {
-        const c = cases.find(c => c.id === currentCaseId);
-        if (!c) return;
-        let log = `NOX DIGITAL DETECTIVE | INVESTIGATION LOG\n===========================================\nCASE_ID:   ${c.id}\nTITLE:     ${c.title}\nTIMESTAMP: ${new Date(c.timestamp).toLocaleString()}\n===========================================\n\n`;
-        c.messages.forEach(m => { log += `${m.role==='assistant'?'[NOX_UNIT]':'[OPERATOR]'}\n${m.content.replace(/<[^>]*>?/gm,'').replace(/<!--NOXMAP:[\s\S]*?-->/g,'')}\n\n`; });
-        const blob = new Blob([log],{type:'text/plain'});
+        const currentCase = cases.find(c => c.id === currentCaseId);
+        if (!currentCase) return;
+        let log = `NOX DIGITAL DETECTIVE | INVESTIGATION LOG\n===========================================\nCASE_ID:   ${currentCase.id}\nTITLE:     ${currentCase.title}\nTIMESTAMP: ${new Date(currentCase.timestamp).toLocaleString()}\n===========================================\n\n`;
+        currentCase.messages.forEach(msg => {
+            const label   = msg.role === 'assistant' ? '[NOX_UNIT]' : '[OPERATOR]';
+            const clean   = msg.content.replace(/<[^>]*>?/gm,'').replace(/<!--NOXMAP:[\s\S]*?-->/g,'');
+            log += `${label}\n${clean}\n\n`;
+        });
+        const blob = new Blob([log], {type:'text/plain'});
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
-        a.href=url; a.download=`${c.id}.txt`;
+        a.href = url; a.download = `${currentCase.id}.txt`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(url);
     };
 
-    // ─── SIDEBAR ─────────────────────────────────
+    // ─────────────────────────────────────────────
+    //  SIDEBAR / EVENT LISTENERS
+    // ─────────────────────────────────────────────
     const toggleSidebar = () => { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); document.body.classList.toggle('sidebar-open'); };
 
     menuBtn.addEventListener('click',         toggleSidebar);
@@ -614,31 +928,42 @@ If NO map search is needed (general conversation, analysis, no physical place):
     exportBtn.addEventListener('click',       downloadLog);
     graphToggleBtn.addEventListener('click',  toggleGraphView);
     clearBtn.addEventListener('click',        () => { if(confirm('Purge logs?')) deleteCase(currentCaseId); });
-    userInput.addEventListener('input',  function() { this.style.height='auto'; this.style.height=this.scrollHeight+'px'; });
-    userInput.addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} });
+    userInput.addEventListener('input',  function() { this.style.height='auto'; this.style.height=(this.scrollHeight)+'px'; });
+    userInput.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
 
-    // ─── CALL MODE ───────────────────────────────
+    // ─────────────────────────────────────────────
+    //  CALL MODE
+    // ─────────────────────────────────────────────
     const setupCallMode = () => {
         const callTriggerBtn = document.createElement('button');
         callTriggerBtn.className = 'icon-btn';
         callTriggerBtn.innerHTML = '<i class="fas fa-phone-alt"></i>';
         callTriggerBtn.title = "Call Mode";
         document.querySelector('.header-right').prepend(callTriggerBtn);
-        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SR) { callTriggerBtn.style.display='none'; return; }
-        const recognition = new SR();
-        recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-US';
-        callTriggerBtn.addEventListener('click', () => { isCallMode=true; callOverlay.classList.add('active'); callStatus.textContent="SECURE LINE ESTABLISHED"; });
-        callEndBtn.addEventListener('click', () => { isCallMode=false; callOverlay.classList.remove('active'); recognition.stop(); window.speechSynthesis.cancel(); callSpectrum.classList.remove('active'); callMicBtn.classList.remove('listening'); });
-        callMicBtn.addEventListener('click', () => { if(callMicBtn.classList.contains('listening')) recognition.stop(); else { window.speechSynthesis.cancel(); recognition.start(); } });
-        recognition.onstart  = () => { callMicBtn.classList.add('listening'); callSpectrum.classList.add('active'); callStatus.textContent="LISTENING..."; };
-        recognition.onresult = e  => { userInput.value=e.results[0][0].transcript; callStatus.textContent="TRANSMITTING..."; sendMessage(); };
-        recognition.onerror  = ()  => { callMicBtn.classList.remove('listening'); callSpectrum.classList.remove('active'); callStatus.textContent="SIGNAL INTERRUPTED"; };
-        recognition.onend    = ()  => { callMicBtn.classList.remove('listening'); if(isCallMode&&callStatus.textContent!=="TRANSMITTING..."){callStatus.textContent="AWAITING INPUT...";callSpectrum.classList.remove('active');} };
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            callTriggerBtn.addEventListener('click', () => { isCallMode = true; callOverlay.classList.add('active'); callStatus.textContent = "SECURE LINE ESTABLISHED"; });
+            callEndBtn.addEventListener('click', () => { isCallMode = false; callOverlay.classList.remove('active'); recognition.stop(); window.speechSynthesis.cancel(); callSpectrum.classList.remove('active'); callMicBtn.classList.remove('listening'); });
+            callMicBtn.addEventListener('click', () => { if (callMicBtn.classList.contains('listening')) recognition.stop(); else { window.speechSynthesis.cancel(); recognition.start(); } });
+            recognition.onstart  = () => { callMicBtn.classList.add('listening'); callSpectrum.classList.add('active'); callStatus.textContent = "LISTENING..."; };
+            recognition.onresult = e  => { userInput.value = e.results[0][0].transcript; callStatus.textContent = "TRANSMITTING..."; sendMessage(); };
+            recognition.onerror  = e  => { callMicBtn.classList.remove('listening'); callSpectrum.classList.remove('active'); callStatus.textContent = "SIGNAL INTERRUPTED"; };
+            recognition.onend    = () => { callMicBtn.classList.remove('listening'); if (isCallMode && callStatus.textContent !== "TRANSMITTING...") { callStatus.textContent = "AWAITING INPUT..."; callSpectrum.classList.remove('active'); } };
+        } else {
+            callTriggerBtn.style.display = 'none';
+        }
     };
 
     setupCallMode();
     init();
     </script>
 </body>
-</html>
+                                          </html>
