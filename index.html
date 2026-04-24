@@ -691,38 +691,68 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
     const PRIVATE_IP = /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|127\.|0\.0\.0\.0|::1)/;
 
     const lookupIP = async (ip) => {
-        try {
-            // ipwho.is — free, no key, proper CORS headers
-            const r = await fetch(`https://ipwho.is/${ip}`);
-            if (!r.ok) return null;
-            const d = await r.json();
-            if (!d.success) return null;
-            // Normalise to a consistent shape
-            return {
-                query:       d.ip,
-                country:     d.country      || 'Unknown',
-                countryCode: d.country_code || 'xx',
-                regionName:  d.region       || 'Unknown',
-                city:        d.city         || 'Unknown',
-                lat:         parseFloat(d.latitude)  || 0,
-                lon:         parseFloat(d.longitude) || 0,
-                isp:         d.connection?.isp  || d.org || 'Unknown',
-                org:         d.org              || 'Unknown',
-                as:          d.connection?.asn  ? `AS${d.connection.asn} ${d.connection.org || ''}`.trim() : 'Unknown',
-                proxy:       d.security?.proxy  || false,
-                hosting:     d.security?.hosting || false,
-                vpn:         d.security?.vpn     || false,
-                tor:         d.security?.tor     || false,
-            };
-        } catch(e) { return null; }
+        // Try multiple free CORS-friendly APIs in order
+        const attempts = [
+            // 1. ip-api.com HTTPS (CORS allowed on https)
+            async () => {
+                const r = await fetch(`https://ip-api.com/json/${ip}?fields=66846719`);
+                const d = await r.json();
+                if (d.status !== 'success') throw new Error(d.message);
+                return {
+                    query: d.query, country: d.country, countryCode: d.countryCode,
+                    regionName: d.regionName, city: d.city,
+                    lat: d.lat, lon: d.lon,
+                    isp: d.isp, org: d.org, as: d.as,
+                    proxy: d.proxy, hosting: d.hosting, vpn: d.proxy, tor: false
+                };
+            },
+            // 2. ipapi.co
+            async () => {
+                const r = await fetch(`https://ipapi.co/${ip}/json/`);
+                const d = await r.json();
+                if (d.error) throw new Error(d.reason);
+                return {
+                    query: d.ip, country: d.country_name, countryCode: d.country_code,
+                    regionName: d.region, city: d.city,
+                    lat: parseFloat(d.latitude), lon: parseFloat(d.longitude),
+                    isp: d.org || 'Unknown', org: d.org || 'Unknown',
+                    as: d.asn || 'Unknown',
+                    proxy: false, hosting: false, vpn: false, tor: false
+                };
+            },
+            // 3. freeipapi.com
+            async () => {
+                const r = await fetch(`https://freeipapi.com/api/json/${ip}`);
+                const d = await r.json();
+                if (!d.ipAddress) throw new Error('no data');
+                return {
+                    query: d.ipAddress, country: d.countryName, countryCode: d.countryCode,
+                    regionName: d.regionName, city: d.cityName,
+                    lat: parseFloat(d.latitude), lon: parseFloat(d.longitude),
+                    isp: d.isp || 'Unknown', org: d.isp || 'Unknown', as: 'Unknown',
+                    proxy: d.isProxy || false, hosting: false, vpn: false, tor: false
+                };
+            }
+        ];
+
+        for (const attempt of attempts) {
+            try {
+                const result = await attempt();
+                if (result && result.country) return result;
+            } catch(e) {
+                console.warn('NOX_IP_ATTEMPT_FAILED', e.message);
+            }
+        }
+        return { query: ip, _error: true }; // return stub so card can show failure
     };
 
     const buildIPCard = (d) => {
+        if (d._error) return `<div class="ip-card"><div class="ip-card-header"><span class="ip-address">${d.query}</span><span class="ip-tag proxy">LOOKUP_FAILED</span></div><div class="ip-grid"><div class="ip-row"><span class="ip-k">STATUS</span><span class="ip-v">All geolocation APIs unreachable. Check console for details.</span></div></div></div>`;
         const flag = `https://flagcdn.com/24x18/${(d.countryCode||'xx').toLowerCase()}.png`;
         const tags = [
-            d.proxy   ? '<span class="ip-tag proxy">PROXY</span>'     : '',
-            d.vpn     ? '<span class="ip-tag proxy">VPN</span>'       : '',
-            d.tor     ? '<span class="ip-tag proxy">TOR</span>'       : '',
+            d.proxy   ? '<span class="ip-tag proxy">PROXY</span>'        : '',
+            d.vpn     ? '<span class="ip-tag proxy">VPN</span>'          : '',
+            d.tor     ? '<span class="ip-tag proxy">TOR</span>'          : '',
             d.hosting ? '<span class="ip-tag hosting">DATACENTER</span>' : '',
         ].filter(Boolean).join('');
         const lat = typeof d.lat === 'number' ? d.lat.toFixed(4) : '—';
@@ -734,11 +764,11 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                 ${tags}
             </div>
             <div class="ip-grid">
-                <div class="ip-row"><span class="ip-k">LOCATION</span><span class="ip-v">${d.city}, ${d.regionName}, ${d.country}</span></div>
+                <div class="ip-row"><span class="ip-k">LOCATION</span><span class="ip-v">${d.city||'—'}, ${d.regionName||'—'}, ${d.country||'—'}</span></div>
                 <div class="ip-row"><span class="ip-k">COORDS</span><span class="ip-v">${lat}, ${lon}</span></div>
-                <div class="ip-row"><span class="ip-k">ISP</span><span class="ip-v">${d.isp}</span></div>
-                <div class="ip-row"><span class="ip-k">ORG</span><span class="ip-v">${d.org}</span></div>
-                <div class="ip-row"><span class="ip-k">ASN</span><span class="ip-v">${d.as}</span></div>
+                <div class="ip-row"><span class="ip-k">ISP</span><span class="ip-v">${d.isp||'—'}</span></div>
+                <div class="ip-row"><span class="ip-k">ORG</span><span class="ip-v">${d.org||'—'}</span></div>
+                <div class="ip-row"><span class="ip-k">ASN</span><span class="ip-v">${d.as||'—'}</span></div>
             </div>
         </div>`;
     };
@@ -788,13 +818,13 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
         ipResults.forEach((d, i) => {
             if (!d) return;
             injectionHTML += `\n\n${buildIPCard(d)}`;
+            if (d._error) return; // card shown but skip map/context
             if (i === 0) {
-                ipContext = `IP_GEOLOCATION: ${d.query} resolves to ${d.city}, ${d.regionName}, ${d.country}. ISP: ${d.isp}. Org: ${d.org}. Coordinates: ${d.lat}, ${d.lon}.${d.proxy?' Flagged as PROXY/VPN.':''}${d.hosting?' Flagged as HOSTING/DATACENTER.':''}`;
-                // If no map from spatial search, pin the IP location
-                if (!mapData) {
+                ipContext = `IP_GEOLOCATION: ${d.query} resolves to ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'}. ISP: ${d.isp||'?'}. Org: ${d.org||'?'}. Coordinates: ${d.lat}, ${d.lon}.${d.proxy?' Flagged as PROXY/VPN.':''}${d.hosting?' Flagged as HOSTING/DATACENTER.':''}`;
+                if (!mapData && d.lat && d.lon) {
                     mapData = {
                         query: `IP ${d.query}`,
-                        primary: { name: `${d.city}, ${d.country} — ${d.isp}`, lat: d.lat, lon: d.lon, type: 'ip_geolocation', address: `${d.city}, ${d.regionName}, ${d.country}` },
+                        primary: { name: `${d.city||'Unknown'}, ${d.country||'?'} — ${d.isp||'?'}`, lat: d.lat, lon: d.lon, type: 'ip_geolocation', address: `${d.city||''}, ${d.regionName||''}, ${d.country||''}` },
                         alternates: []
                     };
                 }
