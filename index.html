@@ -6,6 +6,7 @@
     <title>NOX | Digital Detective Assistant</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <style>
         :root {
             --bg-primary: #121212;
@@ -87,8 +88,7 @@
             padding: 12px 10px; margin-bottom: 5px; border-radius: 4px; cursor: pointer;
             transition: background 0.2s; position: relative; overflow: hidden;
             display: flex; justify-content: space-between; align-items: center;
-            user-select: none;
-            -webkit-user-select: none;
+            user-select: none; -webkit-user-select: none;
         }
         .case-item:hover { background-color: var(--bg-tertiary); }
         .case-item.active { background-color: var(--bg-tertiary); border-left: 3px solid var(--accent-red); }
@@ -96,7 +96,6 @@
             font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1;
             pointer-events: none;
         }
-        
         .case-delete-btn {
             background: none; border: none; color: var(--accent-red); cursor: pointer;
             font-size: 1rem; padding: 5px; display: none; margin-left: 10px;
@@ -149,13 +148,52 @@
             border-right: 3px solid #666; font-family: var(--font-sans); font-size: 0.95rem;
         }
 
-        /* Gravatar UI components */
+        /* Gravatar UI */
         .gravatar-info {
             display: flex; align-items: center; gap: 15px; margin-top: 15px;
             padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 4px;
         }
         .gravatar-img { width: 50px; height: 50px; border-radius: 4px; border: 1px solid var(--accent-color); }
         .gravatar-name { font-family: var(--font-mono); font-size: 0.8rem; color: #fff; letter-spacing: 1px; }
+
+        /* ── SPATIAL INTERCEPT MAP ── */
+        .nox-map-block {
+            margin-top: 16px;
+            border: 1px solid var(--accent-color);
+            border-radius: 3px;
+            overflow: hidden;
+            background: #0d0d0d;
+        }
+        .nox-map-header {
+            background: rgba(139,0,0,0.15);
+            border-bottom: 1px solid var(--accent-color);
+            padding: 8px 14px;
+            display: flex; align-items: center; gap: 10px;
+            font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 1.5px;
+            color: var(--accent-red);
+        }
+        .nox-map-header .blink {
+            width: 7px; height: 7px; border-radius: 50%; background: var(--accent-red);
+            animation: blink-dot 1.2s infinite;
+        }
+        @keyframes blink-dot { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+        .nox-map-canvas {
+            width: 100%; height: 220px;
+        }
+        .nox-map-footer {
+            padding: 10px 14px;
+            font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            line-height: 1.7;
+        }
+        .nox-map-footer .coord-line { color: #7fba8a; }
+        .nox-map-footer .alt-line { color: var(--text-secondary); }
+        .nox-map-footer .alt-line span { color: #c8a96e; }
+
+        /* Custom Leaflet dark overrides */
+        .leaflet-container { background: #0d0d0d !important; }
+        .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(0.75) contrast(1.1); }
+        .leaflet-control-zoom a { background: var(--bg-secondary) !important; color: var(--text-primary) !important; border-color: var(--border-color) !important; }
 
         .input-area { 
             flex-shrink: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); 
@@ -165,7 +203,6 @@
             background-color: var(--bg-secondary); border: 1px solid var(--border-color);
             padding: 10px 15px; display: flex; gap: 12px; align-items: center; border-radius: 4px;
         }
-        
         textarea {
             flex-grow: 1; background: transparent; border: none; color: var(--text-primary);
             font-family: var(--font-sans); font-size: 16px; resize: none; 
@@ -182,38 +219,27 @@
             body.sidebar-open .main-content { margin-left: var(--sidebar-width); }
             .input-area { padding: 20px 40px 40px 40px; }
         }
+
         #node-delete-btn {
-            position: absolute;
-            display: none;
-            background: var(--accent-red);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            font-size: 14px;
+            position: absolute; display: none;
+            background: var(--accent-red); color: white; border: none; border-radius: 50%;
+            width: 30px; height: 30px; cursor: pointer; z-index: 100;
+            justify-content: center; align-items: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); font-size: 14px;
         }
 
-        /* --- CALL MODE OVERLAY STYLES --- */
+        /* CALL MODE */
         .call-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(18, 18, 18, 0.96); z-index: 9999;
+            background: rgba(18,18,18,0.96); z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
             backdrop-filter: blur(8px);
         }
-        .call-overlay.active {
-            opacity: 1; pointer-events: auto;
-        }
+        .call-overlay.active { opacity: 1; pointer-events: auto; }
         .call-status {
             font-family: var(--font-mono); color: var(--text-secondary);
-            margin-bottom: 50px; letter-spacing: 2px; text-transform: uppercase;
-            font-size: 1rem;
+            margin-bottom: 50px; letter-spacing: 2px; text-transform: uppercase; font-size: 1rem;
         }
         .spectrum-container {
             display: flex; align-items: center; gap: 10px; height: 120px; margin-bottom: 80px;
@@ -221,25 +247,17 @@
         .spectrum-bar {
             width: 14px; height: 20px; background-color: var(--accent-red);
             border-radius: 8px; transition: height 0.15s ease;
-            box-shadow: 0 0 15px rgba(139, 0, 0, 0.8);
+            box-shadow: 0 0 15px rgba(139,0,0,0.8);
         }
-        .spectrum-container.active .spectrum-bar {
-            animation: pulse-wave 1.2s ease-in-out infinite;
-        }
+        .spectrum-container.active .spectrum-bar { animation: pulse-wave 1.2s ease-in-out infinite; }
         .spectrum-container.active .spectrum-bar:nth-child(1) { animation-delay: 0.0s; }
         .spectrum-container.active .spectrum-bar:nth-child(2) { animation-delay: 0.15s; }
         .spectrum-container.active .spectrum-bar:nth-child(3) { animation-delay: 0.3s; }
         .spectrum-container.active .spectrum-bar:nth-child(4) { animation-delay: 0.45s; }
         .spectrum-container.active .spectrum-bar:nth-child(5) { animation-delay: 0.6s; }
-        
-        @keyframes pulse-wave {
-            0%, 100% { height: 20px; }
-            50% { height: 100px; }
-        }
+        @keyframes pulse-wave { 0%,100%{height:20px;} 50%{height:100px;} }
 
-        .call-controls {
-            display: flex; gap: 50px; align-items: center;
-        }
+        .call-controls { display: flex; gap: 50px; align-items: center; }
         .call-btn {
             width: 70px; height: 70px; border-radius: 50%; border: none;
             display: flex; align-items: center; justify-content: center;
@@ -252,14 +270,10 @@
         .call-btn-mic:hover { background-color: #a00000; }
         .call-btn-mic.listening { 
             background-color: #ff2222; 
-            box-shadow: 0 0 25px rgba(255, 34, 34, 0.6); 
+            box-shadow: 0 0 25px rgba(255,34,34,0.6); 
             animation: pulse-mic 1.5s infinite;
         }
-        @keyframes pulse-mic {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+        @keyframes pulse-mic { 0%{transform:scale(1);} 50%{transform:scale(1.05);} 100%{transform:scale(1);} }
     </style>
 </head>
 <body>
@@ -295,11 +309,9 @@
             </header>
             
             <div class="chat-container" id="chat-container"></div>
-            <div id="evidence-board">
-                
-            </div><button id="node-delete-btn"><i class="fas fa-trash"></i></button>
+            <div id="evidence-board"></div>
+            <button id="node-delete-btn"><i class="fas fa-trash"></i></button>
 
-            
             <div class="input-area">
                 <div class="input-wrapper">
                     <textarea id="user-input" placeholder="Operator query..." rows="1"></textarea>
@@ -325,511 +337,631 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script>
-        const API_URL = "https://hermes.ai.unturf.com/v1/chat/completions";
-        const chatContainer = document.getElementById('chat-container');
-        const evidenceBoard = document.getElementById('evidence-board');
-        const userInput = document.getElementById('user-input');
-        const sendBtn = document.getElementById('send-btn');
-        const caseIdDisplay = document.getElementById('case-id-display');
-        const caseListEl = document.getElementById('case-list');
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebar-overlay');
-        const menuBtn = document.getElementById('menu-btn');
-        const closeSidebarBtn = document.getElementById('close-sidebar');
-        const newCaseBtn = document.getElementById('new-case-btn');
-        const clearBtn = document.getElementById('clear-btn');
-        const exportBtn = document.getElementById('export-btn');
-        const graphToggleBtn = document.getElementById('graph-toggle-btn');
-        
-        // Call UI Elements
-        const callOverlay = document.getElementById('call-overlay');
-        const callSpectrum = document.getElementById('call-spectrum');
-        const callMicBtn = document.getElementById('call-btn-mic');
-        const callEndBtn = document.getElementById('call-btn-end');
-        const callStatus = document.getElementById('call-status');
+    // ─────────────────────────────────────────────
+    //  CONFIG
+    // ─────────────────────────────────────────────
+    const API_URL = "https://hermes.ai.unturf.com/v1/chat/completions";
 
-        let cases = [];
-        let currentCaseId = null;
-        let isGraphView = false;
-        let isCallMode = false;
-        let network = null;
+    const chatContainer     = document.getElementById('chat-container');
+    const evidenceBoard     = document.getElementById('evidence-board');
+    const userInput         = document.getElementById('user-input');
+    const sendBtn           = document.getElementById('send-btn');
+    const caseIdDisplay     = document.getElementById('case-id-display');
+    const caseListEl        = document.getElementById('case-list');
+    const sidebar           = document.getElementById('sidebar');
+    const sidebarOverlay    = document.getElementById('sidebar-overlay');
+    const menuBtn           = document.getElementById('menu-btn');
+    const closeSidebarBtn   = document.getElementById('close-sidebar');
+    const newCaseBtn        = document.getElementById('new-case-btn');
+    const clearBtn          = document.getElementById('clear-btn');
+    const exportBtn         = document.getElementById('export-btn');
+    const graphToggleBtn    = document.getElementById('graph-toggle-btn');
+    const callOverlay       = document.getElementById('call-overlay');
+    const callSpectrum      = document.getElementById('call-spectrum');
+    const callMicBtn        = document.getElementById('call-btn-mic');
+    const callEndBtn        = document.getElementById('call-btn-end');
+    const callStatus        = document.getElementById('call-status');
 
-        const init = () => {
-            loadState();
-            if (cases.length === 0) createNewCase();
-            else {
-                currentCaseId = localStorage.getItem('nox_active_case') || cases[0].id;
-                renderChat();
-                renderArchive();
-            }
-        };
+    let cases         = [];
+    let currentCaseId = null;
+    let isGraphView   = false;
+    let isCallMode    = false;
+    let network       = null;
+    let mapInstances  = {};   // keyed by unique map div id, stores leaflet map refs
 
-        const loadState = () => {
-            const saved = localStorage.getItem('nox_cases');
-            if (saved) cases = JSON.parse(saved);
-        };
-
-        const saveState = () => {
-            localStorage.setItem('nox_cases', JSON.stringify(cases));
-            localStorage.setItem('nox_active_case', currentCaseId);
+    // ─────────────────────────────────────────────
+    //  STATE
+    // ─────────────────────────────────────────────
+    const init = () => {
+        loadState();
+        if (cases.length === 0) createNewCase();
+        else {
+            currentCaseId = localStorage.getItem('nox_active_case') || cases[0].id;
+            renderChat();
             renderArchive();
+        }
+    };
+    const loadState  = () => { const s = localStorage.getItem('nox_cases'); if (s) cases = JSON.parse(s); };
+    const saveState  = () => { localStorage.setItem('nox_cases', JSON.stringify(cases)); localStorage.setItem('nox_active_case', currentCaseId); renderArchive(); };
+    const generateCaseId = () => 'NX-' + Math.floor(Math.random() * 9000 + 1000) + '-LOG';
+
+    const createNewCase = () => {
+        const newCase = {
+            id: generateCaseId(),
+            title: 'New Investigation...',
+            messages: [{ role: 'assistant', content: 'System active. Neural links established. How can I assist with your investigation?' }],
+            timestamp: Date.now()
         };
+        cases.unshift(newCase);
+        currentCaseId = newCase.id;
+        saveState();
+        if (isGraphView) renderGraph(); else renderChat();
+        if (sidebar.classList.contains('open')) toggleSidebar();
+    };
 
-        const generateCaseId = () => 'NX-' + Math.floor(Math.random() * 9000 + 1000) + '-LOG';
+    // ─────────────────────────────────────────────
+    //  RENDER CHAT
+    // ─────────────────────────────────────────────
+    const renderChat = () => {
+        chatContainer.innerHTML = '';
+        mapInstances = {};
+        const currentCase = cases.find(c => c.id === currentCaseId);
+        if (currentCase) {
+            caseIdDisplay.textContent = currentCase.id;
+            currentCase.messages.forEach(msg => appendMessageUI(msg.role, msg.content, false));
+        }
+        scrollToBottom();
+    };
 
-        const createNewCase = () => {
-            const newCase = {
-                id: generateCaseId(),
-                title: 'New Investigation...',
-                messages: [{ role: 'assistant', content: 'System active. Neural links established. How can I assist with your investigation?' }],
-                timestamp: Date.now()
-            };
-            cases.unshift(newCase);
-            currentCaseId = newCase.id;
-            saveState();
-            if (isGraphView) renderGraph(); else renderChat();
-            if (sidebar.classList.contains('open')) toggleSidebar();
-        };
+    const appendMessageUI = (role, content, animate = true) => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${role}-msg`;
+        const label = role === 'assistant' ? 'NOX_UNIT' : 'OPERATOR';
 
-        const renderChat = () => {
-            chatContainer.innerHTML = '';
-            const currentCase = cases.find(c => c.id === currentCaseId);
-            if (currentCase) {
-                caseIdDisplay.textContent = currentCase.id;
-                currentCase.messages.forEach(msg => appendMessageUI(msg.role, msg.content, false));
-            }
-            scrollToBottom();
-        };
+        // Separate map-block JSON from prose
+        const mapMatch = content.match(/<!--NOXMAP:([\s\S]*?)-->/);
+        let prose = content.replace(/<!--NOXMAP:[\s\S]*?-->/g, '').trim();
 
-        const appendMessageUI = (role, content, animate = true) => {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${role}-msg`;
-            const label = role === 'assistant' ? 'NOX_UNIT' : 'OPERATOR';
-            msgDiv.innerHTML = `<div class="msg-header">${label}</div><div class="msg-content">${content}</div>`;
-            chatContainer.appendChild(msgDiv);
-            scrollToBottom();
-        };
+        msgDiv.innerHTML = `<div class="msg-header">${label}</div><div class="msg-content">${prose}</div>`;
+        chatContainer.appendChild(msgDiv);
 
-        const scrollToBottom = () => chatContainer.scrollTop = chatContainer.scrollHeight;
-
-        const renderArchive = () => {
-            caseListEl.innerHTML = '';
-            cases.forEach(c => {
-                if (!c || !c.id) return; 
-
-                const li = document.createElement('li');
-                li.className = `case-item ${c.id === currentCaseId ? 'active' : ''}`;
-                
-                const textSpan = document.createElement('span');
-                textSpan.className = 'case-item-text';
-                textSpan.textContent = c.title;
-
-                const delBtn = document.createElement('button');
-                delBtn.className = 'case-delete-btn';
-                delBtn.innerHTML = '<i class="fas fa-trash"></i>';
-
-                let pressTimer;
-                const startPress = (e) => {
-                    pressTimer = setTimeout(() => {
-                        document.querySelectorAll('.case-item').forEach(item => item.classList.remove('show-delete'));
-                        li.classList.add('show-delete');
-                    }, 600);
-                };
-                const cancelPress = () => clearTimeout(pressTimer);
-
-                li.addEventListener('touchstart', startPress, {passive: true});
-                li.addEventListener('mousedown', startPress);
-                li.addEventListener('touchend', cancelPress);
-                li.addEventListener('mouseup', cancelPress);
-                li.addEventListener('contextmenu', (e) => e.preventDefault());
-
-                li.addEventListener('click', (e) => {
-                    if (e.target.closest('.case-delete-btn')) return;
-                    if (li.classList.contains('show-delete')) {
-                        li.classList.remove('show-delete');
-                        return;
-                    }
-                    currentCaseId = c.id;
-                    saveState();
-                    if (isGraphView) { renderGraph(); caseIdDisplay.textContent = currentCaseId; }
-                    else renderChat();
-                    if (window.innerWidth < 768) toggleSidebar();
-                });
-
-                delBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    deleteCase(c.id);
-                });
-
-                li.appendChild(textSpan);
-                li.appendChild(delBtn);
-                caseListEl.appendChild(li);
-            });
-        };
-
-        const deleteCase = (id) => {
-            cases = cases.filter(c => c.id !== id);
-            if (cases.length === 0) {
-                createNewCase();
-            } else if (currentCaseId === id) {
-                currentCaseId = cases[0].id;
-                if (isGraphView) renderGraph(); else renderChat();
-            }
-            saveState();
-        };
-
-        const fetchGravatar = async (email) => {
-            const hash = CryptoJS.MD5(email.trim().toLowerCase()).toString();
-            const imgUrl = `https://www.gravatar.com/avatar/${hash}?s=200&d=identicon`;
+        if (mapMatch) {
             try {
-                const response = await fetch(`https://en.gravatar.com/${hash}.json`);
-                if (response.ok) {
-                    const data = await response.json();
-                    const profile = data.entry[0];
-                    return {
-                        name: profile.displayName || profile.preferredUsername || "ID_REDACTED",
-                        image: profile.thumbnailUrl || imgUrl
-                    };
-                }
-            } catch (e) {}
-            return { name: "ENCRYPTED_ID", image: imgUrl };
-        };
+                const mapData = JSON.parse(mapMatch[1]);
+                const mapBlock = buildMapBlock(mapData);
+                msgDiv.querySelector('.msg-content').appendChild(mapBlock);
+            } catch(e) { console.error('NOX_MAP_PARSE_ERR', e); }
+        }
 
-        const renderGraph = () => {
-            const currentCase = cases.find(c => c.id === currentCaseId);
-            if (!currentCase) return;
+        scrollToBottom();
+    };
 
-            const nodes = new vis.DataSet([{ 
-                id: 'ROOT', label: `CASE:\n${currentCase.id}`, 
-                shape: 'database', color: '#8b0000', 
-                font: { color: '#ffffff', face: 'JetBrains Mono' } 
-            }]);
-            const edges = new vis.DataSet([]);
-            const seenEntities = new Set();
-            const delBtn = document.getElementById('node-delete-btn');
+    // ─────────────────────────────────────────────
+    //  MAP BLOCK BUILDER
+    // ─────────────────────────────────────────────
+    const buildMapBlock = (data) => {
+        // data: { query, primary: {name,lat,lon,type,address}, alternates: [{name,lat,lon,type}] }
+        const mapId = 'nox-map-' + Date.now() + '-' + Math.random().toString(36).slice(2,6);
 
-            const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-            const ipRegex = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
-            const phoneRegex = /(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
-            const noxRegex = /\[EVIDENCE:\s*(.*?)\]/gi;
+        const block = document.createElement('div');
+        block.className = 'nox-map-block';
 
-            currentCase.messages.forEach(msg => {
-                const text = msg.content;
-                const matches = [
-                    ...[...text.matchAll(emailRegex)].map(m => ({ val: m[0], type: 'email', color: '#2c4a5e', shape: 'box' })),
-                    ...[...text.matchAll(ipRegex)].map(m => ({ val: m[0], type: 'ip', color: '#4a5e2c', shape: 'ellipse' })),
-                    ...[...text.matchAll(phoneRegex)].map(m => ({ val: m[0], type: 'phone', color: '#5e4a2c', shape: 'ellipse' })),
-                    ...[...text.matchAll(noxRegex)].map(m => ({ val: m[1], type: 'nox', color: '#8b0000', shape: 'hexagon' }))
-                ];
+        const altsHtml = data.alternates && data.alternates.length
+            ? data.alternates.map((a,i) =>
+                `<div class="alt-line">ALT_${String(i+1).padStart(2,'0')}: <span>${escHtml(a.name)}</span> — ${a.lat.toFixed(5)}, ${a.lon.toFixed(5)}</div>`
+              ).join('')
+            : '<div class="alt-line">NO_ALTERNATES_FOUND</div>';
 
-                matches.forEach(match => {
-                    const id = match.val.trim();
-                    if (!id || seenEntities.has(id)) return;
-                    if (currentCase.blacklist && currentCase.blacklist.includes(id)) return;
-                    
-                    seenEntities.add(id);
-                    nodes.add({ 
-                        id: id, label: id, color: match.color, shape: match.shape,
-                        font: { color: '#e0e0e0', face: 'JetBrains Mono' }
+        block.innerHTML = `
+            <div class="nox-map-header">
+                <div class="blink"></div>
+                SPATIAL_INTERCEPT :: ${escHtml(data.query.toUpperCase())}
+            </div>
+            <div class="nox-map-canvas" id="${mapId}"></div>
+            <div class="nox-map-footer">
+                <div class="coord-line">▸ PRIMARY TARGET: ${escHtml(data.primary.name)}</div>
+                <div class="coord-line">  LAT: ${data.primary.lat.toFixed(6)} | LON: ${data.primary.lon.toFixed(6)}</div>
+                ${altsHtml}
+            </div>`;
+
+        // Leaflet needs to render after the element is in the DOM
+        setTimeout(() => {
+            const mapEl = document.getElementById(mapId);
+            if (!mapEl) return;
+            const m = L.map(mapId, { zoomControl: true, attributionControl: false }).setView([data.primary.lat, data.primary.lon], 16);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
+
+            // Red primary marker
+            const redIcon = L.divIcon({
+                className: '',
+                html: `<div style="width:14px;height:14px;border-radius:50%;background:#8b0000;border:2px solid #ff4444;box-shadow:0 0 10px rgba(139,0,0,0.8);"></div>`,
+                iconSize: [14,14], iconAnchor:[7,7]
+            });
+            L.marker([data.primary.lat, data.primary.lon], {icon: redIcon})
+             .addTo(m)
+             .bindPopup(`<b>${data.primary.name}</b><br>${data.primary.type||''}<br>${data.primary.address||''}`);
+
+            // Grey alternate markers
+            if (data.alternates) {
+                data.alternates.forEach(a => {
+                    const greyIcon = L.divIcon({
+                        className: '',
+                        html: `<div style="width:10px;height:10px;border-radius:50%;background:#455a64;border:1.5px solid #7a9aaa;"></div>`,
+                        iconSize:[10,10], iconAnchor:[5,5]
                     });
-                    edges.add({ from: 'ROOT', to: id, color: { color: '#455a64' } });
+                    L.marker([a.lat, a.lon], {icon: greyIcon}).addTo(m).bindPopup(`<b>${a.name}</b>`);
                 });
-            });
-
-            const container = document.getElementById('evidence-board');
-            if (network) network.destroy();
-            network = new vis.Network(container, { nodes, edges }, {
-                physics: { stabilization: true, barnesHut: { springLength: 150 } },
-                nodes: { borderWidth: 2, shadow: true },
-                edges: { width: 1.5, shadow: true }
-            });
-
-            let selectedNodeId = null;
-
-            // Hide button on any click outside or movement
-            const hideBtn = () => { delBtn.style.display = 'none'; };
-            network.on("click", hideBtn);
-            network.on("dragStart", hideBtn);
-
-            // Show button on hold
-            network.on("hold", function (params) {
-                if (params.nodes.length > 0) {
-                    const nodeId = params.nodes[0];
-                    if (nodeId === 'ROOT') return;
-
-                    selectedNodeId = nodeId;
-                    
-                    // Convert canvas coordinates to DOM coordinates
-                    const domPos = network.canvasToDOM(network.getPositions([nodeId])[nodeId]);
-                    
-                    delBtn.style.display = 'flex';
-                    delBtn.style.left = (domPos.x - 15) + 'px';
-                    delBtn.style.top = (domPos.y - 45) + 'px'; // Float slightly above
-                }
-            });
-
-            // Delete action
-            delBtn.onclick = (e) => {
-                e.stopPropagation();
-                if (selectedNodeId) {
-                    if (!currentCase.blacklist) currentCase.blacklist = [];
-                    currentCase.blacklist.push(selectedNodeId);
-                    saveState();
-                    nodes.remove(selectedNodeId);
-                    hideBtn();
-                }
-            };
-        };
-
-
-        const toggleGraphView = () => {
-            isGraphView = !isGraphView;
-            if (isGraphView) {
-                chatContainer.style.display = 'none';
-                evidenceBoard.style.display = 'block';
-                graphToggleBtn.classList.add('active');
-                renderGraph();
-            } else {
-                chatContainer.style.display = 'flex';
-                evidenceBoard.style.display = 'none';
-                graphToggleBtn.classList.remove('active');
-                scrollToBottom();
             }
-        };
 
-        const sendMessage = async () => {
-            const message = userInput.value.trim();
-            if (!message) return;
-            const currentCase = cases.find(c => c.id === currentCaseId);
-            if (currentCase.messages.length <= 1) currentCase.title = message.substring(0, 30);
-            
-            currentCase.messages.push({ role: 'user', content: message });
-            
-            if (!isGraphView) appendMessageUI('user', message);
-            userInput.value = '';
-            userInput.style.height = 'auto';
+            mapInstances[mapId] = m;
+            m.invalidateSize();
+        }, 100);
+
+        return block;
+    };
+
+    const escHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const scrollToBottom = () => chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    // ─────────────────────────────────────────────
+    //  ARCHIVE
+    // ─────────────────────────────────────────────
+    const renderArchive = () => {
+        caseListEl.innerHTML = '';
+        cases.forEach(c => {
+            if (!c || !c.id) return;
+            const li = document.createElement('li');
+            li.className = `case-item ${c.id === currentCaseId ? 'active' : ''}`;
+            const textSpan = document.createElement('span');
+            textSpan.className = 'case-item-text';
+            textSpan.textContent = c.title;
+            const delBtn = document.createElement('button');
+            delBtn.className = 'case-delete-btn';
+            delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+
+            let pressTimer;
+            const startPress  = () => { pressTimer = setTimeout(() => { document.querySelectorAll('.case-item').forEach(i => i.classList.remove('show-delete')); li.classList.add('show-delete'); }, 600); };
+            const cancelPress = () => clearTimeout(pressTimer);
+            li.addEventListener('touchstart', startPress, {passive:true});
+            li.addEventListener('mousedown',  startPress);
+            li.addEventListener('touchend',   cancelPress);
+            li.addEventListener('mouseup',    cancelPress);
+            li.addEventListener('contextmenu', e => e.preventDefault());
+            li.addEventListener('click', e => {
+                if (e.target.closest('.case-delete-btn')) return;
+                if (li.classList.contains('show-delete')) { li.classList.remove('show-delete'); return; }
+                currentCaseId = c.id;
+                saveState();
+                if (isGraphView) { renderGraph(); caseIdDisplay.textContent = currentCaseId; } else renderChat();
+                if (window.innerWidth < 768) toggleSidebar();
+            });
+            delBtn.addEventListener('click', e => { e.stopPropagation(); deleteCase(c.id); });
+            li.appendChild(textSpan);
+            li.appendChild(delBtn);
+            caseListEl.appendChild(li);
+        });
+    };
+
+    const deleteCase = (id) => {
+        cases = cases.filter(c => c.id !== id);
+        if (cases.length === 0) createNewCase();
+        else if (currentCaseId === id) { currentCaseId = cases[0].id; if (isGraphView) renderGraph(); else renderChat(); }
+        saveState();
+    };
+
+    // ─────────────────────────────────────────────
+    //  GRAVATAR
+    // ─────────────────────────────────────────────
+    const fetchGravatar = async (email) => {
+        const hash = CryptoJS.MD5(email.trim().toLowerCase()).toString();
+        const imgUrl = `https://www.gravatar.com/avatar/${hash}?s=200&d=identicon`;
+        try {
+            const r = await fetch(`https://en.gravatar.com/${hash}.json`);
+            if (r.ok) { const d = await r.json(); const p = d.entry[0]; return { name: p.displayName||p.preferredUsername||"ID_REDACTED", image: p.thumbnailUrl||imgUrl }; }
+        } catch(e) {}
+        return { name: "ENCRYPTED_ID", image: imgUrl };
+    };
+
+    // ─────────────────────────────────────────────
+    //  SPATIAL INTERCEPT — CORE FEATURE
+    // ─────────────────────────────────────────────
+
+    // Keyword sets for OSM tag detection
+    const OSM_AMENITY = ['fountain','library','hospital','school','university','bank','restaurant','cafe','bar','pub','police','fire_station','pharmacy','cinema','theatre','museum','park','church','mosque','synagogue','temple','stadium','marketplace','prison','courthouse','embassy','post_office','fuel','parking','atm'];
+    const OSM_TOURISM = ['hotel','museum','attraction','monument','viewpoint','gallery','zoo','theme_park','hostel','camp_site'];
+    const OSM_LEISURE = ['park','stadium','sports_centre','swimming_pool','golf_course','marina','garden'];
+    const OSM_NATURAL = ['beach','cliff','peak','waterfall','cave_entrance','spring','wood','forest'];
+    const OSM_SHOP    = ['supermarket','mall','market','bakery','butcher','florist','bookshop','hardware'];
+    const OSM_BUILDING= ['cathedral','chapel','castle','tower','bridge','lighthouse','windmill'];
+
+    const SPATIAL_TRIGGERS = [
+        /last seen/i, /spotted at/i, /located (at|near|in)/i, /location:/i,
+        /spatial intercept/i, /coordinates (of|for)/i, /find.*on.*map/i,
+        /where is\b/i, /whereabouts/i, /ran.*search.*(?:on|for|at)/i,
+        /trace.*location/i, /track.*to\b/i, /near\b.*\bin\b/i, /\bat\b.*\bin\b/i,
+        /show.*map/i, /map.*location/i, /place.*\bin\b/i
+    ];
+
+    const isSpatialQuery = (text) => SPATIAL_TRIGGERS.some(r => r.test(text));
+
+    // Extract OSM tags from free text
+    const extractOSMTags = (text) => {
+        const lower = text.toLowerCase();
+        const tags = {};
+
+        OSM_AMENITY.forEach(a => { if (lower.includes(a)) tags.amenity = a; });
+        OSM_TOURISM.forEach(a => { if (lower.includes(a)) tags.tourism = a; });
+        OSM_LEISURE.forEach(a => { if (lower.includes(a)) tags.leisure = a; });
+        OSM_NATURAL.forEach(a => { if (lower.includes(a)) tags['natural'] = a; });
+        OSM_SHOP.forEach(a    => { if (lower.includes(a)) tags.shop = a; });
+        OSM_BUILDING.forEach(a => { if (lower.includes(a)) tags.building = a; });
+
+        // Fallback: named place
+        const nameMatch = text.match(/(?:called|named|known as)\s+["']?([A-Z][^,."']+)["']?/i);
+        if (nameMatch) tags.name = nameMatch[1].trim();
+
+        return tags;
+    };
+
+    // Extract city/region/country from text
+    const extractLocation = (text) => {
+        // Common city patterns
+        const patterns = [
+            /\bin\s+([A-Z][a-zA-Z\s]+?)(?:\.|,|\s+near|\s+at|\s*$)/m,
+            /([A-Z][a-zA-Z]+(?:\s[A-Z][a-zA-Z]+)?)\s+(?:city|district|borough|county|region)/i,
+            /(?:city|district|area)\s+of\s+([A-Z][a-zA-Z\s]+)/i
+        ];
+        for (const p of patterns) {
+            const m = text.match(p);
+            if (m) return m[1].trim();
+        }
+        return null;
+    };
+
+    // Build Overpass QL query
+    const buildOverpassQuery = (tags, cityName, radiusKm = 5) => {
+        const tagFilters = Object.entries(tags).map(([k,v]) => `["${k}"="${v}"]`).join('');
+        if (!tagFilters) return null;
+
+        if (cityName) {
+            // Use Nominatim first to get city bbox, then query within it
+            return { type: 'nominatim_then_overpass', tags: tagFilters, city: cityName };
+        }
+        return { type: 'overpass_global', tags: tagFilters };
+    };
+
+    // Nominatim geocode a city name → bbox
+    const geocodeCity = async (city) => {
+        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`;
+        const r = await fetch(url, { headers: {'Accept-Language':'en', 'User-Agent':'NOX-Detective/1.0'} });
+        const d = await r.json();
+        if (!d.length) return null;
+        const b = d[0].boundingbox; // [minlat, maxlat, minlon, maxlon]
+        return { lat: parseFloat(d[0].lat), lon: parseFloat(d[0].lon), bbox: b, name: d[0].display_name };
+    };
+
+    // Overpass API fetch
+    const overpassFetch = async (ql) => {
+        const url = 'https://overpass-api.de/api/interpreter';
+        const r = await fetch(url, { method:'POST', body: 'data=' + encodeURIComponent(ql) });
+        return await r.json();
+    };
+
+    // Main spatial intercept pipeline
+    const runSpatialIntercept = async (userText) => {
+        const tags   = extractOSMTags(userText);
+        const city   = extractLocation(userText);
+
+        if (!Object.keys(tags).length && !city) return null; // nothing to map
+
+        let elements = [];
+        let queryLabel = Object.values(tags).join(' + ') + (city ? ` in ${city}` : '');
+
+        try {
+            if (city) {
+                const geo = await geocodeCity(city);
+                if (!geo) return null;
+                const [s,n,w,e] = geo.bbox;
+                const tagFilters = Object.entries(tags).map(([k,v]) => `["${k}"="${v}"]`).join('');
+                
+                // If we have tag filters, search within bbox; otherwise search by name
+                let ql;
+                if (tagFilters) {
+                    ql = `[out:json][timeout:15];(node${tagFilters}(${s},${w},${n},${e});way${tagFilters}(${s},${w},${n},${e}););out center 10;`;
+                } else {
+                    // fallback: search named place
+                    ql = `[out:json][timeout:15];(node["name"~"${city}",i](${s},${w},${n},${e});way["name"~"${city}",i](${s},${w},${n},${e}););out center 5;`;
+                }
+                const data = await overpassFetch(ql);
+                elements = data.elements || [];
+            } else {
+                // No city: global search limited to 5 results
+                const tagFilters = Object.entries(tags).map(([k,v]) => `["${k}"="${v}"]`).join('');
+                const ql = `[out:json][timeout:15];node${tagFilters};out 5;`;
+                const data = await overpassFetch(ql);
+                elements = data.elements || [];
+            }
+        } catch(e) {
+            console.error('NOX_OVERPASS_ERR', e);
+            return null;
+        }
+
+        if (!elements.length) return null;
+
+        // Normalise elements (ways have 'center', nodes have lat/lon directly)
+        const normalised = elements.map(el => ({
+            name: el.tags?.name || el.tags?.['name:en'] || queryLabel,
+            lat:  el.lat || el.center?.lat,
+            lon:  el.lon || el.center?.lon,
+            type: Object.entries(el.tags||{}).filter(([k]) => ['amenity','tourism','leisure','natural','shop'].includes(k)).map(([k,v])=>`${k}=${v}`).join(' '),
+            address: [el.tags?.['addr:street'], el.tags?.['addr:housenumber'], el.tags?.['addr:city']].filter(Boolean).join(' ')
+        })).filter(el => el.lat && el.lon);
+
+        if (!normalised.length) return null;
+
+        // Scoring: prefer named matches, else top result is primary
+        const scored = normalised.map((el, i) => ({ ...el, score: i === 0 ? 100 : 50 }));
+        scored.sort((a,b) => b.score - a.score);
+
+        return {
+            query:      queryLabel,
+            primary:    scored[0],
+            alternates: scored.slice(1, 4)
+        };
+    };
+
+    // ─────────────────────────────────────────────
+    //  SEND MESSAGE
+    // ─────────────────────────────────────────────
+    const sendMessage = async () => {
+        const message = userInput.value.trim();
+        if (!message) return;
+        const currentCase = cases.find(c => c.id === currentCaseId);
+        if (currentCase.messages.length <= 1) currentCase.title = message.substring(0, 30);
+
+        currentCase.messages.push({ role: 'user', content: message });
+        if (!isGraphView) appendMessageUI('user', message);
+        userInput.value = '';
+        userInput.style.height = 'auto';
+        if (isGraphView) renderGraph();
+
+        // Typing indicator
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message assistant-msg';
+        const emailMatch = message.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+        const isPhone    = /^\+?(\d[\d-. ]+)?(\([\d-. ]+\))?[\d-. ]+\d$/.test(message) && message.replace(/\D/g,'').length >= 7;
+        const isSpatial  = isSpatialQuery(message);
+        const status     = isSpatial ? 'Running spatial intercept...' : emailMatch ? 'Intercepting digital footprint...' : isPhone ? 'Tracing signal origin...' : 'Analyzing...';
+        typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">${status}</div>`;
+        if (!isGraphView) { chatContainer.appendChild(typingDiv); scrollToBottom(); }
+        if (isCallMode) { callStatus.textContent = "ANALYZING..."; callSpectrum.classList.remove('active'); }
+
+        // Run spatial intercept & AI in parallel
+        let injectionHTML = "";
+        let mapData = null;
+
+        const [gravatarResult, spatialResult] = await Promise.all([
+            emailMatch ? fetchGravatar(emailMatch[0]) : Promise.resolve(null),
+            isSpatial  ? runSpatialIntercept(message)  : Promise.resolve(null)
+        ]);
+
+        if (gravatarResult) {
+            injectionHTML += `\n\n<div class="gravatar-info"><img src="${gravatarResult.image}" class="gravatar-img"><div class="gravatar-name">IDENTITY_MATCH: ${gravatarResult.name}</div></div>`;
+        }
+        if (spatialResult) {
+            mapData = spatialResult;
+        }
+
+        try {
+            // Build spatial context for the AI prompt if we have map data
+            let spatialContext = '';
+            if (mapData) {
+                spatialContext = `\n\nSPATIAL_DATA_RETRIEVED: Primary target coordinates: ${mapData.primary.name} at LAT ${mapData.primary.lat.toFixed(5)}, LON ${mapData.primary.lon.toFixed(5)}. `;
+                if (mapData.alternates.length) {
+                    spatialContext += `Alternate sites: ${mapData.alternates.map(a => `${a.name} (${a.lat.toFixed(4)},${a.lon.toFixed(4)})`).join('; ')}.`;
+                }
+                spatialContext += ' Incorporate these coordinates naturally into your response.';
+            }
+
+            const apiMessages = [{
+                role: "system",
+                content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. Act as a general investigation assistant. MANDATORY: For every person, location, organization, or alias you mention, you MUST wrap it in the evidence tag like this: [EVIDENCE: Name]. If the operator provides a phone number, identify country and carrier. If an email is provided, mention the digital trace. If spatial data is provided in the query, reference the coordinates and location naturally in your noir detective style." + spatialContext
+            }];
+            currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role: m.role, content: m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'') }));
+
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages: apiMessages, temperature: 0.7 })
+            });
+
+            if (!isGraphView) typingDiv.remove();
+            const data      = await response.json();
+            const replyText = data.choices[0].message.content;
+
+            // Embed map JSON as hidden comment in the stored message
+            const mapComment = mapData ? `<!--NOXMAP:${JSON.stringify(mapData)}-->` : '';
+            const fullReply  = replyText + injectionHTML + mapComment;
+
+            currentCase.messages.push({ role: 'assistant', content: fullReply });
+            saveState();
 
             if (isGraphView) renderGraph();
+            else appendMessageUI('assistant', fullReply);
 
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message assistant-msg';
-            
-            const emailMatch = message.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-            const isPhone = /^\+?(\d[\d-. ]+)?(\([\d-. ]+\))?[\d-. ]+\d$/.test(message) && message.replace(/\D/g,'').length >= 7;
-            
-            const status = emailMatch ? 'Intercepting digital footprint...' : (isPhone ? 'Tracing signal origin...' : 'Analyzing...');
-            typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">${status}</div>`;
-            
-            if (!isGraphView) {
-                chatContainer.appendChild(typingDiv);
-                scrollToBottom();
-            }
-
-            if (isCallMode) {
-                callStatus.textContent = "ANALYZING...";
-                callSpectrum.classList.remove('active');
-            }
-
-            let injectionHTML = "";
-            if (emailMatch) {
-                const profile = await fetchGravatar(emailMatch[0]);
-                injectionHTML = `\n\n<div class="gravatar-info"><img src="${profile.image}" class="gravatar-img"><div class="gravatar-name">IDENTITY_MATCH: ${profile.name}</div></div>`;
-            }
-
-            try {
-                const apiMessages = [{ 
-                    role: "system", 
-                    content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. Act as a general investigation assistant. MANDATORY: For every person, location, organization, or alias you mention, you MUST wrap it in the evidence tag like this: [EVIDENCE: Name]. If the operator provides a phone number, identify country and carrier. If an email is provided, mention the digital trace." 
-                }];
-
-                currentCase.messages.slice(-6).forEach(m => apiMessages.push(m));
-
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ 
-                        model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", 
-                        messages: apiMessages,
-                        temperature: 0.7 
-                    })
-                });
-
-                if (!isGraphView) typingDiv.remove();
-                const data = await response.json();
-                const replyText = data.choices[0].message.content;
-                const reply = replyText + injectionHTML;
-                currentCase.messages.push({ role: 'assistant', content: reply });
-                saveState();
-                
-                if (isGraphView) renderGraph();
-                else appendMessageUI('assistant', reply);
-
-            // --- TEXT TO SPEECH UPGRADE (Synced with Call Mode) ---
+            // TTS in call mode
             if (isCallMode && 'speechSynthesis' in window) {
                 const cleanSpeech = replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi, '$1').replace(/<[^>]*>?/gm, '');
-                const utterance = new SpeechSynthesisUtterance(cleanSpeech);
-                utterance.pitch = 0.7; 
-                utterance.rate = 0.95; 
-
-                utterance.onstart = () => {
-                    if (isCallMode) {
-                        callSpectrum.classList.add('active');
-                        callStatus.textContent = "NOX_UNIT TRANSMITTING";
-                    }
-                };
-
-                utterance.onend = () => {
-                    if (isCallMode) {
-                        callSpectrum.classList.remove('active');
-                        callStatus.textContent = "AWAITING INPUT...";
-                    }
-                };
-
+                const utterance   = new SpeechSynthesisUtterance(cleanSpeech);
+                utterance.pitch   = 0.7;
+                utterance.rate    = 0.95;
+                utterance.onstart = () => { if (isCallMode) { callSpectrum.classList.add('active'); callStatus.textContent = "NOX_UNIT TRANSMITTING"; } };
+                utterance.onend   = () => { if (isCallMode) { callSpectrum.classList.remove('active'); callStatus.textContent = "AWAITING INPUT..."; } };
                 window.speechSynthesis.speak(utterance);
             } else if (isCallMode) {
                 callStatus.textContent = "AWAITING INPUT...";
             }
 
-        } catch (e) {
-            if (!isGraphView) {
-                typingDiv.remove();
-                appendMessageUI('assistant', 'SIGNAL LOST: Link unstable.');
-            }
-            if (isCallMode) {
-                callStatus.textContent = "SIGNAL INTERRUPTED";
-            }
+        } catch(e) {
+            if (!isGraphView) { typingDiv.remove(); appendMessageUI('assistant', 'SIGNAL LOST: Link unstable.'); }
+            if (isCallMode) callStatus.textContent = "SIGNAL INTERRUPTED";
         }
-    }; // This closes the sendMessage function
+    };
 
+    // ─────────────────────────────────────────────
+    //  GRAPH VIEW
+    // ─────────────────────────────────────────────
+    const renderGraph = () => {
+        const currentCase = cases.find(c => c.id === currentCaseId);
+        if (!currentCase) return;
+        const nodes = new vis.DataSet([{ id:'ROOT', label:`CASE:\n${currentCase.id}`, shape:'database', color:'#8b0000', font:{color:'#ffffff',face:'JetBrains Mono'} }]);
+        const edges = new vis.DataSet([]);
+        const seenEntities = new Set();
+        const delBtn = document.getElementById('node-delete-btn');
 
-        const downloadLog = () => {
-            const currentCase = cases.find(c => c.id === currentCaseId);
-            if (!currentCase) return;
+        const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+        const ipRegex    = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+        const phoneRegex = /(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
+        const noxRegex   = /\[EVIDENCE:\s*(.*?)\]/gi;
 
-            let logContent = `NOX DIGITAL DETECTIVE | INVESTIGATION LOG\n`;
-            logContent += `===========================================\n`;
-            logContent += `CASE_ID:   ${currentCase.id}\n`;
-            logContent += `TITLE:     ${currentCase.title}\n`;
-            logContent += `TIMESTAMP: ${new Date(currentCase.timestamp).toLocaleString()}\n`;
-            logContent += `===========================================\n\n`;
-
-            currentCase.messages.forEach(msg => {
-                const label = msg.role === 'assistant' ? '[NOX_UNIT]' : '[OPERATOR]';
-                const cleanContent = msg.content.replace(/<[^>]*>?/gm, '');
-                logContent += `${label}\n${cleanContent}\n\n`;
+        currentCase.messages.forEach(msg => {
+            const text = msg.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'');
+            const matches = [
+                ...[...text.matchAll(emailRegex)].map(m => ({ val:m[0], color:'#2c4a5e', shape:'box' })),
+                ...[...text.matchAll(ipRegex)].map(m    => ({ val:m[0], color:'#4a5e2c', shape:'ellipse' })),
+                ...[...text.matchAll(phoneRegex)].map(m => ({ val:m[0], color:'#5e4a2c', shape:'ellipse' })),
+                ...[...text.matchAll(noxRegex)].map(m   => ({ val:m[1], color:'#8b0000', shape:'hexagon' }))
+            ];
+            matches.forEach(match => {
+                const id = match.val.trim();
+                if (!id || seenEntities.has(id)) return;
+                if (currentCase.blacklist && currentCase.blacklist.includes(id)) return;
+                seenEntities.add(id);
+                nodes.add({ id, label:id, color:match.color, shape:match.shape, font:{color:'#e0e0e0',face:'JetBrains Mono'} });
+                edges.add({ from:'ROOT', to:id, color:{color:'#455a64'} });
             });
+        });
 
-            const blob = new Blob([logContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${currentCase.id}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        };
+        const container = document.getElementById('evidence-board');
+        if (network) network.destroy();
+        network = new vis.Network(container, {nodes,edges}, {
+            physics: { stabilization:true, barnesHut:{springLength:150} },
+            nodes: { borderWidth:2, shadow:true },
+            edges: { width:1.5, shadow:true }
+        });
 
-        const toggleSidebar = () => {
-            sidebar.classList.toggle('open');
-            sidebarOverlay.classList.toggle('active');
-            document.body.classList.toggle('sidebar-open');
-        };
-
-        menuBtn.addEventListener('click', toggleSidebar);
-        closeSidebarBtn.addEventListener('click', toggleSidebar);
-        sidebarOverlay.addEventListener('click', toggleSidebar);
-        newCaseBtn.addEventListener('click', createNewCase);
-        sendBtn.addEventListener('click', sendMessage);
-        exportBtn.addEventListener('click', downloadLog); 
-        graphToggleBtn.addEventListener('click', toggleGraphView);
-        userInput.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px'; });
-        userInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-        clearBtn.addEventListener('click', () => { if(confirm('Purge logs?')) deleteCase(currentCaseId); });
-
-        // --- SPEECH RECOGNITION & CALL OVERLAY UPGRADE ---
-        const setupCallMode = () => {
-            // Inject Call Button into the Header
-            const callTriggerBtn = document.createElement('button');
-            callTriggerBtn.className = 'icon-btn';
-            callTriggerBtn.innerHTML = '<i class="fas fa-phone-alt"></i>';
-            callTriggerBtn.title = "Call Mode";
-            document.querySelector('.header-right').prepend(callTriggerBtn);
-
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            let recognition = null;
-
-            if (SpeechRecognition) {
-                recognition = new SpeechRecognition();
-                recognition.continuous = false;
-                recognition.interimResults = false;
-                recognition.lang = 'en-US';
-
-                // Open Call Interface
-                callTriggerBtn.addEventListener('click', () => {
-                    isCallMode = true;
-                    callOverlay.classList.add('active');
-                    callStatus.textContent = "SECURE LINE ESTABLISHED";
-                });
-
-                // Close Call Interface
-                callEndBtn.addEventListener('click', () => {
-                    isCallMode = false;
-                    callOverlay.classList.remove('active');
-                    recognition.stop();
-                    window.speechSynthesis.cancel();
-                    callSpectrum.classList.remove('active');
-                    callMicBtn.classList.remove('listening');
-                });
-
-                // Toggle Mic
-                callMicBtn.addEventListener('click', () => {
-                    if (callMicBtn.classList.contains('listening')) {
-                        recognition.stop();
-                    } else {
-                        window.speechSynthesis.cancel(); // Stop NOX from speaking if user interrupts
-                        recognition.start();
-                    }
-                });
-
-                recognition.onstart = () => {
-                    callMicBtn.classList.add('listening');
-                    callSpectrum.classList.add('active');
-                    callStatus.textContent = "LISTENING...";
-                };
-
-                recognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript;
-                    userInput.value = transcript;
-                    callStatus.textContent = "TRANSMITTING...";
-                    sendMessage(); 
-                };
-
-                recognition.onerror = (e) => {
-                    callMicBtn.classList.remove('listening');
-                    callSpectrum.classList.remove('active');
-                    callStatus.textContent = "SIGNAL INTERRUPTED";
-                    console.error("NOX_VOICE_ERROR: Signal Interrupted.", e);
-                };
-                
-                recognition.onend = () => {
-                    callMicBtn.classList.remove('listening');
-                    if (isCallMode && callStatus.textContent !== "TRANSMITTING...") {
-                        callStatus.textContent = "AWAITING INPUT...";
-                        callSpectrum.classList.remove('active');
-                    }
-                };
-            } else {
-                callTriggerBtn.style.display = 'none';
+        let selectedNodeId = null;
+        const hideBtn = () => { delBtn.style.display='none'; };
+        network.on("click", hideBtn);
+        network.on("dragStart", hideBtn);
+        network.on("hold", params => {
+            if (params.nodes.length > 0) {
+                const nodeId = params.nodes[0];
+                if (nodeId === 'ROOT') return;
+                selectedNodeId = nodeId;
+                const domPos = network.canvasToDOM(network.getPositions([nodeId])[nodeId]);
+                delBtn.style.display  = 'flex';
+                delBtn.style.left = (domPos.x - 15) + 'px';
+                delBtn.style.top  = (domPos.y - 45) + 'px';
+            }
+        });
+        delBtn.onclick = e => {
+            e.stopPropagation();
+            if (selectedNodeId) {
+                if (!currentCase.blacklist) currentCase.blacklist = [];
+                currentCase.blacklist.push(selectedNodeId);
+                saveState(); nodes.remove(selectedNodeId); hideBtn();
             }
         };
+    };
 
-        setupCallMode();
-        init();
+    const toggleGraphView = () => {
+        isGraphView = !isGraphView;
+        if (isGraphView) {
+            chatContainer.style.display = 'none';
+            evidenceBoard.style.display = 'block';
+            graphToggleBtn.classList.add('active');
+            renderGraph();
+        } else {
+            chatContainer.style.display = 'flex';
+            evidenceBoard.style.display = 'none';
+            graphToggleBtn.classList.remove('active');
+            scrollToBottom();
+        }
+    };
+
+    // ─────────────────────────────────────────────
+    //  EXPORT
+    // ─────────────────────────────────────────────
+    const downloadLog = () => {
+        const currentCase = cases.find(c => c.id === currentCaseId);
+        if (!currentCase) return;
+        let log = `NOX DIGITAL DETECTIVE | INVESTIGATION LOG\n===========================================\nCASE_ID:   ${currentCase.id}\nTITLE:     ${currentCase.title}\nTIMESTAMP: ${new Date(currentCase.timestamp).toLocaleString()}\n===========================================\n\n`;
+        currentCase.messages.forEach(msg => {
+            const label   = msg.role === 'assistant' ? '[NOX_UNIT]' : '[OPERATOR]';
+            const clean   = msg.content.replace(/<[^>]*>?/gm,'').replace(/<!--NOXMAP:[\s\S]*?-->/g,'');
+            log += `${label}\n${clean}\n\n`;
+        });
+        const blob = new Blob([log], {type:'text/plain'});
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url; a.download = `${currentCase.id}.txt`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    // ─────────────────────────────────────────────
+    //  SIDEBAR / EVENT LISTENERS
+    // ─────────────────────────────────────────────
+    const toggleSidebar = () => { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); document.body.classList.toggle('sidebar-open'); };
+
+    menuBtn.addEventListener('click',         toggleSidebar);
+    closeSidebarBtn.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click',  toggleSidebar);
+    newCaseBtn.addEventListener('click',      createNewCase);
+    sendBtn.addEventListener('click',         sendMessage);
+    exportBtn.addEventListener('click',       downloadLog);
+    graphToggleBtn.addEventListener('click',  toggleGraphView);
+    clearBtn.addEventListener('click',        () => { if(confirm('Purge logs?')) deleteCase(currentCaseId); });
+    userInput.addEventListener('input',  function() { this.style.height='auto'; this.style.height=(this.scrollHeight)+'px'; });
+    userInput.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+
+    // ─────────────────────────────────────────────
+    //  CALL MODE
+    // ─────────────────────────────────────────────
+    const setupCallMode = () => {
+        const callTriggerBtn = document.createElement('button');
+        callTriggerBtn.className = 'icon-btn';
+        callTriggerBtn.innerHTML = '<i class="fas fa-phone-alt"></i>';
+        callTriggerBtn.title = "Call Mode";
+        document.querySelector('.header-right').prepend(callTriggerBtn);
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            callTriggerBtn.addEventListener('click', () => { isCallMode = true; callOverlay.classList.add('active'); callStatus.textContent = "SECURE LINE ESTABLISHED"; });
+            callEndBtn.addEventListener('click', () => { isCallMode = false; callOverlay.classList.remove('active'); recognition.stop(); window.speechSynthesis.cancel(); callSpectrum.classList.remove('active'); callMicBtn.classList.remove('listening'); });
+            callMicBtn.addEventListener('click', () => { if (callMicBtn.classList.contains('listening')) recognition.stop(); else { window.speechSynthesis.cancel(); recognition.start(); } });
+            recognition.onstart  = () => { callMicBtn.classList.add('listening'); callSpectrum.classList.add('active'); callStatus.textContent = "LISTENING..."; };
+            recognition.onresult = e  => { userInput.value = e.results[0][0].transcript; callStatus.textContent = "TRANSMITTING..."; sendMessage(); };
+            recognition.onerror  = e  => { callMicBtn.classList.remove('listening'); callSpectrum.classList.remove('active'); callStatus.textContent = "SIGNAL INTERRUPTED"; };
+            recognition.onend    = () => { callMicBtn.classList.remove('listening'); if (isCallMode && callStatus.textContent !== "TRANSMITTING...") { callStatus.textContent = "AWAITING INPUT..."; callSpectrum.classList.remove('active'); } };
+        } else {
+            callTriggerBtn.style.display = 'none';
+        }
+    };
+
+    setupCallMode();
+    init();
     </script>
 </body>
 </html>
