@@ -635,20 +635,22 @@
 
     // Nominatim geocode a city name → bbox
     const geocodeCity = async (city) => {
-        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`;
-        const r = await fetch(url, { headers: {'Accept-Language':'en', 'User-Agent':'NOX-Detective/1.0'} });
-        const d = await r.json();
-        if (!d.length) return null;
-        const b = d[0].boundingbox; // [minlat, maxlat, minlon, maxlon]
-        return { lat: parseFloat(d[0].lat), lon: parseFloat(d[0].lon), bbox: b, name: d[0].display_name };
-    };
+    const r = await fetch(`/api/geocode?q=${encodeURIComponent(city)}`);
+    const d = await r.json();
+    if (!d.length) return null;
+    const b = d[0].boundingbox;
+    return { lat: parseFloat(d[0].lat), lon: parseFloat(d[0].lon), bbox: b, name: d[0].display_name };
+};
 
     // Overpass API fetch
     const overpassFetch = async (ql) => {
-        const url = 'https://overpass-api.de/api/interpreter';
-        const r = await fetch(url, { method:'POST', body: 'data=' + encodeURIComponent(ql) });
-        return await r.json();
-    };
+    const r = await fetch('/api/overpass', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ql })
+    });
+    return await r.json();
+};
 
     // Main spatial intercept pipeline
     const runSpatialIntercept = async (userText) => {
