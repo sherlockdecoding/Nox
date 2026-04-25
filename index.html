@@ -776,14 +776,31 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
         return await r.json();
     };
 
+    // Human-readable label map — OSM tag values are never exposed to the AI or UI
+    const OSM_READABLE = {
+        fountain:'Fountain', cafe:'Café', restaurant:'Restaurant', hospital:'Hospital',
+        park:'Park', museum:'Museum', hotel:'Hotel', bar:'Bar', pub:'Bar', pharmacy:'Pharmacy',
+        police:'Police Station', library:'Library', school:'School', place_of_worship:'Place of Worship',
+        beach:'Beach', supermarket:'Supermarket', cinema:'Cinema', stadium:'Stadium',
+        station:'Train Station', aerodrome:'Airport', bank:'Bank', atm:'ATM', fuel:'Petrol Station',
+        parking:'Parking', castle:'Castle', monument:'Monument', marketplace:'Market',
+        post_office:'Post Office', prison:'Prison', embassy:'Embassy', marina:'Marina',
+        bridge:'Bridge', tower:'Tower', zoo:'Zoo', university:'University', college:'College'
+    };
+
     const normaliseElements = (elements, fallbackLabel) =>
         elements.map(el => ({
             name: el.tags?.name || el.tags?.['name:en'] || fallbackLabel,
             lat:  el.lat || el.center?.lat,
             lon:  el.lon || el.center?.lon,
-            type: Object.entries(el.tags||{})
-                    .filter(([k]) => ['amenity','tourism','leisure','natural','shop','railway','aeroway','historic','man_made'].includes(k))
-                    .map(([k,v]) => `${k}=${v}`).join(' '),
+            // Human-readable type only — no raw OSM key=value strings
+            type: (() => {
+                for (const k of ['amenity','tourism','leisure','natural','shop','railway','aeroway','historic','man_made']) {
+                    const v = el.tags?.[k];
+                    if (v) return OSM_READABLE[v] || (v.charAt(0).toUpperCase() + v.slice(1).replace(/_/g,' '));
+                }
+                return fallbackLabel;
+            })(),
             address: [el.tags?.['addr:street'], el.tags?.['addr:housenumber'], el.tags?.['addr:city']].filter(Boolean).join(' ')
         })).filter(el => el.lat && el.lon);
 
@@ -1226,17 +1243,11 @@ Always return all fields. Use empty arrays [] if nothing found. Default booleans
         const username0 = intent.usernames[0] || null;
         const publicIPs = intent.ips.filter(ip => !PRIVATE_IP.test(ip));
 
-        // ── RUN ALL ENRICHMENTS IN PARALLEL ──
-        const [gravatarResult, breachResult, whoisResult, dnsResult, sslResult, usernameResults, spatialIntent, ...ipResults] = await Promise.all([
+        // ── RUN NON-SPATIAL ENRICHMENTS IN PARALLEL ──
+        const [gravatarResult, breachResult, whoisResult, dnsResult, sslResult, usernameResults, ...ipResults] = await Promise.all([
             email0    ? fetchGravatar(email0)       : Promise.resolve(null),
             email0    ? checkBreaches(email0)       : Promise.resolve(null),
-            domain0   ? lookupWHOIS(domain0)        : Promise.resolve(null),
-            domain0   ? lookupDNS(domain0)          : Promise.resolve(null),
-            domain0   ? lookupSSL(domain0)          : Promise.resolve(null),
-            username0 ? searchUsername(username0)   : Promise.resolve(null),
-            intent.wants_spatial ? detectSpatialIntent(message) : Promise.resolve(null),
-            ...publicIPs.map(ip => lookupIP(ip))
-        ]);
+            domain0   ? lookupWHOIS(domain0)        :
 
         // ── EMAIL / IDENTITY ──
         if (gravatarResult) {
@@ -1325,7 +1336,10 @@ Always return all fields. Use empty arrays [] if nothing found. Default booleans
             const spatialMap = await runSpatialIntercept(spatialIntent);
             if (spatialMap) {
                 spatialMapData = spatialMap;
-                osintSections.push(`[SPATIAL_TRACE]\nSearch query: ${spatialMap.query}\nPrimary target: ${spatialMap.primary.name}\nCoordinates: ${spatialMap.primary.lat.toFixed(5)}, ${spatialMap.primary.lon.toFixed(5)}\nType: ${spatialMap.primary.type||'place'}\nAlternates found: ${spatialMap.alternates.length}`);
+                const altDesc = spatialMap.alternates.length
+                    ? spatialMap.alternates.map(a => `${a.name} (${a.type}${a.address ? ', ' + a.address : ''})`).join('; ')
+                    : 'none';
+                osintSections.push(`[SPATIAL_TRACE]\nSearch: ${spatialMap.query}\nPrimary: ${spatialMap.primary.name} — ${spatialMap.primary.type}${spatialMap.primary.address ? ', ' + spatialMap.primary.address : ''} — coords ${spatialMap.primary.lat.toFixed(5)}, ${spatialMap.primary.lon.toFixed(5)}\nNearby: ${altDesc}`);
             }
         }
 
@@ -1348,7 +1362,8 @@ CRITICAL RULES:
 - Domain/WHOIS data belongs ONLY to [DOMAIN_INTEL]. Never link it to an IP address unless explicitly stated.
 - Spatial coordinates from [SPATIAL_TRACE] come from a place search — not from an IP lookup.
 - If a section has no data, do not invent or substitute data from another section.
-- Summarise each tool's findings in its own paragraph. Keep sections distinct.${osintFeed}`;
+- Summarise each tool's findings in its own paragraph. Keep sections distinct.
+- NEVER mention technical terms like "amenity", "OSM tags", "Overpass", "node", "way", or any database/API internals. Describe places naturally.${osintFeed}`;
 
             const apiMessages = [{ role: "system", content: systemPrompt }];
             currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role: m.role, content: m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'') }));
