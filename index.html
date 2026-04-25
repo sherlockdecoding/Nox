@@ -209,6 +209,60 @@
         .ip-k { color: var(--accent-red); min-width: 72px; flex-shrink: 0; }
         .ip-v { color: var(--text-primary); word-break: break-all; }
 
+        /* ── SHARED OSINT CARD BASE ── */
+        .osint-card {
+            margin-top: 15px; border: 1px solid var(--accent-color); border-radius: 3px;
+            background: rgba(0,0,0,0.3); overflow: hidden; font-family: var(--font-mono);
+        }
+        .osint-card-header {
+            display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+            background: rgba(69,90,100,0.2); border-bottom: 1px solid var(--border-color);
+            font-size: 0.72rem; letter-spacing: 1.5px; color: var(--accent-red);
+        }
+        .osint-card-header .blink {
+            width: 7px; height: 7px; border-radius: 50%; background: var(--accent-red);
+            animation: blink-dot 1.2s infinite; flex-shrink: 0;
+        }
+        .osint-card-title { flex-grow: 1; }
+        .osint-grid { padding: 10px 14px; display: flex; flex-direction: column; gap: 5px; }
+        .osint-row { display: flex; gap: 12px; font-size: 0.72rem; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 4px; }
+        .osint-k { color: var(--accent-red); min-width: 90px; flex-shrink: 0; }
+        .osint-v { color: var(--text-primary); word-break: break-all; line-height: 1.5; }
+        .osint-v a { color: #7fba8a; text-decoration: none; }
+        .osint-v a:hover { text-decoration: underline; }
+        .osint-section-title { font-size: 0.68rem; color: var(--text-secondary); letter-spacing: 1px; margin: 8px 0 4px; }
+
+        /* Username results */
+        .username-grid { padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 6px; }
+        .username-chip {
+            font-size: 0.68rem; padding: 4px 8px; border-radius: 2px; letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .username-chip.found   { background: rgba(127,186,138,0.15); border: 1px solid #7fba8a; color: #7fba8a; }
+        .username-chip.notfound{ background: rgba(255,255,255,0.04); border: 1px solid #333; color: #555; }
+        .username-chip .dot    { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+        .username-chip.found .dot   { background: #7fba8a; }
+        .username-chip.notfound .dot{ background: #444; }
+
+        /* Breach badges */
+        .breach-list { padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
+        .breach-item {
+            font-size: 0.72rem; padding: 6px 10px; border-radius: 2px;
+            border-left: 3px solid var(--accent-red); background: rgba(139,0,0,0.1);
+        }
+        .breach-name { color: #ff6b6b; margin-bottom: 2px; }
+        .breach-meta { color: var(--text-secondary); font-size: 0.65rem; }
+
+        /* EXIF */
+        .exif-upload-area {
+            margin-top: 15px; border: 1px dashed var(--accent-color); border-radius: 3px;
+            padding: 20px; text-align: center; cursor: pointer; font-family: var(--font-mono);
+            font-size: 0.8rem; color: var(--text-secondary); transition: all 0.2s;
+            background: rgba(0,0,0,0.2);
+        }
+        .exif-upload-area:hover { border-color: var(--accent-red); color: var(--text-primary); }
+        .exif-upload-area input { display: none; }
+
         /* Custom Leaflet dark overrides */
         .leaflet-container { background: #0d0d0d !important; }
         .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(0.75) contrast(1.1); }
@@ -358,6 +412,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exifr/dist/lite.umd.js"></script>
     <script>
     // ─────────────────────────────────────────────
     //  CONFIG
@@ -774,6 +829,348 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
     };
 
     // ─────────────────────────────────────────────
+    //  WHOIS LOOKUP  (whois.freeaitools.online — CORS ok)
+    // ─────────────────────────────────────────────
+
+
+    const lookupWHOIS = async (domain) => {
+        try {
+            const r = await fetch(`https://api.domainsdb.info/v1/domains/search?domain=${encodeURIComponent(domain)}&zone=${domain.split('.').pop()}`);
+            const d = await r.json();
+            // Also fetch rdap which is fully public
+            const rdap = await fetch(`https://rdap.org/domain/${domain}`);
+            const rd = rdap.ok ? await rdap.json() : null;
+
+            let result = { domain, registered: false };
+            if (rd) {
+                result.registered = true;
+                result.registrar = rd.entities?.find(e => e.roles?.includes('registrar'))?.vcardArray?.[1]?.find(v=>v[0]==='fn')?.[3] || 'Unknown';
+                result.created   = rd.events?.find(e => e.eventAction==='registration')?.eventDate?.slice(0,10) || '—';
+                result.expires   = rd.events?.find(e => e.eventAction==='expiration')?.eventDate?.slice(0,10) || '—';
+                result.updated   = rd.events?.find(e => e.eventAction==='last changed')?.eventDate?.slice(0,10) || '—';
+                result.status    = rd.status?.join(', ') || '—';
+                result.nameservers = rd.nameservers?.map(n => n.ldhName).join(', ') || '—';
+            }
+            return result;
+        } catch(e) { return null; }
+    };
+
+    const lookupDNS = async (domain) => {
+        try {
+            const types = ['A','MX','TXT','CNAME','NS'];
+            const results = await Promise.all(types.map(t =>
+                fetch(`https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=${t}`)
+                    .then(r => r.json())
+                    .then(d => ({ type: t, answers: d.Answer || [] }))
+                    .catch(() => ({ type: t, answers: [] }))
+            ));
+            return results.filter(r => r.answers.length);
+        } catch(e) { return null; }
+    };
+
+    const lookupSSL = async (domain) => {
+        try {
+            const r = await fetch(`https://api.certspotter.com/v1/issuances?domain=${encodeURIComponent(domain)}&include_subdomains=true&expand=dns_names`);
+            const d = await r.json();
+            if (!Array.isArray(d) || !d.length) return null;
+            const latest = d[0];
+            return {
+                issuer:    latest.issuer?.name || '—',
+                notBefore: latest.not_before?.slice(0,10) || '—',
+                notAfter:  latest.not_after?.slice(0,10)  || '—',
+                dnsNames:  latest.dns_names?.slice(0,10)  || []
+            };
+        } catch(e) { return null; }
+    };
+
+    const buildDomainCard = (whois, dns, ssl, domain) => {
+        let html = `<div class="osint-card">
+            <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">DOMAIN_INTEL :: ${escHtml(domain.toUpperCase())}</span></div>`;
+
+        if (whois?.registered) {
+            html += `<div class="osint-grid">
+                <div class="osint-row"><span class="osint-k">REGISTRAR</span><span class="osint-v">${escHtml(whois.registrar)}</span></div>
+                <div class="osint-row"><span class="osint-k">CREATED</span><span class="osint-v">${whois.created}</span></div>
+                <div class="osint-row"><span class="osint-k">EXPIRES</span><span class="osint-v">${whois.expires}</span></div>
+                <div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">${escHtml(whois.status)}</span></div>
+                <div class="osint-row"><span class="osint-k">NAMESERVERS</span><span class="osint-v">${escHtml(whois.nameservers)}</span></div>
+            </div>`;
+        } else {
+            html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">Registration data unavailable</span></div></div>`;
+        }
+
+        if (ssl) {
+            html += `<div class="osint-grid">
+                <div class="osint-section-title" style="padding:0 14px;">SSL CERTIFICATE</div>
+                <div class="osint-row"><span class="osint-k">ISSUER</span><span class="osint-v">${escHtml(ssl.issuer)}</span></div>
+                <div class="osint-row"><span class="osint-k">VALID</span><span class="osint-v">${ssl.notBefore} → ${ssl.notAfter}</span></div>
+                <div class="osint-row"><span class="osint-k">SANs</span><span class="osint-v">${ssl.dnsNames.map(escHtml).join(', ')}</span></div>
+            </div>`;
+        }
+
+        if (dns?.length) {
+            html += `<div class="osint-grid"><div class="osint-section-title" style="padding:0 14px;">DNS RECORDS</div>`;
+            dns.forEach(rec => {
+                const vals = rec.answers.map(a => escHtml(a.data)).join('<br>');
+                html += `<div class="osint-row"><span class="osint-k">${rec.type}</span><span class="osint-v">${vals}</span></div>`;
+            });
+            html += `</div>`;
+        }
+
+        html += `</div>`;
+        return html;
+    };
+
+    // ─────────────────────────────────────────────
+    //  EMAIL BREACH CHECK  (HaveIBeenPwned — no key for domain search)
+    //  Falls back to XposedOrNot API for individual email
+    // ─────────────────────────────────────────────
+    const checkBreaches = async (email) => {
+        try {
+            // XposedOrNot — completely free, no key, CORS ok
+            const r = await fetch(`https://api.xposedornot.com/v1/check-email/${encodeURIComponent(email)}`);
+            if (r.status === 404) return { email, breaches: [], clean: true };
+            const d = await r.json();
+            if (!d.breaches) return null;
+            // Flatten breach list
+            const breaches = d.breaches.flat ? d.breaches.flat() : d.breaches;
+            return { email, breaches: Array.isArray(breaches) ? breaches : [], clean: false };
+        } catch(e) { return null; }
+    };
+
+    const buildBreachCard = (result) => {
+        if (!result) return '';
+        let html = `<div class="osint-card">
+            <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">BREACH_SCAN :: ${escHtml(result.email)}</span></div>`;
+        if (result.clean || !result.breaches.length) {
+            html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v" style="color:#7fba8a">NO BREACHES DETECTED</span></div></div>`;
+        } else {
+            html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">FOUND IN</span><span class="osint-v" style="color:#ff6b6b">${result.breaches.length} BREACH${result.breaches.length>1?'ES':''}</span></div></div>`;
+            html += `<div class="breach-list">`;
+            result.breaches.slice(0,15).forEach(b => {
+                const name = typeof b === 'string' ? b : (b.breachID || b.name || JSON.stringify(b));
+                html += `<div class="breach-item"><div class="breach-name">${escHtml(name)}</div></div>`;
+            });
+            html += `</div>`;
+        }
+        html += `</div>`;
+        return html;
+    };
+
+    // ─────────────────────────────────────────────
+    //  USERNAME SEARCH  (checks profile URLs directly)
+    // ─────────────────────────────────────────────
+    const USERNAME_PLATFORMS = [
+        { name: 'GitHub',      url: u => `https://github.com/${u}`,                    check: 'html' },
+        { name: 'Reddit',      url: u => `https://www.reddit.com/user/${u}/about.json`, check: 'json' },
+        { name: 'HackerNews',  url: u => `https://hacker-news.firebaseio.com/v0/user/${u}.json`, check: 'json' },
+        { name: 'Instagram',   url: u => `https://www.instagram.com/${u}/`,             check: 'html' },
+        { name: 'TikTok',      url: u => `https://www.tiktok.com/@${u}`,                check: 'html' },
+        { name: 'Twitter/X',   url: u => `https://twitter.com/${u}`,                    check: 'html' },
+        { name: 'LinkedIn',    url: u => `https://www.linkedin.com/in/${u}`,            check: 'html' },
+        { name: 'Pinterest',   url: u => `https://www.pinterest.com/${u}/`,             check: 'html' },
+        { name: 'Twitch',      url: u => `https://www.twitch.tv/${u}`,                  check: 'html' },
+        { name: 'YouTube',     url: u => `https://www.youtube.com/@${u}`,               check: 'html' },
+        { name: 'SoundCloud',  url: u => `https://soundcloud.com/${u}`,                 check: 'html' },
+        { name: 'Keybase',     url: u => `https://keybase.io/${u}`,                     check: 'html' },
+        { name: 'Gitlab',      url: u => `https://gitlab.com/${u}`,                     check: 'html' },
+        { name: 'Medium',      url: u => `https://medium.com/@${u}`,                    check: 'html' },
+        { name: 'Dev.to',      url: u => `https://dev.to/${u}`,                         check: 'html' },
+        { name: 'Steam',       url: u => `https://steamcommunity.com/id/${u}`,          check: 'html' },
+        { name: 'Spotify',     url: u => `https://open.spotify.com/user/${u}`,          check: 'html' },
+        { name: 'Patreon',     url: u => `https://www.patreon.com/${u}`,                check: 'html' },
+        { name: 'Fiverr',      url: u => `https://www.fiverr.com/${u}`,                 check: 'html' },
+        { name: 'Gravatar',    url: u => `https://en.gravatar.com/${u}.json`,           check: 'json' },
+    ];
+
+    const searchUsername = async (username) => {
+        const results = await Promise.all(USERNAME_PLATFORMS.map(async p => {
+            const url = p.url(username);
+            try {
+                const r = await fetch(url, { method: 'HEAD', mode: 'no-cors' });
+                // no-cors means opaque response — status 0 means it got somewhere (not blocked entirely)
+                return { platform: p.name, url, found: true };
+            } catch(e) {
+                return { platform: p.name, url, found: false };
+            }
+        }));
+        return results;
+    };
+
+    const buildUsernameCard = (username, results) => {
+        const found    = results.filter(r => r.found);
+        const notFound = results.filter(r => !r.found);
+        let html = `<div class="osint-card">
+            <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">USERNAME_SWEEP :: ${escHtml(username)}</span></div>
+            <div class="osint-grid">
+                <div class="osint-row"><span class="osint-k">HITS</span><span class="osint-v" style="color:#7fba8a">${found.length} / ${results.length} platforms</span></div>
+            </div>
+            <div class="username-grid">`;
+        found.forEach(r => {
+            html += `<a href="${r.url}" target="_blank" class="username-chip found"><div class="dot"></div>${escHtml(r.platform)}</a>`;
+        });
+        notFound.forEach(r => {
+            html += `<span class="username-chip notfound"><div class="dot"></div>${escHtml(r.platform)}</span>`;
+        });
+        html += `</div></div>`;
+        return html;
+    };
+
+    // ─────────────────────────────────────────────
+    //  EXIF READER  (injected as a UI element into the chat)
+    // ─────────────────────────────────────────────
+    const buildExifUploader = () => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'osint-card';
+        wrapper.style.marginTop = '15px';
+
+        const header = document.createElement('div');
+        header.className = 'osint-card-header';
+        header.innerHTML = `<div class="blink"></div><span class="osint-card-title">EXIF_EXTRACTOR :: DROP IMAGE TO ANALYSE</span>`;
+        wrapper.appendChild(header);
+
+        const dropArea = document.createElement('div');
+        dropArea.className = 'exif-upload-area';
+        dropArea.innerHTML = `<i class="fas fa-camera" style="font-size:1.5rem;margin-bottom:8px;display:block"></i>Click or drag an image here`;
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        dropArea.appendChild(fileInput);
+
+        const resultsDiv = document.createElement('div');
+        resultsDiv.className = 'osint-grid';
+        resultsDiv.style.display = 'none';
+
+        const processFile = async (file) => {
+            dropArea.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Extracting metadata...`;
+            try {
+                const exif = await exifr.parse(file, true);
+                resultsDiv.style.display = 'flex';
+                resultsDiv.innerHTML = '';
+
+                if (!exif || !Object.keys(exif).length) {
+                    resultsDiv.innerHTML = `<div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">No EXIF metadata found in this file.</span></div>`;
+                    dropArea.innerHTML = `<i class="fas fa-check"></i> ${escHtml(file.name)}`;
+                    return;
+                }
+
+                const fields = [
+                    ['MAKE',        exif.Make],
+                    ['MODEL',       exif.Model],
+                    ['SOFTWARE',    exif.Software],
+                    ['DATE_TAKEN',  exif.DateTimeOriginal || exif.DateTime],
+                    ['GPS_LAT',     exif.latitude],
+                    ['GPS_LON',     exif.longitude],
+                    ['GPS_ALT',     exif.GPSAltitude ? `${exif.GPSAltitude.toFixed(1)}m` : null],
+                    ['WIDTH',       exif.ImageWidth || exif.ExifImageWidth],
+                    ['HEIGHT',      exif.ImageHeight || exif.ExifImageHeight],
+                    ['F_STOP',      exif.FNumber ? `f/${exif.FNumber}` : null],
+                    ['EXPOSURE',    exif.ExposureTime ? `1/${Math.round(1/exif.ExposureTime)}s` : null],
+                    ['ISO',         exif.ISO],
+                    ['FOCAL_LEN',   exif.FocalLength ? `${exif.FocalLength}mm` : null],
+                ];
+                fields.filter(([,v]) => v != null).forEach(([k,v]) => {
+                    resultsDiv.innerHTML += `<div class="osint-row"><span class="osint-k">${k}</span><span class="osint-v">${escHtml(String(v))}</span></div>`;
+                });
+
+                // If GPS found — add map pin
+                if (exif.latitude && exif.longitude) {
+                    const mapData = {
+                        query: `Photo location: ${file.name}`,
+                        primary: { name: `Photo GPS: ${exif.latitude.toFixed(5)}, ${exif.longitude.toFixed(5)}`, lat: exif.latitude, lon: exif.longitude, type: 'exif_gps', address: '' },
+                        alternates: []
+                    };
+                    const mapBlock = buildMapBlock(mapData);
+                    wrapper.appendChild(mapBlock);
+
+                    // Also feed to NOX as context
+                    userInput.value = `EXIF GPS data extracted from ${file.name}: coordinates ${exif.latitude.toFixed(6)}, ${exif.longitude.toFixed(6)}. Camera: ${exif.Make||'?'} ${exif.Model||'?'}. Date: ${exif.DateTimeOriginal||'unknown'}. Analyse this location.`;
+                    sendMessage();
+                }
+
+                dropArea.innerHTML = `<i class="fas fa-check" style="color:#7fba8a"></i> ${escHtml(file.name)}`;
+            } catch(e) {
+                resultsDiv.style.display = 'flex';
+                resultsDiv.innerHTML = `<div class="osint-row"><span class="osint-k">ERROR</span><span class="osint-v">${e.message}</span></div>`;
+                dropArea.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:#ff6b6b"></i> Failed`;
+            }
+        };
+
+        dropArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
+        dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.style.borderColor='var(--accent-red)'; });
+        dropArea.addEventListener('dragleave', () => { dropArea.style.borderColor=''; });
+        dropArea.addEventListener('drop', e => { e.preventDefault(); dropArea.style.borderColor=''; if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]); });
+
+        wrapper.appendChild(dropArea);
+        wrapper.appendChild(resultsDiv);
+        return wrapper;
+    };
+
+    // ─────────────────────────────────────────────
+    //  UNIFIED AI INTENT CLASSIFIER
+    //  One call figures out ALL OSINT intents from natural language.
+    //  Returns { emails, ips, domains, usernames, wants_exif, wants_spatial }
+    // ─────────────────────────────────────────────
+    const classifyIntent = async (text) => {
+        const systemPrompt = `You are an OSINT intent classifier for a detective app.
+Analyse the operator's message and extract every investigative target mentioned.
+Reply ONLY with raw JSON, no markdown, no explanation:
+{
+  "emails":      ["list of email addresses mentioned or implied"],
+  "ips":         ["list of IP addresses mentioned"],
+  "domains":     ["list of domain names mentioned, NOT email providers like gmail.com"],
+  "usernames":   ["list of social media usernames or handles to search across platforms"],
+  "wants_exif":  true/false,
+  "wants_spatial": true/false
+}
+
+Rules:
+- emails: extract any email address literally present
+- ips: extract any IPv4 address literally present
+- domains: extract standalone domains like 'example.com', 'darkweb.io'. Never include gmail/yahoo/hotmail/outlook/icloud/protonmail
+- usernames: extract if the user wants to find someone's social accounts. Could be phrased as "find @johndoe", "look up the user darkoperator", "search for this handle: ghost99", "who is xX_hacker_Xx online", etc.
+- wants_exif: true if user wants to analyse photo/image metadata or EXIF data
+- wants_spatial: true if user mentions a real-world place to find on a map
+
+Always return all fields. Use empty arrays [] if nothing found. Default booleans to false.`;
+
+        try {
+            const r = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: text }
+                    ],
+                    temperature: 0.0,
+                    max_tokens: 300
+                })
+            });
+            const data = await r.json();
+            const raw = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
+            const parsed = JSON.parse(raw);
+            // Sanitise
+            return {
+                emails:        Array.isArray(parsed.emails)    ? parsed.emails    : [],
+                ips:           Array.isArray(parsed.ips)       ? parsed.ips       : [],
+                domains:       Array.isArray(parsed.domains)   ? parsed.domains   : [],
+                usernames:     Array.isArray(parsed.usernames) ? parsed.usernames : [],
+                wants_exif:    !!parsed.wants_exif,
+                wants_spatial: !!parsed.wants_spatial,
+            };
+        } catch(e) {
+            console.error('NOX_CLASSIFY_ERR', e);
+            // Fallback: basic regex extraction so nothing is totally lost
+            const emailFallback = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g) || [];
+            const ipFallback    = [...text.matchAll(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g)].map(m=>m[0]);
+            return { emails: emailFallback, ips: ipFallback, domains: [], usernames: [], wants_exif: false, wants_spatial: false };
+        }
+    };
+
+    // ─────────────────────────────────────────────
     //  SEND MESSAGE
     // ─────────────────────────────────────────────
     const sendMessage = async () => {
@@ -791,9 +1188,6 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
         // Typing indicator
         const typingDiv = document.createElement('div');
         typingDiv.className = 'message assistant-msg';
-        const emailMatch = message.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-        // Collect all public IPs in message
-        const ipMatches = [...message.matchAll(IP_REGEX)].map(m => m[1]).filter(ip => !PRIVATE_IP.test(ip));
 
         typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">Analyzing...</div>`;
         if (!isGraphView) { chatContainer.appendChild(typingDiv); scrollToBottom(); }
@@ -801,26 +1195,64 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
 
         let injectionHTML = "";
         let mapData = null;
+        let osintContext = '';
 
-        // Run gravatar, IP lookups, and spatial intent detection all in parallel
-        const [gravatarResult, spatialIntent, ...ipResults] = await Promise.all([
-            emailMatch ? fetchGravatar(emailMatch[0]) : Promise.resolve(null),
-            detectSpatialIntent(message),
-            ...ipMatches.map(ip => lookupIP(ip))
+        // Single AI call classifies all intent from natural language
+        const intent = await classifyIntent(message);
+
+        // Spatial intent (separate dedicated classifier for map accuracy)
+        const spatialIntent = intent.wants_spatial ? await detectSpatialIntent(message) : null;
+
+        // Run all enrichments in parallel based on classified intent
+        const email0    = intent.emails[0]    || null;
+        const domain0   = intent.domains[0]   || null;
+        const username0 = intent.usernames[0] || null;
+        const publicIPs = intent.ips.filter(ip => !PRIVATE_IP.test(ip));
+
+        const [gravatarResult, breachResult, whoisResult, dnsResult, sslResult, usernameResults, ...ipResults] = await Promise.all([
+            email0    ? fetchGravatar(email0)                          : Promise.resolve(null),
+            email0    ? checkBreaches(email0)                          : Promise.resolve(null),
+            domain0   ? lookupWHOIS(domain0)                           : Promise.resolve(null),
+            domain0   ? lookupDNS(domain0)                             : Promise.resolve(null),
+            domain0   ? lookupSSL(domain0)                             : Promise.resolve(null),
+            username0 ? searchUsername(username0)                      : Promise.resolve(null),
+            ...publicIPs.map(ip => lookupIP(ip))
         ]);
 
         if (gravatarResult) {
             injectionHTML += `\n\n<div class="gravatar-info"><img src="${gravatarResult.image}" class="gravatar-img"><div class="gravatar-name">IDENTITY_MATCH: ${gravatarResult.name}</div></div>`;
         }
+        if (breachResult) {
+            injectionHTML += `\n\n${buildBreachCard(breachResult)}`;
+            if (!breachResult.clean && breachResult.breaches.length) {
+                osintContext += ` EMAIL_BREACHES: ${email0} found in ${breachResult.breaches.length} breach(es): ${breachResult.breaches.slice(0,5).map(b=>typeof b==='string'?b:(b.breachID||b.name||'')).join(', ')}.`;
+            }
+        }
+        if (whoisResult || dnsResult || sslResult) {
+            injectionHTML += `\n\n${buildDomainCard(whoisResult, dnsResult, sslResult, domain0)}`;
+            if (whoisResult?.registered) osintContext += ` DOMAIN: ${domain0} registered ${whoisResult.created}, expires ${whoisResult.expires}, registrar: ${whoisResult.registrar}.`;
+        }
+        if (usernameResults) {
+            injectionHTML += `\n\n${buildUsernameCard(username0, usernameResults)}`;
+            const hits = usernameResults.filter(r=>r.found).map(r=>r.platform).join(', ');
+            osintContext += ` USERNAME ${username0}: found on ${hits||'no platforms'}.`;
+        }
+        if (intent.wants_exif && !isGraphView) {
+            const exifMsg = document.createElement('div');
+            exifMsg.className = 'message assistant-msg';
+            exifMsg.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated. Awaiting file input.</div>`;
+            exifMsg.querySelector('.msg-content').appendChild(buildExifUploader());
+            chatContainer.appendChild(exifMsg);
+            scrollToBottom();
+        }
 
         // Build IP cards + collect map data from first geolocatable IP
-        let ipContext = '';
         ipResults.forEach((d, i) => {
             if (!d) return;
             injectionHTML += `\n\n${buildIPCard(d)}`;
-            if (d._error) return; // card shown but skip map/context
+            if (d._error) return;
             if (i === 0) {
-                ipContext = `IP_GEOLOCATION: ${d.query} resolves to ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'}. ISP: ${d.isp||'?'}. Org: ${d.org||'?'}. Coordinates: ${d.lat}, ${d.lon}.${d.proxy?' Flagged as PROXY/VPN.':''}${d.hosting?' Flagged as HOSTING/DATACENTER.':''}`;
+                osintContext += ` IP: ${d.query} → ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'}. ISP: ${d.isp||'?'}. Org: ${d.org||'?'}. Coords: ${d.lat},${d.lon}.${d.proxy?' PROXY/VPN.':''}${d.hosting?' DATACENTER.':''}`;
                 if (!mapData && d.lat && d.lon) {
                     mapData = {
                         query: `IP ${d.query}`,
@@ -837,22 +1269,16 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                 typingDiv.querySelector('.msg-content').textContent = 'Running spatial intercept...';
             }
             const spatialMap = await runSpatialIntercept(spatialIntent);
-            if (spatialMap) mapData = spatialMap;
+            if (spatialMap) {
+                mapData = spatialMap;
+                osintContext += ` LOCATION: ${spatialMap.primary.name} at ${spatialMap.primary.lat.toFixed(5)},${spatialMap.primary.lon.toFixed(5)}.`;
+            }
         }
 
         try {
-            let spatialContext = ipContext;
-            if (mapData && !ipContext) {
-                spatialContext = `\n\nSPATIAL_DATA_RETRIEVED: Primary target coordinates: ${mapData.primary.name} at LAT ${mapData.primary.lat.toFixed(5)}, LON ${mapData.primary.lon.toFixed(5)}. `;
-                if (mapData.alternates.length) {
-                    spatialContext += `Alternate sites: ${mapData.alternates.map(a => `${a.name} (${a.lat.toFixed(4)},${a.lon.toFixed(4)})`).join('; ')}.`;
-                }
-                spatialContext += ' Incorporate these coordinates naturally into your response.';
-            }
-
             const apiMessages = [{
                 role: "system",
-                content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. Act as a general investigation assistant. MANDATORY: For every person, location, organization, or alias you mention, you MUST wrap it in the evidence tag like this: [EVIDENCE: Name]. If the operator provides a phone number, identify country and carrier. If an email is provided, mention the digital trace. If an IP address is provided, reference the geolocation and ISP data naturally. If spatial data is provided, reference coordinates in your noir detective style." + (spatialContext ? '\n\n' + spatialContext : '')
+                content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags. Reference all OSINT data provided — IP geolocation, domain/WHOIS, DNS, SSL, breach records, username sweep results, spatial coordinates — weaving findings naturally into your response." + (osintContext ? '\n\nOSINT_FEED:' + osintContext : '')
             }];
             currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role: m.role, content: m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'') }));
 
