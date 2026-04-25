@@ -698,8 +698,6 @@
 
     // ─────────────────────────────────────────────
     //  AI-DRIVEN SPATIAL INTENT DETECTION
-    //  Returns null or { query, city, places: [{label, osm_tags}] }
-    //  Supports multiple place types mentioned in one message
     // ─────────────────────────────────────────────
     const detectSpatialIntent = async (userText) => {
         const systemPrompt = `You are a spatial intent classifier for a detective investigation app.
@@ -789,8 +787,6 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
             address: [el.tags?.['addr:street'], el.tags?.['addr:housenumber'], el.tags?.['addr:city']].filter(Boolean).join(' ')
         })).filter(el => el.lat && el.lon);
 
-    // Takes the intent object from detectSpatialIntent and fetches real locations
-    // Runs one Overpass query per place type, merges all results
     const runSpatialIntercept = async (intent) => {
         const { query, city, places } = intent;
         let allElements = [];
@@ -803,7 +799,6 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                 if (geo) bbox = geo.bbox;
             }
 
-            // No tags at all — just pin the city
             if (!places.length) {
                 if (!geo) return null;
                 return {
@@ -813,7 +808,6 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                 };
             }
 
-            // Run one Overpass query per place type in parallel
             const queries = places.map(place => {
                 const tf = Object.entries(place.osm_tags || {}).map(([k,v]) => `["${k}"="${v}"]`).join('');
                 if (!tf) return Promise.resolve([]);
@@ -830,7 +824,6 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
             });
 
             const results = await Promise.all(queries);
-            // Flatten: first result of each type becomes a pin; rest are alternates
             results.forEach(group => { allElements.push(...group.slice(0, 3)); });
 
         } catch(e) {
@@ -843,7 +836,7 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
         return {
             query,
             primary:    allElements[0],
-            alternates: allElements.slice(1, 6)   // show up to 5 alternates across all types
+            alternates: allElements.slice(1, 6)
         };
     };
 
@@ -861,53 +854,30 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
     };
 
     // ─────────────────────────────────────────────
-    //  IP LOOKUP  (ip-api.com — free, no key needed)
+    //  IP LOOKUP
     // ─────────────────────────────────────────────
     const IP_REGEX = /\b((?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))\b/g;
     const PRIVATE_IP = /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|127\.|0\.0\.0\.0|::1)/;
 
     const lookupIP = async (ip) => {
-        // Try multiple free CORS-friendly APIs in order
         const attempts = [
-            // 1. ip-api.com HTTPS (CORS allowed on https)
             async () => {
                 const r = await fetch(`https://ip-api.com/json/${ip}?fields=66846719`);
                 const d = await r.json();
                 if (d.status !== 'success') throw new Error(d.message);
-                return {
-                    query: d.query, country: d.country, countryCode: d.countryCode,
-                    regionName: d.regionName, city: d.city,
-                    lat: d.lat, lon: d.lon,
-                    isp: d.isp, org: d.org, as: d.as,
-                    proxy: d.proxy, hosting: d.hosting, vpn: d.proxy, tor: false
-                };
+                return { query: d.query, country: d.country, countryCode: d.countryCode, regionName: d.regionName, city: d.city, lat: d.lat, lon: d.lon, isp: d.isp, org: d.org, as: d.as, proxy: d.proxy, hosting: d.hosting, vpn: d.proxy, tor: false };
             },
-            // 2. ipapi.co
             async () => {
                 const r = await fetch(`https://ipapi.co/${ip}/json/`);
                 const d = await r.json();
                 if (d.error) throw new Error(d.reason);
-                return {
-                    query: d.ip, country: d.country_name, countryCode: d.country_code,
-                    regionName: d.region, city: d.city,
-                    lat: parseFloat(d.latitude), lon: parseFloat(d.longitude),
-                    isp: d.org || 'Unknown', org: d.org || 'Unknown',
-                    as: d.asn || 'Unknown',
-                    proxy: false, hosting: false, vpn: false, tor: false
-                };
+                return { query: d.ip, country: d.country_name, countryCode: d.country_code, regionName: d.region, city: d.city, lat: parseFloat(d.latitude), lon: parseFloat(d.longitude), isp: d.org || 'Unknown', org: d.org || 'Unknown', as: d.asn || 'Unknown', proxy: false, hosting: false, vpn: false, tor: false };
             },
-            // 3. freeipapi.com
             async () => {
                 const r = await fetch(`https://freeipapi.com/api/json/${ip}`);
                 const d = await r.json();
                 if (!d.ipAddress) throw new Error('no data');
-                return {
-                    query: d.ipAddress, country: d.countryName, countryCode: d.countryCode,
-                    regionName: d.regionName, city: d.cityName,
-                    lat: parseFloat(d.latitude), lon: parseFloat(d.longitude),
-                    isp: d.isp || 'Unknown', org: d.isp || 'Unknown', as: 'Unknown',
-                    proxy: d.isProxy || false, hosting: false, vpn: false, tor: false
-                };
+                return { query: d.ipAddress, country: d.countryName, countryCode: d.countryCode, regionName: d.regionName, city: d.cityName, lat: parseFloat(d.latitude), lon: parseFloat(d.longitude), isp: d.isp || 'Unknown', org: d.isp || 'Unknown', as: 'Unknown', proxy: d.isProxy || false, hosting: false, vpn: false, tor: false };
             }
         ];
 
@@ -915,53 +885,27 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
             try {
                 const result = await attempt();
                 if (result && result.country) return result;
-            } catch(e) {
-                console.warn('NOX_IP_ATTEMPT_FAILED', e.message);
-            }
+            } catch(e) { console.warn('NOX_IP_ATTEMPT_FAILED', e.message); }
         }
-        return { query: ip, _error: true }; // return stub so card can show failure
+        return { query: ip, _error: true };
     };
 
     const buildIPCard = (d) => {
-        if (d._error) return `<div class="ip-card"><div class="ip-card-header"><span class="ip-address">${d.query}</span><span class="ip-tag proxy">LOOKUP_FAILED</span></div><div class="ip-grid"><div class="ip-row"><span class="ip-k">STATUS</span><span class="ip-v">All geolocation APIs unreachable. Check console for details.</span></div></div></div>`;
+        if (d._error) return `<div class="ip-card"><div class="ip-card-header"><span class="ip-address">${d.query}</span><span class="ip-tag proxy">LOOKUP_FAILED</span></div><div class="ip-grid"><div class="ip-row"><span class="ip-k">STATUS</span><span class="ip-v">All geolocation APIs unreachable.</span></div></div></div>`;
         const flag = `https://flagcdn.com/24x18/${(d.countryCode||'xx').toLowerCase()}.png`;
-        const tags = [
-            d.proxy   ? '<span class="ip-tag proxy">PROXY</span>'        : '',
-            d.vpn     ? '<span class="ip-tag proxy">VPN</span>'          : '',
-            d.tor     ? '<span class="ip-tag proxy">TOR</span>'          : '',
-            d.hosting ? '<span class="ip-tag hosting">DATACENTER</span>' : '',
-        ].filter(Boolean).join('');
+        const tags = [d.proxy?'<span class="ip-tag proxy">PROXY</span>':'', d.vpn?'<span class="ip-tag proxy">VPN</span>':'', d.tor?'<span class="ip-tag proxy">TOR</span>':'', d.hosting?'<span class="ip-tag hosting">DATACENTER</span>':''].filter(Boolean).join('');
         const lat = typeof d.lat === 'number' ? d.lat.toFixed(4) : '—';
         const lon = typeof d.lon === 'number' ? d.lon.toFixed(4) : '—';
-        return `<div class="ip-card">
-            <div class="ip-card-header">
-                <img src="${flag}" class="ip-flag" onerror="this.style.display='none'">
-                <span class="ip-address">${d.query}</span>
-                ${tags}
-            </div>
-            <div class="ip-grid">
-                <div class="ip-row"><span class="ip-k">LOCATION</span><span class="ip-v">${d.city||'—'}, ${d.regionName||'—'}, ${d.country||'—'}</span></div>
-                <div class="ip-row"><span class="ip-k">COORDS</span><span class="ip-v">${lat}, ${lon}</span></div>
-                <div class="ip-row"><span class="ip-k">ISP</span><span class="ip-v">${d.isp||'—'}</span></div>
-                <div class="ip-row"><span class="ip-k">ORG</span><span class="ip-v">${d.org||'—'}</span></div>
-                <div class="ip-row"><span class="ip-k">ASN</span><span class="ip-v">${d.as||'—'}</span></div>
-            </div>
-        </div>`;
+        return `<div class="ip-card"><div class="ip-card-header"><img src="${flag}" class="ip-flag" onerror="this.style.display='none'"><span class="ip-address">${d.query}</span>${tags}</div><div class="ip-grid"><div class="ip-row"><span class="ip-k">LOCATION</span><span class="ip-v">${d.city||'—'}, ${d.regionName||'—'}, ${d.country||'—'}</span></div><div class="ip-row"><span class="ip-k">COORDS</span><span class="ip-v">${lat}, ${lon}</span></div><div class="ip-row"><span class="ip-k">ISP</span><span class="ip-v">${d.isp||'—'}</span></div><div class="ip-row"><span class="ip-k">ORG</span><span class="ip-v">${d.org||'—'}</span></div><div class="ip-row"><span class="ip-k">ASN</span><span class="ip-v">${d.as||'—'}</span></div></div></div>`;
     };
 
     // ─────────────────────────────────────────────
-    //  WHOIS LOOKUP  (whois.freeaitools.online — CORS ok)
+    //  WHOIS / DNS / SSL LOOKUP
     // ─────────────────────────────────────────────
-
-
     const lookupWHOIS = async (domain) => {
         try {
-            const r = await fetch(`https://api.domainsdb.info/v1/domains/search?domain=${encodeURIComponent(domain)}&zone=${domain.split('.').pop()}`);
-            const d = await r.json();
-            // Also fetch rdap which is fully public
             const rdap = await fetch(`https://rdap.org/domain/${domain}`);
             const rd = rdap.ok ? await rdap.json() : null;
-
             let result = { domain, registered: false };
             if (rd) {
                 result.registered = true;
@@ -995,65 +939,38 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
             const d = await r.json();
             if (!Array.isArray(d) || !d.length) return null;
             const latest = d[0];
-            return {
-                issuer:    latest.issuer?.name || '—',
-                notBefore: latest.not_before?.slice(0,10) || '—',
-                notAfter:  latest.not_after?.slice(0,10)  || '—',
-                dnsNames:  latest.dns_names?.slice(0,10)  || []
-            };
+            return { issuer: latest.issuer?.name || '—', notBefore: latest.not_before?.slice(0,10) || '—', notAfter: latest.not_after?.slice(0,10) || '—', dnsNames: latest.dns_names?.slice(0,10) || [] };
         } catch(e) { return null; }
     };
 
     const buildDomainCard = (whois, dns, ssl, domain) => {
-        let html = `<div class="osint-card">
-            <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">DOMAIN_INTEL :: ${escHtml(domain.toUpperCase())}</span></div>`;
-
+        let html = `<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">DOMAIN_INTEL :: ${escHtml(domain.toUpperCase())}</span></div>`;
         if (whois?.registered) {
-            html += `<div class="osint-grid">
-                <div class="osint-row"><span class="osint-k">REGISTRAR</span><span class="osint-v">${escHtml(whois.registrar)}</span></div>
-                <div class="osint-row"><span class="osint-k">CREATED</span><span class="osint-v">${whois.created}</span></div>
-                <div class="osint-row"><span class="osint-k">EXPIRES</span><span class="osint-v">${whois.expires}</span></div>
-                <div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">${escHtml(whois.status)}</span></div>
-                <div class="osint-row"><span class="osint-k">NAMESERVERS</span><span class="osint-v">${escHtml(whois.nameservers)}</span></div>
-            </div>`;
+            html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">REGISTRAR</span><span class="osint-v">${escHtml(whois.registrar)}</span></div><div class="osint-row"><span class="osint-k">CREATED</span><span class="osint-v">${whois.created}</span></div><div class="osint-row"><span class="osint-k">EXPIRES</span><span class="osint-v">${whois.expires}</span></div><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">${escHtml(whois.status)}</span></div><div class="osint-row"><span class="osint-k">NAMESERVERS</span><span class="osint-v">${escHtml(whois.nameservers)}</span></div></div>`;
         } else {
             html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">Registration data unavailable</span></div></div>`;
         }
-
         if (ssl) {
-            html += `<div class="osint-grid">
-                <div class="osint-section-title" style="padding:0 14px;">SSL CERTIFICATE</div>
-                <div class="osint-row"><span class="osint-k">ISSUER</span><span class="osint-v">${escHtml(ssl.issuer)}</span></div>
-                <div class="osint-row"><span class="osint-k">VALID</span><span class="osint-v">${ssl.notBefore} → ${ssl.notAfter}</span></div>
-                <div class="osint-row"><span class="osint-k">SANs</span><span class="osint-v">${ssl.dnsNames.map(escHtml).join(', ')}</span></div>
-            </div>`;
+            html += `<div class="osint-grid"><div class="osint-section-title" style="padding:0 14px;">SSL CERTIFICATE</div><div class="osint-row"><span class="osint-k">ISSUER</span><span class="osint-v">${escHtml(ssl.issuer)}</span></div><div class="osint-row"><span class="osint-k">VALID</span><span class="osint-v">${ssl.notBefore} → ${ssl.notAfter}</span></div><div class="osint-row"><span class="osint-k">SANs</span><span class="osint-v">${ssl.dnsNames.map(escHtml).join(', ')}</span></div></div>`;
         }
-
         if (dns?.length) {
             html += `<div class="osint-grid"><div class="osint-section-title" style="padding:0 14px;">DNS RECORDS</div>`;
-            dns.forEach(rec => {
-                const vals = rec.answers.map(a => escHtml(a.data)).join('<br>');
-                html += `<div class="osint-row"><span class="osint-k">${rec.type}</span><span class="osint-v">${vals}</span></div>`;
-            });
+            dns.forEach(rec => { html += `<div class="osint-row"><span class="osint-k">${rec.type}</span><span class="osint-v">${rec.answers.map(a => escHtml(a.data)).join('<br>')}</span></div>`; });
             html += `</div>`;
         }
-
         html += `</div>`;
         return html;
     };
 
     // ─────────────────────────────────────────────
-    //  EMAIL BREACH CHECK  (HaveIBeenPwned — no key for domain search)
-    //  Falls back to XposedOrNot API for individual email
+    //  EMAIL BREACH CHECK
     // ─────────────────────────────────────────────
     const checkBreaches = async (email) => {
         try {
-            // XposedOrNot — completely free, no key, CORS ok
             const r = await fetch(`https://api.xposedornot.com/v1/check-email/${encodeURIComponent(email)}`);
             if (r.status === 404) return { email, breaches: [], clean: true };
             const d = await r.json();
             if (!d.breaches) return null;
-            // Flatten breach list
             const breaches = d.breaches.flat ? d.breaches.flat() : d.breaches;
             return { email, breaches: Array.isArray(breaches) ? breaches : [], clean: false };
         } catch(e) { return null; }
@@ -1061,13 +978,11 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
 
     const buildBreachCard = (result) => {
         if (!result) return '';
-        let html = `<div class="osint-card">
-            <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">BREACH_SCAN :: ${escHtml(result.email)}</span></div>`;
+        let html = `<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">BREACH_SCAN :: ${escHtml(result.email)}</span></div>`;
         if (result.clean || !result.breaches.length) {
             html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v" style="color:#7fba8a">NO BREACHES DETECTED</span></div></div>`;
         } else {
-            html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">FOUND IN</span><span class="osint-v" style="color:#ff6b6b">${result.breaches.length} BREACH${result.breaches.length>1?'ES':''}</span></div></div>`;
-            html += `<div class="breach-list">`;
+            html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">FOUND IN</span><span class="osint-v" style="color:#ff6b6b">${result.breaches.length} BREACH${result.breaches.length>1?'ES':''}</span></div></div><div class="breach-list">`;
             result.breaches.slice(0,15).forEach(b => {
                 const name = typeof b === 'string' ? b : (b.breachID || b.name || JSON.stringify(b));
                 html += `<div class="breach-item"><div class="breach-name">${escHtml(name)}</div></div>`;
@@ -1079,37 +994,36 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
     };
 
     // ─────────────────────────────────────────────
-    //  USERNAME SEARCH  (checks profile URLs directly)
+    //  USERNAME SEARCH
     // ─────────────────────────────────────────────
     const USERNAME_PLATFORMS = [
-        { name: 'GitHub',      url: u => `https://github.com/${u}`,                    check: 'html' },
-        { name: 'Reddit',      url: u => `https://www.reddit.com/user/${u}/about.json`, check: 'json' },
-        { name: 'HackerNews',  url: u => `https://hacker-news.firebaseio.com/v0/user/${u}.json`, check: 'json' },
-        { name: 'Instagram',   url: u => `https://www.instagram.com/${u}/`,             check: 'html' },
-        { name: 'TikTok',      url: u => `https://www.tiktok.com/@${u}`,                check: 'html' },
-        { name: 'Twitter/X',   url: u => `https://twitter.com/${u}`,                    check: 'html' },
-        { name: 'LinkedIn',    url: u => `https://www.linkedin.com/in/${u}`,            check: 'html' },
-        { name: 'Pinterest',   url: u => `https://www.pinterest.com/${u}/`,             check: 'html' },
-        { name: 'Twitch',      url: u => `https://www.twitch.tv/${u}`,                  check: 'html' },
-        { name: 'YouTube',     url: u => `https://www.youtube.com/@${u}`,               check: 'html' },
-        { name: 'SoundCloud',  url: u => `https://soundcloud.com/${u}`,                 check: 'html' },
-        { name: 'Keybase',     url: u => `https://keybase.io/${u}`,                     check: 'html' },
-        { name: 'Gitlab',      url: u => `https://gitlab.com/${u}`,                     check: 'html' },
-        { name: 'Medium',      url: u => `https://medium.com/@${u}`,                    check: 'html' },
-        { name: 'Dev.to',      url: u => `https://dev.to/${u}`,                         check: 'html' },
-        { name: 'Steam',       url: u => `https://steamcommunity.com/id/${u}`,          check: 'html' },
-        { name: 'Spotify',     url: u => `https://open.spotify.com/user/${u}`,          check: 'html' },
-        { name: 'Patreon',     url: u => `https://www.patreon.com/${u}`,                check: 'html' },
-        { name: 'Fiverr',      url: u => `https://www.fiverr.com/${u}`,                 check: 'html' },
-        { name: 'Gravatar',    url: u => `https://en.gravatar.com/${u}.json`,           check: 'json' },
+        { name: 'GitHub',      url: u => `https://github.com/${u}` },
+        { name: 'Reddit',      url: u => `https://www.reddit.com/user/${u}/about.json` },
+        { name: 'HackerNews',  url: u => `https://hacker-news.firebaseio.com/v0/user/${u}.json` },
+        { name: 'Instagram',   url: u => `https://www.instagram.com/${u}/` },
+        { name: 'TikTok',      url: u => `https://www.tiktok.com/@${u}` },
+        { name: 'Twitter/X',   url: u => `https://twitter.com/${u}` },
+        { name: 'LinkedIn',    url: u => `https://www.linkedin.com/in/${u}` },
+        { name: 'Pinterest',   url: u => `https://www.pinterest.com/${u}/` },
+        { name: 'Twitch',      url: u => `https://www.twitch.tv/${u}` },
+        { name: 'YouTube',     url: u => `https://www.youtube.com/@${u}` },
+        { name: 'SoundCloud',  url: u => `https://soundcloud.com/${u}` },
+        { name: 'Keybase',     url: u => `https://keybase.io/${u}` },
+        { name: 'Gitlab',      url: u => `https://gitlab.com/${u}` },
+        { name: 'Medium',      url: u => `https://medium.com/@${u}` },
+        { name: 'Dev.to',      url: u => `https://dev.to/${u}` },
+        { name: 'Steam',       url: u => `https://steamcommunity.com/id/${u}` },
+        { name: 'Spotify',     url: u => `https://open.spotify.com/user/${u}` },
+        { name: 'Patreon',     url: u => `https://www.patreon.com/${u}` },
+        { name: 'Fiverr',      url: u => `https://www.fiverr.com/${u}` },
+        { name: 'Gravatar',    url: u => `https://en.gravatar.com/${u}.json` },
     ];
 
     const searchUsername = async (username) => {
         const results = await Promise.all(USERNAME_PLATFORMS.map(async p => {
             const url = p.url(username);
             try {
-                const r = await fetch(url, { method: 'HEAD', mode: 'no-cors' });
-                // no-cors means opaque response — status 0 means it got somewhere (not blocked entirely)
+                await fetch(url, { method: 'HEAD', mode: 'no-cors' });
                 return { platform: p.name, url, found: true };
             } catch(e) {
                 return { platform: p.name, url, found: false };
@@ -1121,24 +1035,15 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
     const buildUsernameCard = (username, results) => {
         const found    = results.filter(r => r.found);
         const notFound = results.filter(r => !r.found);
-        let html = `<div class="osint-card">
-            <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">USERNAME_SWEEP :: ${escHtml(username)}</span></div>
-            <div class="osint-grid">
-                <div class="osint-row"><span class="osint-k">HITS</span><span class="osint-v" style="color:#7fba8a">${found.length} / ${results.length} platforms</span></div>
-            </div>
-            <div class="username-grid">`;
-        found.forEach(r => {
-            html += `<a href="${r.url}" target="_blank" class="username-chip found"><div class="dot"></div>${escHtml(r.platform)}</a>`;
-        });
-        notFound.forEach(r => {
-            html += `<span class="username-chip notfound"><div class="dot"></div>${escHtml(r.platform)}</span>`;
-        });
+        let html = `<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">USERNAME_SWEEP :: ${escHtml(username)}</span></div><div class="osint-grid"><div class="osint-row"><span class="osint-k">HITS</span><span class="osint-v" style="color:#7fba8a">${found.length} / ${results.length} platforms</span></div></div><div class="username-grid">`;
+        found.forEach(r => { html += `<a href="${r.url}" target="_blank" class="username-chip found"><div class="dot"></div>${escHtml(r.platform)}</a>`; });
+        notFound.forEach(r => { html += `<span class="username-chip notfound"><div class="dot"></div>${escHtml(r.platform)}</span>`; });
         html += `</div></div>`;
         return html;
     };
 
     // ─────────────────────────────────────────────
-    //  EXIF READER  (injected as a UI element into the chat)
+    //  EXIF READER
     // ─────────────────────────────────────────────
     const buildExifUploader = (preloadedFile = null) => {
         const wrapper = document.createElement('div');
@@ -1194,7 +1099,6 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                     resultsDiv.innerHTML += `<div class="osint-row"><span class="osint-k">${k}</span><span class="osint-v">${escHtml(String(v))}</span></div>`;
                 });
 
-                // If GPS found — add map pin
                 if (exif.latitude && exif.longitude) {
                     const mapData = {
                         query: `Photo location: ${file.name}`,
@@ -1204,7 +1108,6 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                     const mapBlock = buildMapBlock(mapData);
                     wrapper.appendChild(mapBlock);
 
-                    // Also feed to NOX as context
                     userInput.value = `EXIF GPS data extracted from ${file.name}: coordinates ${exif.latitude.toFixed(6)}, ${exif.longitude.toFixed(6)}. Camera: ${exif.Make||'?'} ${exif.Model||'?'}. Date: ${exif.DateTimeOriginal||'unknown'}. Analyse this location.`;
                     sendMessage();
                 }
@@ -1226,7 +1129,6 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
         wrapper.appendChild(dropArea);
         wrapper.appendChild(resultsDiv);
 
-        // If a file was passed directly (from upload button), process immediately
         if (preloadedFile) processFile(preloadedFile);
 
         return wrapper;
@@ -1234,8 +1136,6 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
 
     // ─────────────────────────────────────────────
     //  UNIFIED AI INTENT CLASSIFIER
-    //  One call figures out ALL OSINT intents from natural language.
-    //  Returns { emails, ips, domains, usernames, wants_exif, wants_spatial }
     // ─────────────────────────────────────────────
     const classifyIntent = async (text) => {
         const systemPrompt = `You are an OSINT intent classifier for a detective app.
@@ -1254,7 +1154,7 @@ Rules:
 - emails: extract any email address literally present
 - ips: extract any IPv4 address literally present
 - domains: extract standalone domains like 'example.com', 'darkweb.io'. Never include gmail/yahoo/hotmail/outlook/icloud/protonmail
-- usernames: extract if the user wants to find someone's social accounts. Could be phrased as "find @johndoe", "look up the user darkoperator", "search for this handle: ghost99", "who is xX_hacker_Xx online", etc.
+- usernames: extract if the user wants to find someone's social accounts
 - wants_exif: true if user wants to analyse photo/image metadata or EXIF data
 - wants_spatial: true if user mentions a real-world place to find on a map
 
@@ -1266,10 +1166,7 @@ Always return all fields. Use empty arrays [] if nothing found. Default booleans
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",
-                    messages: [
-                        { role: "system", content: systemPrompt },
-                        { role: "user", content: text }
-                    ],
+                    messages: [{ role: "system", content: systemPrompt }, { role: "user", content: text }],
                     temperature: 0.0,
                     max_tokens: 300
                 })
@@ -1277,7 +1174,6 @@ Always return all fields. Use empty arrays [] if nothing found. Default booleans
             const data = await r.json();
             const raw = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
             const parsed = JSON.parse(raw);
-            // Sanitise
             return {
                 emails:        Array.isArray(parsed.emails)    ? parsed.emails    : [],
                 ips:           Array.isArray(parsed.ips)       ? parsed.ips       : [],
@@ -1288,7 +1184,6 @@ Always return all fields. Use empty arrays [] if nothing found. Default booleans
             };
         } catch(e) {
             console.error('NOX_CLASSIFY_ERR', e);
-            // Fallback: basic regex extraction so nothing is totally lost
             const emailFallback = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g) || [];
             const ipFallback    = [...text.matchAll(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g)].map(m=>m[0]);
             return { emails: emailFallback, ips: ipFallback, domains: [], usernames: [], wants_exif: false, wants_spatial: false };
@@ -1297,6 +1192,9 @@ Always return all fields. Use empty arrays [] if nothing found. Default booleans
 
     // ─────────────────────────────────────────────
     //  SEND MESSAGE
+    //  KEY FIX: Each OSINT source gets its own clearly labelled context block.
+    //  The AI receives a structured feed — not one blended string — so it
+    //  cannot mix up IP geolocation with spatial trace or WHOIS data.
     // ─────────────────────────────────────────────
     const sendMessage = async () => {
         const message = userInput.value.trim();
@@ -1310,58 +1208,80 @@ Always return all fields. Use empty arrays [] if nothing found. Default booleans
         userInput.style.height = 'auto';
         if (isGraphView) renderGraph();
 
-        // Typing indicator
         const typingDiv = document.createElement('div');
         typingDiv.className = 'message assistant-msg';
-
         typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">Analyzing...</div>`;
         if (!isGraphView) { chatContainer.appendChild(typingDiv); scrollToBottom(); }
         if (isCallMode) { callStatus.textContent = "ANALYZING..."; callSpectrum.classList.remove('active'); }
 
         let injectionHTML = "";
-        let mapData = null;
-        let osintContext = '';
+        // Each tool result stored separately — never merged into one string
+        const osintSections = [];
 
-        // Single AI call classifies all intent from natural language
+        // ── CLASSIFY INTENT (single AI call) ──
         const intent = await classifyIntent(message);
 
-        // Spatial intent (separate dedicated classifier for map accuracy)
-        const spatialIntent = intent.wants_spatial ? await detectSpatialIntent(message) : null;
-
-        // Run all enrichments in parallel based on classified intent
         const email0    = intent.emails[0]    || null;
         const domain0   = intent.domains[0]   || null;
         const username0 = intent.usernames[0] || null;
         const publicIPs = intent.ips.filter(ip => !PRIVATE_IP.test(ip));
 
-        const [gravatarResult, breachResult, whoisResult, dnsResult, sslResult, usernameResults, ...ipResults] = await Promise.all([
-            email0    ? fetchGravatar(email0)                          : Promise.resolve(null),
-            email0    ? checkBreaches(email0)                          : Promise.resolve(null),
-            domain0   ? lookupWHOIS(domain0)                           : Promise.resolve(null),
-            domain0   ? lookupDNS(domain0)                             : Promise.resolve(null),
-            domain0   ? lookupSSL(domain0)                             : Promise.resolve(null),
-            username0 ? searchUsername(username0)                      : Promise.resolve(null),
+        // ── RUN ALL ENRICHMENTS IN PARALLEL ──
+        const [gravatarResult, breachResult, whoisResult, dnsResult, sslResult, usernameResults, spatialIntent, ...ipResults] = await Promise.all([
+            email0    ? fetchGravatar(email0)       : Promise.resolve(null),
+            email0    ? checkBreaches(email0)       : Promise.resolve(null),
+            domain0   ? lookupWHOIS(domain0)        : Promise.resolve(null),
+            domain0   ? lookupDNS(domain0)          : Promise.resolve(null),
+            domain0   ? lookupSSL(domain0)          : Promise.resolve(null),
+            username0 ? searchUsername(username0)   : Promise.resolve(null),
+            intent.wants_spatial ? detectSpatialIntent(message) : Promise.resolve(null),
             ...publicIPs.map(ip => lookupIP(ip))
         ]);
 
+        // ── EMAIL / IDENTITY ──
         if (gravatarResult) {
             injectionHTML += `\n\n<div class="gravatar-info"><img src="${gravatarResult.image}" class="gravatar-img"><div class="gravatar-name">IDENTITY_MATCH: ${gravatarResult.name}</div></div>`;
+            osintSections.push(`[EMAIL_IDENTITY]\nTarget: ${email0}\nGravatar display name: ${gravatarResult.name}`);
         }
+
+        // ── BREACH DATA ──
         if (breachResult) {
             injectionHTML += `\n\n${buildBreachCard(breachResult)}`;
             if (!breachResult.clean && breachResult.breaches.length) {
-                osintContext += ` EMAIL_BREACHES: ${email0} found in ${breachResult.breaches.length} breach(es): ${breachResult.breaches.slice(0,5).map(b=>typeof b==='string'?b:(b.breachID||b.name||'')).join(', ')}.`;
+                const names = breachResult.breaches.slice(0,5).map(b => typeof b==='string'?b:(b.breachID||b.name||'')).join(', ');
+                osintSections.push(`[EMAIL_BREACH_SCAN]\nTarget: ${email0}\nBreaches found: ${breachResult.breaches.length}\nBreached services: ${names}`);
+            } else if (breachResult.clean) {
+                osintSections.push(`[EMAIL_BREACH_SCAN]\nTarget: ${email0}\nResult: No breaches detected — clean record`);
             }
         }
+
+        // ── DOMAIN WHOIS / DNS / SSL ──
         if (whoisResult || dnsResult || sslResult) {
             injectionHTML += `\n\n${buildDomainCard(whoisResult, dnsResult, sslResult, domain0)}`;
-            if (whoisResult?.registered) osintContext += ` DOMAIN: ${domain0} registered ${whoisResult.created}, expires ${whoisResult.expires}, registrar: ${whoisResult.registrar}.`;
+            let domainSection = `[DOMAIN_INTEL]\nTarget domain: ${domain0}`;
+            if (whoisResult?.registered) {
+                domainSection += `\nRegistrar: ${whoisResult.registrar}\nCreated: ${whoisResult.created}\nExpires: ${whoisResult.expires}\nStatus: ${whoisResult.status}\nNameservers: ${whoisResult.nameservers}`;
+            } else {
+                domainSection += `\nRegistration: data unavailable`;
+            }
+            if (ssl) {
+                domainSection += `\nSSL issuer: ${sslResult.issuer}\nSSL valid: ${sslResult.notBefore} to ${sslResult.notAfter}`;
+            }
+            if (dnsResult?.length) {
+                domainSection += `\nDNS records: ` + dnsResult.map(r => `${r.type}: ${r.answers.map(a=>a.data).join(', ')}`).join(' | ');
+            }
+            osintSections.push(domainSection);
         }
+
+        // ── USERNAME SWEEP ──
         if (usernameResults) {
             injectionHTML += `\n\n${buildUsernameCard(username0, usernameResults)}`;
-            const hits = usernameResults.filter(r=>r.found).map(r=>r.platform).join(', ');
-            osintContext += ` USERNAME ${username0}: found on ${hits||'no platforms'}.`;
+            const hits    = usernameResults.filter(r=>r.found).map(r=>r.platform).join(', ') || 'none';
+            const misses  = usernameResults.filter(r=>!r.found).map(r=>r.platform).join(', ');
+            osintSections.push(`[USERNAME_SWEEP]\nTarget handle: ${username0}\nPlatforms with presence (${usernameResults.filter(r=>r.found).length}): ${hits}\nNot found on: ${misses}`);
         }
+
+        // ── EXIF ──
         if (intent.wants_exif && !isGraphView) {
             const exifMsg = document.createElement('div');
             exifMsg.className = 'message assistant-msg';
@@ -1371,40 +1291,66 @@ Always return all fields. Use empty arrays [] if nothing found. Default booleans
             scrollToBottom();
         }
 
-        // Build IP cards + collect map data from first geolocatable IP
+        // ── IP GEOLOCATION ──
+        // Map for IP is only added here — spatial trace never overrides it and vice versa
+        let ipMapData = null;
         ipResults.forEach((d, i) => {
             if (!d) return;
             injectionHTML += `\n\n${buildIPCard(d)}`;
-            if (d._error) return;
-            if (i === 0) {
-                osintContext += ` IP: ${d.query} → ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'}. ISP: ${d.isp||'?'}. Org: ${d.org||'?'}. Coords: ${d.lat},${d.lon}.${d.proxy?' PROXY/VPN.':''}${d.hosting?' DATACENTER.':''}`;
-                if (!mapData && d.lat && d.lon) {
-                    mapData = {
-                        query: `IP ${d.query}`,
-                        primary: { name: `${d.city||'Unknown'}, ${d.country||'?'} — ${d.isp||'?'}`, lat: d.lat, lon: d.lon, type: 'ip_geolocation', address: `${d.city||''}, ${d.regionName||''}, ${d.country||''}` },
-                        alternates: []
-                    };
-                }
+            if (d._error) {
+                osintSections.push(`[IP_GEOLOCATION]\nTarget IP: ${d.query}\nResult: lookup failed — all APIs unreachable`);
+                return;
+            }
+            let ipSection = `[IP_GEOLOCATION]\nTarget IP: ${d.query}\nGeographic location: ${d.city||'unknown'}, ${d.regionName||'unknown'}, ${d.country||'unknown'}\nCoordinates: ${d.lat}, ${d.lon}\nISP: ${d.isp||'unknown'}\nOrganisation: ${d.org||'unknown'}\nASN: ${d.as||'unknown'}`;
+            if (d.proxy)   ipSection += `\nFlag: PROXY/VPN detected`;
+            if (d.hosting) ipSection += `\nFlag: DATACENTER/hosting IP`;
+            osintSections.push(ipSection);
+            // Only pin first successful IP on map, only if no spatial intent
+            if (i === 0 && !ipMapData && d.lat && d.lon && !intent.wants_spatial) {
+                ipMapData = {
+                    query: `IP Geolocation: ${d.query}`,
+                    primary: { name: `${d.city||'Unknown'}, ${d.country||'?'} — ${d.isp||'?'}`, lat: d.lat, lon: d.lon, type: 'ip_geolocation', address: `${d.city||''}, ${d.regionName||''}, ${d.country||''}` },
+                    alternates: []
+                };
             }
         });
 
-        // Spatial intent map (overrides IP map if both present)
+        // ── SPATIAL TRACE ──
+        // Completely independent from IP — only triggered by wants_spatial flag
+        let spatialMapData = null;
         if (spatialIntent) {
             if (!isGraphView && typingDiv.querySelector('.msg-content')) {
                 typingDiv.querySelector('.msg-content').textContent = 'Running spatial intercept...';
             }
             const spatialMap = await runSpatialIntercept(spatialIntent);
             if (spatialMap) {
-                mapData = spatialMap;
-                osintContext += ` LOCATION: ${spatialMap.primary.name} at ${spatialMap.primary.lat.toFixed(5)},${spatialMap.primary.lon.toFixed(5)}.`;
+                spatialMapData = spatialMap;
+                osintSections.push(`[SPATIAL_TRACE]\nSearch query: ${spatialMap.query}\nPrimary target: ${spatialMap.primary.name}\nCoordinates: ${spatialMap.primary.lat.toFixed(5)}, ${spatialMap.primary.lon.toFixed(5)}\nType: ${spatialMap.primary.type||'place'}\nAlternates found: ${spatialMap.alternates.length}`);
             }
         }
 
+        // Map comment: spatial takes priority over IP; they are never combined
+        const activeMapData = spatialMapData || ipMapData;
+        const mapComment = activeMapData ? `<!--NOXMAP:${JSON.stringify(activeMapData)}-->` : '';
+
+        // ── BUILD AI CONTEXT ──
+        // Each section is clearly labelled and separated so the model cannot conflate sources
+        const osintFeed = osintSections.length
+            ? `\n\n━━ OSINT INTELLIGENCE FEED ━━\nThe following data was retrieved by independent tools. Each section is a separate source. Do NOT conflate data between sections. Reference each finding by its section label.\n\n${osintSections.join('\n\n')}\n━━ END FEED ━━`
+            : '';
+
         try {
-            const apiMessages = [{
-                role: "system",
-                content: "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags. Reference all OSINT data provided — IP geolocation, domain/WHOIS, DNS, SSL, breach records, username sweep results, spatial coordinates — weaving findings naturally into your response." + (osintContext ? '\n\nOSINT_FEED:' + osintContext : '')
-            }];
+            const systemPrompt = `You are NOX, a cold, analytical digital detective. Tone: noir, concise, precise.
+MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags.
+When OSINT data is provided below, reference each section's findings separately and accurately.
+CRITICAL RULES:
+- IP geolocation data belongs ONLY to the [IP_GEOLOCATION] section. Never attribute it to a place search.
+- Domain/WHOIS data belongs ONLY to [DOMAIN_INTEL]. Never link it to an IP address unless explicitly stated.
+- Spatial coordinates from [SPATIAL_TRACE] come from a place search — not from an IP lookup.
+- If a section has no data, do not invent or substitute data from another section.
+- Summarise each tool's findings in its own paragraph. Keep sections distinct.${osintFeed}`;
+
+            const apiMessages = [{ role: "system", content: systemPrompt }];
             currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role: m.role, content: m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'') }));
 
             const response = await fetch(API_URL, {
@@ -1417,8 +1363,7 @@ Always return all fields. Use empty arrays [] if nothing found. Default booleans
             const data      = await response.json();
             const replyText = data.choices[0].message.content;
 
-            const mapComment = mapData ? `<!--NOXMAP:${JSON.stringify(mapData)}-->` : '';
-            const fullReply  = replyText + injectionHTML + mapComment;
+            const fullReply = replyText + injectionHTML + mapComment;
 
             currentCase.messages.push({ role: 'assistant', content: fullReply });
             saveState();
@@ -1643,18 +1588,18 @@ Always return all fields. Use empty arrays [] if nothing found. Default booleans
     document.getElementById('img-upload-input').addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        e.target.value = ''; // reset so same file can be re-selected
+        e.target.value = '';
 
         const exifMsg = document.createElement('div');
         exifMsg.className = 'message assistant-msg';
         exifMsg.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated — processing ${escHtml(file.name)}</div>`;
-        const uploader = buildExifUploader(file); // pass file directly
+        const uploader = buildExifUploader(file);
         exifMsg.querySelector('.msg-content').appendChild(uploader);
         chatContainer.appendChild(exifMsg);
         scrollToBottom();
     });
 
-    // ── SPLASH: remove from DOM after full animation (9s hold + 1.5s fade = 10.5s) ──
+    // ── SPLASH ──
     const splash = document.getElementById('splash');
     setTimeout(() => {
         splash.style.transition = 'opacity 1.5s ease';
