@@ -281,7 +281,7 @@
             background: var(--bg-primary);
             display: flex; align-items: center; justify-content: center;
             overflow: hidden;
-            animation: splash-exit 1.5s ease 9s forwards;
+            animation: splash-exit 0.6s ease 3.5s forwards;
         }
         @keyframes splash-exit {
             0%   { opacity: 1; pointer-events: auto; }
@@ -289,7 +289,7 @@
             100% { opacity: 0; pointer-events: none; }
         }
         .splash-logo-glow {
-            animation: logo-pulse 2.5s ease-in-out 2s infinite;
+            animation: logo-pulse 2s ease-in-out 1.2s infinite;
         }
         @keyframes logo-pulse {
             0%,100% { text-shadow: 0 0 40px rgba(139,0,0,0.6), 0 0 80px rgba(139,0,0,0.2); }
@@ -298,7 +298,7 @@
         .splash-scanline {
             position: absolute; left: 0; right: 0; height: 2px;
             background: linear-gradient(90deg, transparent, rgba(139,0,0,0.4), transparent);
-            animation: scanline 4s linear 1.8s infinite;
+            animation: scanline 2.5s linear 1s infinite;
         }
         @keyframes scanline {
             0%   { top: 0%; opacity: 0; }
@@ -319,9 +319,9 @@
             transform-origin: bottom;
             opacity: 0;
         }
-        .splash-bar:nth-child(1) { height: 20px; animation-delay: 0.2s; animation-duration: 1.2s; }
-        .splash-bar:nth-child(2) { height: 36px; animation-delay: 0.6s; animation-duration: 1.2s; }
-        .splash-bar:nth-child(3) { height: 26px; animation-delay: 1.0s; animation-duration: 1.2s; }
+        .splash-bar:nth-child(1) { height: 20px; animation-delay: 0.1s; animation-duration: 0.5s; }
+        .splash-bar:nth-child(2) { height: 36px; animation-delay: 0.25s; animation-duration: 0.5s; }
+        .splash-bar:nth-child(3) { height: 26px; animation-delay: 0.4s; animation-duration: 0.5s; }
         @keyframes splash-bar-rise {
             from { opacity: 0; transform: scaleY(0); }
             to   { opacity: 1; transform: scaleY(1); }
@@ -333,7 +333,7 @@
             letter-spacing: 18px;
             color: #fff;
             text-shadow: 0 0 40px rgba(139,0,0,0.6), 0 0 80px rgba(139,0,0,0.2);
-            animation: splash-logo-in 2s cubic-bezier(0.16,1,0.3,1) 1.5s both;
+            animation: splash-logo-in 1s cubic-bezier(0.16,1,0.3,1) 0.4s both;
             text-transform: uppercase;
         }
         @keyframes splash-logo-in {
@@ -348,7 +348,7 @@
             letter-spacing: 5px;
             color: var(--accent-red);
             text-transform: uppercase;
-            animation: splash-sub-in 1s ease 3.5s both;
+            animation: splash-sub-in 0.6s ease 1.3s both;
         }
         @keyframes splash-sub-in {
             from { opacity: 0; transform: translateY(6px); }
@@ -356,7 +356,7 @@
         }
         .splash-line {
             height: 1px; background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
-            animation: splash-line-grow 1.5s ease 4.5s both;
+            animation: splash-line-grow 0.8s ease 1.8s both;
             width: 0;
         }
         @keyframes splash-line-grow {
@@ -1660,8 +1660,8 @@ Always return all fields. Use empty arrays [] if nothing found. Default booleans
         splash.style.transition = 'opacity 1.5s ease';
         splash.style.opacity = '0';
         splash.style.pointerEvents = 'none';
-        setTimeout(() => splash.remove(), 1500);
-    }, 9000);
+        setTimeout(() => splash.remove(), 600);
+    }, 3500);
 
     setupCallMode();
     init();
