@@ -54,10 +54,16 @@ jobs:
           }
           EOF
 
-      - name: Initialize Capacitor
+      - name: Add Android platform
+        run: npx cap add android
+
+      - name: Create missing plugins file
         run: |
-          npx cap add android || true
-          npx cap sync android
+          mkdir -p android/app/src/main/assets
+          echo '[]' > android/app/src/main/assets/capacitor.plugins.json
+
+      - name: Sync Capacitor
+        run: npx cap sync android
 
       - name: Make gradlew executable
         run: chmod +x android/gradlew
