@@ -448,150 +448,6 @@
             animation: pulse-mic 1.5s infinite;
         }
         @keyframes pulse-mic { 0%{transform:scale(1);} 50%{transform:scale(1.05);} 100%{transform:scale(1);} }
-
-        /* ── CCTV / WEBCAM CARD ── */
-        .cctv-card {
-            margin-top: 15px;
-            border: 1px solid var(--accent-color);
-            border-radius: 3px;
-            background: rgba(0,0,0,0.4);
-            overflow: hidden;
-            font-family: var(--font-mono);
-        }
-        .cctv-card-header {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px 14px;
-            background: rgba(139,0,0,0.12);
-            border-bottom: 1px solid var(--accent-color);
-            font-size: 0.72rem; letter-spacing: 1.5px; color: var(--accent-red);
-        }
-        .cctv-card-header .rec-dot {
-            width: 8px; height: 8px; border-radius: 50%; background: var(--accent-red);
-            box-shadow: 0 0 6px var(--accent-red);
-            animation: blink-dot 1s infinite;
-            flex-shrink: 0;
-        }
-        .cctv-meta-bar {
-            display: flex; gap: 16px; padding: 8px 14px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.65rem; color: var(--text-secondary); flex-wrap: wrap;
-        }
-        .cctv-meta-bar .meta-item { display: flex; gap: 5px; align-items: center; }
-        .cctv-meta-bar .meta-label { color: var(--accent-red); }
-        .cctv-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1px;
-            background: var(--border-color);
-        }
-        .cctv-feed {
-            background: #000;
-            position: relative;
-            aspect-ratio: 4/3;
-            overflow: hidden;
-        }
-        .cctv-feed iframe {
-            width: 100%; height: 100%; border: none; display: block;
-            pointer-events: none; /* prevent iframe click-jacking */
-        }
-        .cctv-feed img.feed-img {
-            width: 100%; height: 100%; object-fit: cover; display: block;
-        }
-        .cctv-feed-overlay {
-            position: absolute; inset: 0;
-            display: flex; flex-direction: column; justify-content: space-between;
-            pointer-events: none;
-        }
-        .cctv-feed-top {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            padding: 6px 8px;
-        }
-        .cctv-feed-label {
-            font-family: var(--font-mono); font-size: 0.6rem; color: rgba(255,255,255,0.85);
-            background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 1px;
-            letter-spacing: 0.8px; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-        }
-        .cctv-feed-rec {
-            font-family: var(--font-mono); font-size: 0.55rem; color: #ff4444;
-            background: rgba(0,0,0,0.7); padding: 2px 5px; border-radius: 1px;
-            display: flex; align-items: center; gap: 4px;
-        }
-        .cctv-feed-rec .rdot {
-            width: 5px; height: 5px; border-radius: 50%; background: #ff4444;
-            animation: blink-dot 1s infinite;
-        }
-        .cctv-feed-bottom {
-            padding: 6px 8px;
-            display: flex; justify-content: space-between; align-items: flex-end;
-        }
-        .cctv-coord-tag {
-            font-family: var(--font-mono); font-size: 0.58rem; color: rgba(127,186,138,0.9);
-            background: rgba(0,0,0,0.65); padding: 2px 5px; border-radius: 1px;
-        }
-        .cctv-cam-id {
-            font-family: var(--font-mono); font-size: 0.58rem; color: rgba(255,255,255,0.5);
-            background: rgba(0,0,0,0.65); padding: 2px 5px; border-radius: 1px;
-        }
-        /* fallback / no-signal */
-        .cctv-nosignal {
-            width: 100%; height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(255,255,255,0.03) 0px,
-                rgba(255,255,255,0.03) 1px,
-                transparent 1px,
-                transparent 3px
-            ), #080808;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 8px;
-        }
-        .cctv-nosignal-text {
-            font-family: var(--font-mono); font-size: 0.65rem; color: #333;
-            letter-spacing: 1.5px; animation: flicker 4s infinite;
-        }
-        @keyframes flicker {
-            0%,100%{opacity:0.4;} 92%{opacity:0.4;} 93%{opacity:0.1;} 94%{opacity:0.4;} 96%{opacity:0.1;} 97%{opacity:0.4;}
-        }
-        .cctv-footer {
-            padding: 8px 14px; font-size: 0.65rem; color: var(--text-secondary);
-            border-top: 1px solid var(--border-color); line-height: 1.8;
-            display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px;
-        }
-        .cctv-footer a {
-            color: #7fba8a; text-decoration: none;
-        }
-        .cctv-footer a:hover { text-decoration: underline; }
-
-        /* single IP cam probe card */
-        .cam-probe-card {
-            margin-top: 15px; border: 1px solid var(--accent-color); border-radius: 3px;
-            background: rgba(0,0,0,0.4); overflow: hidden; font-family: var(--font-mono);
-        }
-        .cam-probe-header {
-            display: flex; align-items: center; gap: 10px; padding: 10px 14px;
-            background: rgba(139,0,0,0.12); border-bottom: 1px solid var(--accent-color);
-            font-size: 0.72rem; letter-spacing: 1.5px; color: var(--accent-red);
-        }
-        .cam-probe-feeds {
-            display: flex; flex-wrap: wrap; gap: 1px; background: var(--border-color);
-        }
-        .cam-probe-feed {
-            background: #000; position: relative;
-            width: 100%; min-height: 180px;
-        }
-        .cam-probe-feed img {
-            width: 100%; max-height: 300px; object-fit: contain; display: block;
-        }
-        .cam-probe-meta { padding: 10px 14px; display: flex; flex-direction: column; gap: 4px; }
-        .cam-probe-row { display: flex; gap: 12px; font-size: 0.7rem; }
-        .cam-probe-k { color: var(--accent-red); min-width: 80px; flex-shrink: 0; }
-        .cam-probe-v { color: var(--text-primary); word-break: break-all; }
-        .cam-port-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
-        .cam-port-chip {
-            font-size: 0.62rem; padding: 2px 7px; border-radius: 2px;
-            background: rgba(139,0,0,0.2); border: 1px solid #4a0000; color: #ff8888;
-        }
-        .cam-port-chip.open { background: rgba(127,186,138,0.15); border-color: #7fba8a; color: #7fba8a; }
     </style>
 </head>
 <body>
@@ -763,29 +619,14 @@
         const mapMatch = content.match(/<!--NOXMAP:([\s\S]*?)-->/);
         let prose = content.replace(/<!--NOXMAP:[\s\S]*?-->/g, '').trim();
 
-        // Strip HTML injection blocks from prose display (they're appended separately below)
-        // We detect them by the osint-card / cctv-card / ip-card markers
-        const htmlMatch = prose.match(/([\s\S]*?)(<div class="(?:osint-card|cctv-card|ip-card|cam-probe-card|gravatar-info)[\s\S]*)/);
-        let proseText = htmlMatch ? htmlMatch[1].trim() : prose;
-        let injectHTML = htmlMatch ? htmlMatch[2] : '';
-
-        msgDiv.innerHTML = `<div class="msg-header">${label}</div><div class="msg-content">${escHtml(proseText)}</div>`;
+        msgDiv.innerHTML = `<div class="msg-header">${label}</div><div class="msg-content">${prose}</div>`;
         chatContainer.appendChild(msgDiv);
-
-        const contentEl = msgDiv.querySelector('.msg-content');
-
-        // Inject rich HTML cards
-        if (injectHTML) {
-            const holder = document.createElement('div');
-            holder.innerHTML = injectHTML;
-            contentEl.appendChild(holder);
-        }
 
         if (mapMatch) {
             try {
                 const mapData = JSON.parse(mapMatch[1]);
                 const mapBlock = buildMapBlock(mapData);
-                contentEl.appendChild(mapBlock);
+                msgDiv.querySelector('.msg-content').appendChild(mapBlock);
             } catch(e) { console.error('NOX_MAP_PARSE_ERR', e); }
         }
 
@@ -852,11 +693,13 @@
         return block;
     };
 
-    const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const escHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     const scrollToBottom = () => chatContainer.scrollTop = chatContainer.scrollHeight;
 
     // ─────────────────────────────────────────────
     //  AI-DRIVEN SPATIAL INTENT DETECTION
+    //  Returns null or { query, city, places: [{label, osm_tags}] }
+    //  Supports multiple place types mentioned in one message
     // ─────────────────────────────────────────────
     const detectSpatialIntent = async (userText) => {
         const systemPrompt = `You are a spatial intent classifier for a detective investigation app.
@@ -946,6 +789,8 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
             address: [el.tags?.['addr:street'], el.tags?.['addr:housenumber'], el.tags?.['addr:city']].filter(Boolean).join(' ')
         })).filter(el => el.lat && el.lon);
 
+    // Takes the intent object from detectSpatialIntent and fetches real locations
+    // Runs one Overpass query per place type, merges all results
     const runSpatialIntercept = async (intent) => {
         const { query, city, places } = intent;
         let allElements = [];
@@ -958,6 +803,7 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                 if (geo) bbox = geo.bbox;
             }
 
+            // No tags at all — just pin the city
             if (!places.length) {
                 if (!geo) return null;
                 return {
@@ -967,6 +813,7 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                 };
             }
 
+            // Run one Overpass query per place type in parallel
             const queries = places.map(place => {
                 const tf = Object.entries(place.osm_tags || {}).map(([k,v]) => `["${k}"="${v}"]`).join('');
                 if (!tf) return Promise.resolve([]);
@@ -983,6 +830,7 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
             });
 
             const results = await Promise.all(queries);
+            // Flatten: first result of each type becomes a pin; rest are alternates
             results.forEach(group => { allElements.push(...group.slice(0, 3)); });
 
         } catch(e) {
@@ -995,7 +843,7 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
         return {
             query,
             primary:    allElements[0],
-            alternates: allElements.slice(1, 6)
+            alternates: allElements.slice(1, 6)   // show up to 5 alternates across all types
         };
     };
 
@@ -1013,13 +861,15 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
     };
 
     // ─────────────────────────────────────────────
-    //  IP LOOKUP
+    //  IP LOOKUP  (ip-api.com — free, no key needed)
     // ─────────────────────────────────────────────
     const IP_REGEX = /\b((?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))\b/g;
     const PRIVATE_IP = /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|127\.|0\.0\.0\.0|::1)/;
 
     const lookupIP = async (ip) => {
+        // Try multiple free CORS-friendly APIs in order
         const attempts = [
+            // 1. ip-api.com HTTPS (CORS allowed on https)
             async () => {
                 const r = await fetch(`https://ip-api.com/json/${ip}?fields=66846719`);
                 const d = await r.json();
@@ -1032,6 +882,7 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                     proxy: d.proxy, hosting: d.hosting, vpn: d.proxy, tor: false
                 };
             },
+            // 2. ipapi.co
             async () => {
                 const r = await fetch(`https://ipapi.co/${ip}/json/`);
                 const d = await r.json();
@@ -1045,6 +896,7 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                     proxy: false, hosting: false, vpn: false, tor: false
                 };
             },
+            // 3. freeipapi.com
             async () => {
                 const r = await fetch(`https://freeipapi.com/api/json/${ip}`);
                 const d = await r.json();
@@ -1067,11 +919,11 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                 console.warn('NOX_IP_ATTEMPT_FAILED', e.message);
             }
         }
-        return { query: ip, _error: true };
+        return { query: ip, _error: true }; // return stub so card can show failure
     };
 
     const buildIPCard = (d) => {
-        if (d._error) return `<div class="ip-card"><div class="ip-card-header"><span class="ip-address">${d.query}</span><span class="ip-tag proxy">LOOKUP_FAILED</span></div><div class="ip-grid"><div class="ip-row"><span class="ip-k">STATUS</span><span class="ip-v">All geolocation APIs unreachable.</span></div></div></div>`;
+        if (d._error) return `<div class="ip-card"><div class="ip-card-header"><span class="ip-address">${d.query}</span><span class="ip-tag proxy">LOOKUP_FAILED</span></div><div class="ip-grid"><div class="ip-row"><span class="ip-k">STATUS</span><span class="ip-v">All geolocation APIs unreachable. Check console for details.</span></div></div></div>`;
         const flag = `https://flagcdn.com/24x18/${(d.countryCode||'xx').toLowerCase()}.png`;
         const tags = [
             d.proxy   ? '<span class="ip-tag proxy">PROXY</span>'        : '',
@@ -1098,12 +950,18 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
     };
 
     // ─────────────────────────────────────────────
-    //  WHOIS / DNS / SSL
+    //  WHOIS LOOKUP  (whois.freeaitools.online — CORS ok)
     // ─────────────────────────────────────────────
+
+
     const lookupWHOIS = async (domain) => {
         try {
+            const r = await fetch(`https://api.domainsdb.info/v1/domains/search?domain=${encodeURIComponent(domain)}&zone=${domain.split('.').pop()}`);
+            const d = await r.json();
+            // Also fetch rdap which is fully public
             const rdap = await fetch(`https://rdap.org/domain/${domain}`);
             const rd = rdap.ok ? await rdap.json() : null;
+
             let result = { domain, registered: false };
             if (rd) {
                 result.registered = true;
@@ -1149,6 +1007,7 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
     const buildDomainCard = (whois, dns, ssl, domain) => {
         let html = `<div class="osint-card">
             <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">DOMAIN_INTEL :: ${escHtml(domain.toUpperCase())}</span></div>`;
+
         if (whois?.registered) {
             html += `<div class="osint-grid">
                 <div class="osint-row"><span class="osint-k">REGISTRAR</span><span class="osint-v">${escHtml(whois.registrar)}</span></div>
@@ -1160,6 +1019,7 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
         } else {
             html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">Registration data unavailable</span></div></div>`;
         }
+
         if (ssl) {
             html += `<div class="osint-grid">
                 <div class="osint-section-title" style="padding:0 14px;">SSL CERTIFICATE</div>
@@ -1168,6 +1028,7 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                 <div class="osint-row"><span class="osint-k">SANs</span><span class="osint-v">${ssl.dnsNames.map(escHtml).join(', ')}</span></div>
             </div>`;
         }
+
         if (dns?.length) {
             html += `<div class="osint-grid"><div class="osint-section-title" style="padding:0 14px;">DNS RECORDS</div>`;
             dns.forEach(rec => {
@@ -1176,19 +1037,23 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
             });
             html += `</div>`;
         }
+
         html += `</div>`;
         return html;
     };
 
     // ─────────────────────────────────────────────
-    //  BREACH / USERNAME / EXIF  (unchanged)
+    //  EMAIL BREACH CHECK  (HaveIBeenPwned — no key for domain search)
+    //  Falls back to XposedOrNot API for individual email
     // ─────────────────────────────────────────────
     const checkBreaches = async (email) => {
         try {
+            // XposedOrNot — completely free, no key, CORS ok
             const r = await fetch(`https://api.xposedornot.com/v1/check-email/${encodeURIComponent(email)}`);
             if (r.status === 404) return { email, breaches: [], clean: true };
             const d = await r.json();
             if (!d.breaches) return null;
+            // Flatten breach list
             const breaches = d.breaches.flat ? d.breaches.flat() : d.breaches;
             return { email, breaches: Array.isArray(breaches) ? breaches : [], clean: false };
         } catch(e) { return null; }
@@ -1213,34 +1078,38 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
         return html;
     };
 
+    // ─────────────────────────────────────────────
+    //  USERNAME SEARCH  (checks profile URLs directly)
+    // ─────────────────────────────────────────────
     const USERNAME_PLATFORMS = [
-        { name: 'GitHub',      url: u => `https://github.com/${u}` },
-        { name: 'Reddit',      url: u => `https://www.reddit.com/user/${u}/about.json` },
-        { name: 'HackerNews',  url: u => `https://hacker-news.firebaseio.com/v0/user/${u}.json` },
-        { name: 'Instagram',   url: u => `https://www.instagram.com/${u}/` },
-        { name: 'TikTok',      url: u => `https://www.tiktok.com/@${u}` },
-        { name: 'Twitter/X',   url: u => `https://twitter.com/${u}` },
-        { name: 'LinkedIn',    url: u => `https://www.linkedin.com/in/${u}` },
-        { name: 'Pinterest',   url: u => `https://www.pinterest.com/${u}/` },
-        { name: 'Twitch',      url: u => `https://www.twitch.tv/${u}` },
-        { name: 'YouTube',     url: u => `https://www.youtube.com/@${u}` },
-        { name: 'SoundCloud',  url: u => `https://soundcloud.com/${u}` },
-        { name: 'Keybase',     url: u => `https://keybase.io/${u}` },
-        { name: 'Gitlab',      url: u => `https://gitlab.com/${u}` },
-        { name: 'Medium',      url: u => `https://medium.com/@${u}` },
-        { name: 'Dev.to',      url: u => `https://dev.to/${u}` },
-        { name: 'Steam',       url: u => `https://steamcommunity.com/id/${u}` },
-        { name: 'Spotify',     url: u => `https://open.spotify.com/user/${u}` },
-        { name: 'Patreon',     url: u => `https://www.patreon.com/${u}` },
-        { name: 'Fiverr',      url: u => `https://www.fiverr.com/${u}` },
-        { name: 'Gravatar',    url: u => `https://en.gravatar.com/${u}.json` },
+        { name: 'GitHub',      url: u => `https://github.com/${u}`,                    check: 'html' },
+        { name: 'Reddit',      url: u => `https://www.reddit.com/user/${u}/about.json`, check: 'json' },
+        { name: 'HackerNews',  url: u => `https://hacker-news.firebaseio.com/v0/user/${u}.json`, check: 'json' },
+        { name: 'Instagram',   url: u => `https://www.instagram.com/${u}/`,             check: 'html' },
+        { name: 'TikTok',      url: u => `https://www.tiktok.com/@${u}`,                check: 'html' },
+        { name: 'Twitter/X',   url: u => `https://twitter.com/${u}`,                    check: 'html' },
+        { name: 'LinkedIn',    url: u => `https://www.linkedin.com/in/${u}`,            check: 'html' },
+        { name: 'Pinterest',   url: u => `https://www.pinterest.com/${u}/`,             check: 'html' },
+        { name: 'Twitch',      url: u => `https://www.twitch.tv/${u}`,                  check: 'html' },
+        { name: 'YouTube',     url: u => `https://www.youtube.com/@${u}`,               check: 'html' },
+        { name: 'SoundCloud',  url: u => `https://soundcloud.com/${u}`,                 check: 'html' },
+        { name: 'Keybase',     url: u => `https://keybase.io/${u}`,                     check: 'html' },
+        { name: 'Gitlab',      url: u => `https://gitlab.com/${u}`,                     check: 'html' },
+        { name: 'Medium',      url: u => `https://medium.com/@${u}`,                    check: 'html' },
+        { name: 'Dev.to',      url: u => `https://dev.to/${u}`,                         check: 'html' },
+        { name: 'Steam',       url: u => `https://steamcommunity.com/id/${u}`,          check: 'html' },
+        { name: 'Spotify',     url: u => `https://open.spotify.com/user/${u}`,          check: 'html' },
+        { name: 'Patreon',     url: u => `https://www.patreon.com/${u}`,                check: 'html' },
+        { name: 'Fiverr',      url: u => `https://www.fiverr.com/${u}`,                 check: 'html' },
+        { name: 'Gravatar',    url: u => `https://en.gravatar.com/${u}.json`,           check: 'json' },
     ];
 
     const searchUsername = async (username) => {
         const results = await Promise.all(USERNAME_PLATFORMS.map(async p => {
             const url = p.url(username);
             try {
-                await fetch(url, { method: 'HEAD', mode: 'no-cors' });
+                const r = await fetch(url, { method: 'HEAD', mode: 'no-cors' });
+                // no-cors means opaque response — status 0 means it got somewhere (not blocked entirely)
                 return { platform: p.name, url, found: true };
             } catch(e) {
                 return { platform: p.name, url, found: false };
@@ -1268,56 +1137,78 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
         return html;
     };
 
+    // ─────────────────────────────────────────────
+    //  EXIF READER  (injected as a UI element into the chat)
+    // ─────────────────────────────────────────────
     const buildExifUploader = (preloadedFile = null) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'osint-card';
         wrapper.style.marginTop = '15px';
+
         const header = document.createElement('div');
         header.className = 'osint-card-header';
         header.innerHTML = `<div class="blink"></div><span class="osint-card-title">EXIF_EXTRACTOR :: DROP IMAGE TO ANALYSE</span>`;
         wrapper.appendChild(header);
+
         const dropArea = document.createElement('div');
         dropArea.className = 'exif-upload-area';
         dropArea.innerHTML = `<i class="fas fa-camera" style="font-size:1.5rem;margin-bottom:8px;display:block"></i>Click or drag an image here`;
         const fileInput = document.createElement('input');
-        fileInput.type = 'file'; fileInput.accept = 'image/*';
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
         dropArea.appendChild(fileInput);
+
         const resultsDiv = document.createElement('div');
-        resultsDiv.className = 'osint-grid'; resultsDiv.style.display = 'none';
+        resultsDiv.className = 'osint-grid';
+        resultsDiv.style.display = 'none';
+
         const processFile = async (file) => {
             dropArea.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Extracting metadata...`;
             try {
                 const exif = await exifr.parse(file, true);
-                resultsDiv.style.display = 'flex'; resultsDiv.innerHTML = '';
+                resultsDiv.style.display = 'flex';
+                resultsDiv.innerHTML = '';
+
                 if (!exif || !Object.keys(exif).length) {
-                    resultsDiv.innerHTML = `<div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">No EXIF metadata found.</span></div>`;
+                    resultsDiv.innerHTML = `<div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">No EXIF metadata found in this file.</span></div>`;
                     dropArea.innerHTML = `<i class="fas fa-check"></i> ${escHtml(file.name)}`;
                     return;
                 }
+
                 const fields = [
-                    ['MAKE', exif.Make], ['MODEL', exif.Model], ['SOFTWARE', exif.Software],
-                    ['DATE_TAKEN', exif.DateTimeOriginal || exif.DateTime],
-                    ['GPS_LAT', exif.latitude], ['GPS_LON', exif.longitude],
-                    ['GPS_ALT', exif.GPSAltitude ? `${exif.GPSAltitude.toFixed(1)}m` : null],
-                    ['WIDTH', exif.ImageWidth || exif.ExifImageWidth],
-                    ['HEIGHT', exif.ImageHeight || exif.ExifImageHeight],
-                    ['F_STOP', exif.FNumber ? `f/${exif.FNumber}` : null],
-                    ['EXPOSURE', exif.ExposureTime ? `1/${Math.round(1/exif.ExposureTime)}s` : null],
-                    ['ISO', exif.ISO], ['FOCAL_LEN', exif.FocalLength ? `${exif.FocalLength}mm` : null],
+                    ['MAKE',        exif.Make],
+                    ['MODEL',       exif.Model],
+                    ['SOFTWARE',    exif.Software],
+                    ['DATE_TAKEN',  exif.DateTimeOriginal || exif.DateTime],
+                    ['GPS_LAT',     exif.latitude],
+                    ['GPS_LON',     exif.longitude],
+                    ['GPS_ALT',     exif.GPSAltitude ? `${exif.GPSAltitude.toFixed(1)}m` : null],
+                    ['WIDTH',       exif.ImageWidth || exif.ExifImageWidth],
+                    ['HEIGHT',      exif.ImageHeight || exif.ExifImageHeight],
+                    ['F_STOP',      exif.FNumber ? `f/${exif.FNumber}` : null],
+                    ['EXPOSURE',    exif.ExposureTime ? `1/${Math.round(1/exif.ExposureTime)}s` : null],
+                    ['ISO',         exif.ISO],
+                    ['FOCAL_LEN',   exif.FocalLength ? `${exif.FocalLength}mm` : null],
                 ];
                 fields.filter(([,v]) => v != null).forEach(([k,v]) => {
                     resultsDiv.innerHTML += `<div class="osint-row"><span class="osint-k">${k}</span><span class="osint-v">${escHtml(String(v))}</span></div>`;
                 });
+
+                // If GPS found — add map pin
                 if (exif.latitude && exif.longitude) {
                     const mapData = {
                         query: `Photo location: ${file.name}`,
                         primary: { name: `Photo GPS: ${exif.latitude.toFixed(5)}, ${exif.longitude.toFixed(5)}`, lat: exif.latitude, lon: exif.longitude, type: 'exif_gps', address: '' },
                         alternates: []
                     };
-                    wrapper.appendChild(buildMapBlock(mapData));
+                    const mapBlock = buildMapBlock(mapData);
+                    wrapper.appendChild(mapBlock);
+
+                    // Also feed to NOX as context
                     userInput.value = `EXIF GPS data extracted from ${file.name}: coordinates ${exif.latitude.toFixed(6)}, ${exif.longitude.toFixed(6)}. Camera: ${exif.Make||'?'} ${exif.Model||'?'}. Date: ${exif.DateTimeOriginal||'unknown'}. Analyse this location.`;
                     sendMessage();
                 }
+
                 dropArea.innerHTML = `<i class="fas fa-check" style="color:#7fba8a"></i> ${escHtml(file.name)}`;
             } catch(e) {
                 resultsDiv.style.display = 'flex';
@@ -1325,342 +1216,52 @@ zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amen
                 dropArea.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:#ff6b6b"></i> Failed`;
             }
         };
+
         dropArea.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
         dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.style.borderColor='var(--accent-red)'; });
         dropArea.addEventListener('dragleave', () => { dropArea.style.borderColor=''; });
         dropArea.addEventListener('drop', e => { e.preventDefault(); dropArea.style.borderColor=''; if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]); });
-        wrapper.appendChild(dropArea); wrapper.appendChild(resultsDiv);
+
+        wrapper.appendChild(dropArea);
+        wrapper.appendChild(resultsDiv);
+
+        // If a file was passed directly (from upload button), process immediately
         if (preloadedFile) processFile(preloadedFile);
+
         return wrapper;
     };
 
-    // ═══════════════════════════════════════════════
-    //  CCTV / WEBCAM MODULE
-    // ═══════════════════════════════════════════════
-
-    // Country-code map (ISO 3166-1 alpha-2)
-    const COUNTRY_CODE_MAP = {
-        'united states': 'US', 'usa': 'US', 'us': 'US', 'america': 'US',
-        'united kingdom': 'GB', 'uk': 'GB', 'britain': 'GB', 'england': 'GB',
-        'germany': 'DE', 'france': 'FR', 'italy': 'IT', 'spain': 'ES',
-        'japan': 'JP', 'china': 'CN', 'russia': 'RU', 'canada': 'CA',
-        'australia': 'AU', 'brazil': 'BR', 'india': 'IN', 'mexico': 'MX',
-        'netherlands': 'NL', 'poland': 'PL', 'ukraine': 'UA', 'turkey': 'TR',
-        'sweden': 'SE', 'norway': 'NO', 'denmark': 'DK', 'finland': 'FI',
-        'switzerland': 'CH', 'austria': 'AT', 'belgium': 'BE', 'portugal': 'PT',
-        'czech republic': 'CZ', 'czechia': 'CZ', 'hungary': 'HU', 'romania': 'RO',
-        'south korea': 'KR', 'korea': 'KR', 'taiwan': 'TW', 'hong kong': 'HK',
-        'singapore': 'SG', 'thailand': 'TH', 'indonesia': 'ID', 'malaysia': 'MY',
-        'argentina': 'AR', 'chile': 'CL', 'colombia': 'CO', 'peru': 'PE',
-        'south africa': 'ZA', 'nigeria': 'NG', 'egypt': 'EG', 'morocco': 'MA',
-        'iran': 'IR', 'iraq': 'IQ', 'israel': 'IL', 'saudi arabia': 'SA',
-        'pakistan': 'PK', 'bangladesh': 'BD', 'vietnam': 'VN', 'philippines': 'PH',
-        'new zealand': 'NZ', 'greece': 'GR', 'serbia': 'RS', 'croatia': 'HR',
-        'slovakia': 'SK', 'bulgaria': 'BG', 'latvia': 'LV', 'lithuania': 'LT',
-        'estonia': 'EE', 'slovenia': 'SI', 'luxembourg': 'LU', 'iceland': 'IS',
-        'ireland': 'IE', 'scotland': 'GB', 'wales': 'GB',
-    };
-
-    // Known public webcam snapshot endpoints by type
-    // We use insecam.org-style pages (public directory, no auth required)
-    // plus a few other open MJPEG directories
-    const INSECAM_BASE = 'https://www.insecam.org';
-
-    // Build a list of "camera feed" objects from Insecam country page
-    // Returns array of { ip, port, path, lat, lon, country, city, manufacturer }
-    const fetchInsecamCountry = async (countryCode, maxCams = 6) => {
-        // We use a CORS proxy approach — fetch the Insecam country page via allorigins
-        const url = `${INSECAM_BASE}/en/bycountry/${countryCode}/`;
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-        try {
-            const r = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
-            const d = await r.json();
-            if (!d.contents) return [];
-            return parseInsecamPage(d.contents, maxCams);
-        } catch(e) {
-            console.warn('NOX_CCTV_FETCH_ERR', e);
-            return [];
-        }
-    };
-
-    const fetchInsecamRandom = async (maxCams = 6) => {
-        const url = `${INSECAM_BASE}/en/home/`;
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-        try {
-            const r = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
-            const d = await r.json();
-            if (!d.contents) return [];
-            return parseInsecamPage(d.contents, maxCams);
-        } catch(e) {
-            console.warn('NOX_CCTV_RAND_ERR', e);
-            return [];
-        }
-    };
-
-    // Parse Insecam HTML to extract camera thumbnail URLs + metadata
-    const parseInsecamPage = (html, maxCams) => {
-        const cams = [];
-        // Insecam renders camera cards with img src pointing to snapshot URLs
-        // Pattern: <img src="http://IP:PORT/..." or data-src patterns
-        // We extract the thumbnail src and cam metadata
-
-        // Match camera block: each cam has a div with thumbnail img + info
-        // Insecam structure: <div class="camera-image"> ... <img src="http://IP..." ...>
-        const imgRegex = /src="(http:\/\/\d+\.\d+\.\d+\.\d+[^"]*)"[^>]*>/gi;
-        const altImgRegex = /data-original="(http:\/\/\d+\.\d+\.\d+\.\d+[^"]*)"[^>]*/gi;
-
-        // Also try to grab lat/lon from script blocks or data attributes
-        const latLonRegex = /(\d+\.\d+),\s*(\d+\.\d+)/g;
-
-        // Extract IP:PORT snapshot URLs
-        let m;
-        const snapUrls = new Set();
-
-        while ((m = imgRegex.exec(html)) !== null) {
-            const src = m[1];
-            if (src.match(/\b(?:\d{1,3}\.){3}\d{1,3}\b/)) snapUrls.add(src);
-            if (snapUrls.size >= maxCams * 2) break;
-        }
-
-        while ((m = altImgRegex.exec(html)) !== null) {
-            const src = m[1];
-            if (src.match(/\b(?:\d{1,3}\.){3}\d{1,3}\b/)) snapUrls.add(src);
-            if (snapUrls.size >= maxCams * 2) break;
-        }
-
-        // Also check for thumbnail patterns used by insecam
-        const thumbRegex = /thumbnail_\d+\.jpg[^"]*"[^>]*src="([^"]+)"/gi;
-        while ((m = thumbRegex.exec(html)) !== null) {
-            snapUrls.add(m[1]);
-            if (snapUrls.size >= maxCams * 2) break;
-        }
-
-        // Extract insecam camera page links to get individual cam data
-        // Pattern: href="/en/view/XXXXXX/"
-        const camIdRegex = /href="\/en\/view\/(\d+)\/"/gi;
-        const camIds = [];
-        while ((m = camIdRegex.exec(html)) !== null) {
-            camIds.push(m[1]);
-            if (camIds.length >= maxCams) break;
-        }
-
-        // Parse country/city meta if present
-        const countryMatch = html.match(/class="flag[^"]*"[^>]*title="([^"]+)"/i);
-        const countryName = countryMatch ? countryMatch[1] : 'UNKNOWN';
-
-        // Build cam objects from snap URLs
-        Array.from(snapUrls).slice(0, maxCams).forEach(snapUrl => {
-            const ipMatch = snapUrl.match(/http:\/\/(\d+\.\d+\.\d+\.\d+)(?::(\d+))?/);
-            if (!ipMatch) return;
-            const ip   = ipMatch[1];
-            const port = ipMatch[2] || '80';
-            cams.push({
-                ip, port,
-                snapUrl,
-                streamUrl: null,
-                country: countryName,
-                city: '—',
-                lat: null, lon: null,
-                manufacturer: 'Unknown',
-                camId: null
-            });
-        });
-
-        // If we got cam IDs but few snap URLs, fill with insecam thumbnail pattern
-        camIds.slice(0, maxCams).forEach(id => {
-            // Only add if not already covered
-            if (cams.length >= maxCams) return;
-            // Insecam thumbnail endpoint (public)
-            const snapUrl = `${INSECAM_BASE}/thumbnails/screenshot_${id}.jpg`;
-            cams.push({
-                ip: `cam-${id}`,
-                port: '—',
-                snapUrl,
-                streamUrl: null,
-                country: countryName,
-                city: '—',
-                lat: null, lon: null,
-                manufacturer: 'Unknown',
-                camId: id
-            });
-        });
-
-        return cams.slice(0, maxCams);
-    };
-
-    // Probe a single IP for common camera snapshot endpoints
-    const probeCameraIP = async (ip) => {
-        const commonPorts  = [80, 8080, 8081, 8554, 554, 1935, 9000, 81, 82, 443];
-        const commonPaths  = [
-            '/snapshot.jpg', '/cgi-bin/snapshot.cgi', '/jpg/image.jpg',
-            '/Streaming/channels/1/picture', '/axis-cgi/jpg/image.cgi',
-            '/onvif/snapshot', '/api/snapshot', '/webcam.jpg',
-            '/image.jpg', '/cgi-bin/viewer/video.jpg', '/mjpg/video.mjpg',
-            '/video.mjpg', '/videostream.cgi', '/cam/realmonitor?channel=1&subtype=0'
-        ];
-
-        const proxyBase = 'https://api.allorigins.win/get?url=';
-
-        // Try to find a live snapshot
-        for (const port of commonPorts.slice(0, 4)) {
-            for (const path of commonPaths.slice(0, 6)) {
-                const targetUrl = `http://${ip}:${port}${path}`;
-                const proxyUrl  = proxyBase + encodeURIComponent(targetUrl);
-                try {
-                    const r = await fetch(proxyUrl, { signal: AbortSignal.timeout(4000) });
-                    const ct = r.headers.get('content-type') || '';
-                    if (r.ok && (ct.includes('image') || ct.includes('multipart'))) {
-                        return { ip, port, path, snapUrl: targetUrl, alive: true };
-                    }
-                } catch(e) {}
-            }
-        }
-        return { ip, port: null, path: null, snapUrl: null, alive: false };
-    };
-
-    // Build the CCTV card DOM element
-    const buildCCTVCard = (cams, countryLabel) => {
-        const total = cams.length;
-        const ts = new Date().toISOString().replace('T',' ').slice(0,19) + ' UTC';
-
-        let html = `<div class="cctv-card">
-            <div class="cctv-card-header">
-                <div class="rec-dot"></div>
-                CCTV_INTERCEPT :: ${escHtml(countryLabel.toUpperCase())} — ${total} FEED${total!==1?'S':''} ACQUIRED
-            </div>
-            <div class="cctv-meta-bar">
-                <div class="meta-item"><span class="meta-label">TIMESTAMP:</span> ${ts}</div>
-                <div class="meta-item"><span class="meta-label">SOURCE:</span> INSECAM.ORG / PUBLIC_REGISTRY</div>
-                <div class="meta-item"><span class="meta-label">AUTH:</span> NONE REQUIRED</div>
-            </div>
-            <div class="cctv-grid">`;
-
-        if (!cams.length) {
-            html += `<div style="padding:20px;font-family:var(--font-mono);font-size:0.75rem;color:var(--text-secondary);grid-column:1/-1;">
-                NO FEEDS INTERCEPTED — TARGET OFFLINE OR REGION RESTRICTED
-            </div>`;
-        } else {
-            cams.forEach((cam, i) => {
-                const label = cam.city !== '—' ? `${cam.city}, ${cam.country}` : cam.country;
-                const camIdLabel = cam.camId ? `CAM-${cam.camId}` : `${cam.ip}:${cam.port}`;
-                const insecamLink = cam.camId ? `${INSECAM_BASE}/en/view/${cam.camId}/` : `http://${cam.ip}:${cam.port}/`;
-
-                html += `<div class="cctv-feed">`;
-
-                if (cam.snapUrl) {
-                    // Use allorigins proxy to load the image cross-origin
-                    const proxiedSrc = `https://api.allorigins.win/raw?url=${encodeURIComponent(cam.snapUrl)}`;
-                    html += `<img class="feed-img" 
-                        src="${proxiedSrc}" 
-                        loading="lazy"
-                        onerror="this.parentNode.innerHTML='<div class=\\'cctv-nosignal\\'><i class=\\'fas fa-video-slash\\' style=\\'font-size:1.2rem;color:#333\\'></i><div class=\\'cctv-nosignal-text\\'>NO SIGNAL</div></div>'"
-                    >`;
-                } else {
-                    html += `<div class="cctv-nosignal">
-                        <i class="fas fa-video-slash" style="font-size:1.2rem;color:#333"></i>
-                        <div class="cctv-nosignal-text">NO SIGNAL</div>
-                    </div>`;
-                }
-
-                html += `<div class="cctv-feed-overlay">
-                    <div class="cctv-feed-top">
-                        <div class="cctv-feed-label">${escHtml(label)}</div>
-                        <div class="cctv-feed-rec"><div class="rdot"></div>LIVE</div>
-                    </div>
-                    <div class="cctv-feed-bottom">
-                        ${cam.lat ? `<div class="cctv-coord-tag">${cam.lat.toFixed(4)}, ${cam.lon.toFixed(4)}</div>` : '<div></div>'}
-                        <div class="cctv-cam-id">${escHtml(camIdLabel)}</div>
-                    </div>
-                </div>
-                </div>`;
-            });
-        }
-
-        html += `</div>
-            <div class="cctv-footer">
-                <span>Data sourced from public camera registry. All feeds publicly accessible.</span>
-                <a href="${INSECAM_BASE}/en/bycountry/${escHtml(countryLabel)}/" target="_blank" rel="noopener">
-                    VIEW MORE ON INSECAM <i class="fas fa-external-link-alt" style="font-size:0.6rem"></i>
-                </a>
-            </div>
-        </div>`;
-
-        return html;
-    };
-
-    // Build a single-IP camera probe card
-    const buildCamProbeCard = (ip, probeResult, geoData) => {
-        const ts = new Date().toISOString().replace('T',' ').slice(0,19) + ' UTC';
-
-        let html = `<div class="cam-probe-card">
-            <div class="cam-probe-header">
-                <div class="rec-dot" style="width:8px;height:8px;border-radius:50%;background:var(--accent-red);animation:blink-dot 1s infinite;flex-shrink:0;"></div>
-                CAMERA_PROBE :: ${escHtml(ip)}
-            </div>`;
-
-        if (probeResult.alive && probeResult.snapUrl) {
-            const proxiedSrc = `https://api.allorigins.win/raw?url=${encodeURIComponent(probeResult.snapUrl)}`;
-            html += `<div class="cam-probe-feeds">
-                <div class="cam-probe-feed">
-                    <img src="${proxiedSrc}" 
-                         onerror="this.style.display='none';this.parentNode.innerHTML='<div class=\\'cctv-nosignal\\'><i class=\\'fas fa-video-slash\\' style=\\'font-size:1.5rem;color:#333\\'></i><div class=\\'cctv-nosignal-text\\'>SNAPSHOT UNAVAILABLE</div></div>'"
-                    >
-                </div>
-            </div>`;
-        } else {
-            html += `<div class="cam-probe-feeds"><div class="cam-probe-feed"><div class="cctv-nosignal" style="min-height:160px;"><i class="fas fa-video-slash" style="font-size:1.5rem;color:#333"></i><div class="cctv-nosignal-text">NO CAMERA RESPONSE ON PROBED PORTS</div></div></div></div>`;
-        }
-
-        html += `<div class="cam-probe-meta">
-            <div class="cam-probe-row"><span class="cam-probe-k">TARGET</span><span class="cam-probe-v">${escHtml(ip)}</span></div>
-            <div class="cam-probe-row"><span class="cam-probe-k">STATUS</span><span class="cam-probe-v" style="color:${probeResult.alive?'#7fba8a':'#ff6b6b'}">${probeResult.alive ? 'CAMERA DETECTED — SNAPSHOT CAPTURED' : 'NO OPEN CAMERA PORTS FOUND'}</span></div>`;
-
-        if (probeResult.alive) {
-            html += `
-            <div class="cam-probe-row"><span class="cam-probe-k">PORT</span><span class="cam-probe-v">${probeResult.port}</span></div>
-            <div class="cam-probe-row"><span class="cam-probe-k">ENDPOINT</span><span class="cam-probe-v">${escHtml(probeResult.path)}</span></div>`;
-        }
-
-        if (geoData && !geoData._error) {
-            html += `
-            <div class="cam-probe-row"><span class="cam-probe-k">LOCATION</span><span class="cam-probe-v">${escHtml(geoData.city||'—')}, ${escHtml(geoData.regionName||'—')}, ${escHtml(geoData.country||'—')}</span></div>
-            <div class="cam-probe-row"><span class="cam-probe-k">ISP</span><span class="cam-probe-v">${escHtml(geoData.isp||'—')}</span></div>`;
-        }
-
-        html += `<div class="cam-probe-row"><span class="cam-probe-k">TIMESTAMP</span><span class="cam-probe-v">${ts}</span></div>
-        </div></div>`;
-
-        return html;
-    };
-
     // ─────────────────────────────────────────────
-    //  UNIFIED AI INTENT CLASSIFIER  (extended with cctv_country / cctv_ip)
+    //  UNIFIED AI INTENT CLASSIFIER
+    //  One call figures out ALL OSINT intents from natural language.
+    //  Returns { emails, ips, domains, usernames, wants_exif, wants_spatial }
     // ─────────────────────────────────────────────
     const classifyIntent = async (text) => {
         const systemPrompt = `You are a strict OSINT intent classifier. Extract ONLY what the operator is explicitly asking to investigate.
 Reply ONLY with raw JSON, no markdown, no explanation:
 {
-  "emails":        ["only literal email addresses"],
-  "ips":           ["only literal IPv4 addresses to geolocate/lookup"],
-  "domains":       ["only standalone domains for WHOIS/DNS — NEVER email provider domains"],
-  "usernames":     ["only usernames to search across social platforms"],
+  "emails":        ["only literal email addresses the operator wants investigated"],
+  "ips":           ["only literal IPv4 addresses the operator wants traced"],
+  "domains":       ["only standalone domain names the operator wants looked up e.g. example.com - NEVER include email provider domains like gmail.com yahoo.com hotmail.com protonmail.com"],
+  "usernames":     ["only usernames/handles the operator wants searched across social platforms"],
   "wants_exif":    false,
-  "wants_spatial": false,
-  "wants_cctv":    false,
-  "cctv_country":  null,
-  "cctv_ip":       null
+  "wants_spatial": false
 }
 
-RULES:
-- wants_cctv: true ONLY when operator asks to see webcam(s), CCTV, live camera feed(s), surveillance cameras, or camera streams.
-- cctv_country: if wants_cctv is true AND a specific country is mentioned, set this to the country name in lowercase english (e.g. "germany", "japan", "united states"). Otherwise null.
-- cctv_ip: if the operator provides a specific IP address AND asks to check if it's a camera/webcam/stream (phrases like "is this a camera", "check this cam", "probe this ip for camera", "webcam at IP"), set this to that IP string. This is MUTUALLY EXCLUSIVE with the regular "ips" field — if cctv_ip is set, do NOT put the same IP in ips[].
-- ips: IPs the operator wants to geolocate/trace (NOT camera probes).
-- wants_exif: true ONLY for image/photo metadata questions.
-- wants_spatial: true ONLY for real-world place lookups on a map.
-- These intents are MUTUALLY EXCLUSIVE per message. Pick the dominant intent.
-- Always return all fields. Use [] for empty arrays, false/null for others.`;
+STRICT rules — only include something if the operator is EXPLICITLY asking to investigate it:
+- emails: must be a real email address literally typed e.g. john@example.com
+- ips: must be a real IPv4 address literally typed e.g. 185.220.101.34. Do NOT invent IPs.
+- domains: must be a standalone domain the operator wants WHOIS/DNS on. Do NOT extract domains from email addresses. Do NOT include common email providers.
+- usernames: only if operator explicitly asks to find/search/check someone's social presence
+- wants_exif: true ONLY if operator asks about image/photo metadata
+- wants_spatial: true ONLY if operator mentions a real-world location to find on a map
+
+If the operator mentions an IP to trace → put it in ips, set wants_spatial false (spatial is for place names, not IPs).
+If the operator mentions a place name → set wants_spatial true, do NOT put anything in ips or domains.
+These tools are mutually exclusive per message — do not mix them.
+
+Always return all fields. Use [] for empty arrays, false for booleans.`;
 
         try {
             const r = await fetch(API_URL, {
@@ -1679,6 +1280,7 @@ RULES:
             const data = await r.json();
             const raw = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
             const parsed = JSON.parse(raw);
+            // Sanitise
             return {
                 emails:        Array.isArray(parsed.emails)    ? parsed.emails    : [],
                 ips:           Array.isArray(parsed.ips)       ? parsed.ips       : [],
@@ -1686,15 +1288,13 @@ RULES:
                 usernames:     Array.isArray(parsed.usernames) ? parsed.usernames : [],
                 wants_exif:    !!parsed.wants_exif,
                 wants_spatial: !!parsed.wants_spatial,
-                wants_cctv:    !!parsed.wants_cctv,
-                cctv_country:  parsed.cctv_country || null,
-                cctv_ip:       parsed.cctv_ip      || null,
             };
         } catch(e) {
             console.error('NOX_CLASSIFY_ERR', e);
+            // Fallback: basic regex extraction so nothing is totally lost
             const emailFallback = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g) || [];
             const ipFallback    = [...text.matchAll(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g)].map(m=>m[0]);
-            return { emails: emailFallback, ips: ipFallback, domains: [], usernames: [], wants_exif: false, wants_spatial: false, wants_cctv: false, cctv_country: null, cctv_ip: null };
+            return { emails: emailFallback, ips: ipFallback, domains: [], usernames: [], wants_exif: false, wants_spatial: false };
         }
     };
 
@@ -1713,8 +1313,10 @@ RULES:
         userInput.style.height = 'auto';
         if (isGraphView) renderGraph();
 
+        // Typing indicator
         const typingDiv = document.createElement('div');
         typingDiv.className = 'message assistant-msg';
+
         typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">Analyzing...</div>`;
         if (!isGraphView) { chatContainer.appendChild(typingDiv); scrollToBottom(); }
         if (isCallMode) { callStatus.textContent = "ANALYZING..."; callSpectrum.classList.remove('active'); }
@@ -1723,66 +1325,25 @@ RULES:
         let mapData = null;
         let osintContext = '';
 
+        // Single AI call classifies all intent from natural language
         const intent = await classifyIntent(message);
 
-        // ── CCTV BRANCH ──────────────────────────────
-        if (intent.wants_cctv) {
-            if (!isGraphView) typingDiv.querySelector('.msg-content').textContent = 'Intercepting camera feeds...';
-
-            if (intent.cctv_ip) {
-                // Single IP camera probe
-                const [probeResult, geoData] = await Promise.all([
-                    probeCameraIP(intent.cctv_ip),
-                    lookupIP(intent.cctv_ip)
-                ]);
-                injectionHTML += buildCamProbeCard(intent.cctv_ip, probeResult, geoData);
-                osintContext += ` CAMERA_PROBE: IP ${intent.cctv_ip} → ${probeResult.alive ? `camera detected on port ${probeResult.port} path ${probeResult.path}` : 'no camera found on common ports'}.`;
-
-                // Also add geo map if alive
-                if (probeResult.alive && geoData && !geoData._error && geoData.lat) {
-                    mapData = {
-                        query: `Camera at ${intent.cctv_ip}`,
-                        primary: { name: `CAM: ${intent.cctv_ip} — ${geoData.city||'?'}, ${geoData.country||'?'}`, lat: geoData.lat, lon: geoData.lon, type: 'camera', address: '' },
-                        alternates: []
-                    };
-                }
-
-            } else {
-                // Country or random camera sweep
-                const countryInput = (intent.cctv_country || '').toLowerCase().trim();
-                const countryCode  = COUNTRY_CODE_MAP[countryInput] || countryInput.toUpperCase().slice(0,2) || '';
-                const countryLabel = countryInput ? intent.cctv_country : 'WORLDWIDE';
-
-                let cams = [];
-                if (countryCode) {
-                    cams = await fetchInsecamCountry(countryCode, 6);
-                }
-                // Fallback to random/home if no country or no results
-                if (!cams.length) {
-                    cams = await fetchInsecamRandom(6);
-                }
-
-                injectionHTML += buildCCTVCard(cams, countryLabel || 'WORLDWIDE');
-                osintContext += ` CCTV_INTERCEPT: ${cams.length} camera feeds acquired${countryLabel ? ` for ${countryLabel}` : ' (worldwide)'}.`;
-            }
-        }
-
-        // ── SPATIAL BRANCH ─────────────────────────
+        // Spatial intent (separate dedicated classifier for map accuracy)
         const spatialIntent = intent.wants_spatial ? await detectSpatialIntent(message) : null;
 
-        // ── STANDARD OSINT ─────────────────────────
+        // Run all enrichments in parallel based on classified intent
         const email0    = intent.emails[0]    || null;
         const domain0   = intent.domains[0]   || null;
         const username0 = intent.usernames[0] || null;
         const publicIPs = intent.ips.filter(ip => !PRIVATE_IP.test(ip));
 
         const [gravatarResult, breachResult, whoisResult, dnsResult, sslResult, usernameResults, ...ipResults] = await Promise.all([
-            email0    ? fetchGravatar(email0)   : Promise.resolve(null),
-            email0    ? checkBreaches(email0)   : Promise.resolve(null),
-            domain0   ? lookupWHOIS(domain0)    : Promise.resolve(null),
-            domain0   ? lookupDNS(domain0)      : Promise.resolve(null),
-            domain0   ? lookupSSL(domain0)      : Promise.resolve(null),
-            username0 ? searchUsername(username0): Promise.resolve(null),
+            email0    ? fetchGravatar(email0)                          : Promise.resolve(null),
+            email0    ? checkBreaches(email0)                          : Promise.resolve(null),
+            domain0   ? lookupWHOIS(domain0)                           : Promise.resolve(null),
+            domain0   ? lookupDNS(domain0)                             : Promise.resolve(null),
+            domain0   ? lookupSSL(domain0)                             : Promise.resolve(null),
+            username0 ? searchUsername(username0)                      : Promise.resolve(null),
             ...publicIPs.map(ip => lookupIP(ip))
         ]);
 
@@ -1813,6 +1374,7 @@ RULES:
             scrollToBottom();
         }
 
+        // Build IP cards + collect map data from first geolocatable IP
         ipResults.forEach((d, i) => {
             if (!d) return;
             injectionHTML += `\n\n${buildIPCard(d)}`;
@@ -1829,6 +1391,7 @@ RULES:
             }
         });
 
+        // Spatial intent map (overrides IP map if both present)
         if (spatialIntent) {
             if (!isGraphView && typingDiv.querySelector('.msg-content')) {
                 typingDiv.querySelector('.msg-content').textContent = 'Running spatial intercept...';
@@ -1841,10 +1404,8 @@ RULES:
         }
 
         try {
+            // Build clearly separated context blocks per tool so AI doesn't mix them
             const contextBlocks = [];
-            if (intent.wants_cctv) {
-                contextBlocks.push(`[CCTV_INTERCEPT]\n${osintContext.trim()}`);
-            }
             if (ipResults.some(d => d && !d._error)) {
                 const ipLines = ipResults.filter(d=>d&&!d._error).map(d=>
                     `IP ${d.query}: ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'} | ISP: ${d.isp||'?'} | Org: ${d.org||'?'} | Coords: ${d.lat},${d.lon}${d.proxy?' | PROXY/VPN':''}${d.hosting?' | DATACENTER':''}`
@@ -1869,9 +1430,12 @@ RULES:
                 contextBlocks.push(`[SPATIAL_INTERCEPT]\nPrimary: ${mapData.primary.name} | Coords: ${mapData.primary.lat.toFixed(5)},${mapData.primary.lon.toFixed(5)}${mapData.alternates.length ? ' | Alternates: '+mapData.alternates.map(a=>a.name).join(', ') : ''}`);
             }
 
-            const systemContent = "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags.\n\nEach [BLOCK] below is a separate OSINT result — treat them independently. Do not conflate IP geolocation with spatial map data, do not attribute domain info to an IP, do not mix tools. Reference each block accurately on its own terms.\n\nFor CCTV/camera intercepts, speak as if you just tapped into a live surveillance network — describe the feeds in your noir detective voice." + (contextBlocks.length ? '\n\n' + contextBlocks.join('\n\n') : '');
+            const systemContent = "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags.\n\nEach [BLOCK] below is a separate OSINT result — treat them independently. Do not conflate IP geolocation with spatial map data, do not attribute domain info to an IP, do not mix tools. Reference each block accurately on its own terms." + (contextBlocks.length ? '\n\n' + contextBlocks.join('\n\n') : '');
 
-            const apiMessages = [{ role: "system", content: systemContent }];
+            const apiMessages = [{
+                role: "system",
+                content: systemContent
+            }];
             currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role: m.role, content: m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'') }));
 
             const response = await fetch(API_URL, {
@@ -1896,7 +1460,8 @@ RULES:
             if (isCallMode && 'speechSynthesis' in window) {
                 const cleanSpeech = replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi, '$1').replace(/<[^>]*>?/gm, '');
                 const utterance   = new SpeechSynthesisUtterance(cleanSpeech);
-                utterance.pitch   = 0.7; utterance.rate = 0.95;
+                utterance.pitch   = 0.7;
+                utterance.rate    = 0.95;
                 utterance.onstart = () => { if (isCallMode) { callSpectrum.classList.add('active'); callStatus.textContent = "NOX_UNIT TRANSMITTING"; } };
                 utterance.onend   = () => { if (isCallMode) { callSpectrum.classList.remove('active'); callStatus.textContent = "AWAITING INPUT..."; } };
                 window.speechSynthesis.speak(utterance);
@@ -2013,7 +1578,7 @@ RULES:
     };
 
     // ─────────────────────────────────────────────
-    //  SIDEBAR / ARCHIVE
+    //  SIDEBAR / EVENT LISTENERS
     // ─────────────────────────────────────────────
     const toggleSidebar = () => { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); document.body.classList.toggle('sidebar-open'); };
 
@@ -2028,6 +1593,9 @@ RULES:
     userInput.addEventListener('input',  function() { this.style.height='auto'; this.style.height=(this.scrollHeight)+'px'; });
     userInput.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
 
+    // ─────────────────────────────────────────────
+    //  ARCHIVE
+    // ─────────────────────────────────────────────
     const renderArchive = () => {
         caseListEl.innerHTML = '';
         cases.forEach(c => {
@@ -2040,6 +1608,7 @@ RULES:
             const delBtn = document.createElement('button');
             delBtn.className = 'case-delete-btn';
             delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+
             let pressTimer;
             const startPress  = () => { pressTimer = setTimeout(() => { document.querySelectorAll('.case-item').forEach(i => i.classList.remove('show-delete')); li.classList.add('show-delete'); }, 600); };
             const cancelPress = () => clearTimeout(pressTimer);
@@ -2057,7 +1626,8 @@ RULES:
                 if (window.innerWidth < 768) toggleSidebar();
             });
             delBtn.addEventListener('click', e => { e.stopPropagation(); deleteCase(c.id); });
-            li.appendChild(textSpan); li.appendChild(delBtn);
+            li.appendChild(textSpan);
+            li.appendChild(delBtn);
             caseListEl.appendChild(li);
         });
     };
@@ -2078,36 +1648,44 @@ RULES:
         callTriggerBtn.innerHTML = '<i class="fas fa-phone-alt"></i>';
         callTriggerBtn.title = "Call Mode";
         document.querySelector('.header-right').prepend(callTriggerBtn);
+
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition = null;
+
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
-            recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
             callTriggerBtn.addEventListener('click', () => { isCallMode = true; callOverlay.classList.add('active'); callStatus.textContent = "SECURE LINE ESTABLISHED"; });
             callEndBtn.addEventListener('click', () => { isCallMode = false; callOverlay.classList.remove('active'); recognition.stop(); window.speechSynthesis.cancel(); callSpectrum.classList.remove('active'); callMicBtn.classList.remove('listening'); });
             callMicBtn.addEventListener('click', () => { if (callMicBtn.classList.contains('listening')) recognition.stop(); else { window.speechSynthesis.cancel(); recognition.start(); } });
             recognition.onstart  = () => { callMicBtn.classList.add('listening'); callSpectrum.classList.add('active'); callStatus.textContent = "LISTENING..."; };
             recognition.onresult = e  => { userInput.value = e.results[0][0].transcript; callStatus.textContent = "TRANSMITTING..."; sendMessage(); };
-            recognition.onerror  = () => { callMicBtn.classList.remove('listening'); callSpectrum.classList.remove('active'); callStatus.textContent = "SIGNAL INTERRUPTED"; };
+            recognition.onerror  = e  => { callMicBtn.classList.remove('listening'); callSpectrum.classList.remove('active'); callStatus.textContent = "SIGNAL INTERRUPTED"; };
             recognition.onend    = () => { callMicBtn.classList.remove('listening'); if (isCallMode && callStatus.textContent !== "TRANSMITTING...") { callStatus.textContent = "AWAITING INPUT..."; callSpectrum.classList.remove('active'); } };
         } else {
             callTriggerBtn.style.display = 'none';
         }
     };
 
+    // ── IMAGE UPLOAD BUTTON → direct EXIF processing ──
     document.getElementById('img-upload-input').addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        e.target.value = '';
+        e.target.value = ''; // reset so same file can be re-selected
+
         const exifMsg = document.createElement('div');
         exifMsg.className = 'message assistant-msg';
         exifMsg.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated — processing ${escHtml(file.name)}</div>`;
-        const uploader = buildExifUploader(file);
+        const uploader = buildExifUploader(file); // pass file directly
         exifMsg.querySelector('.msg-content').appendChild(uploader);
         chatContainer.appendChild(exifMsg);
         scrollToBottom();
     });
 
+    // ── SPLASH: remove from DOM after full animation (9s hold + 1.5s fade = 10.5s) ──
     const splash = document.getElementById('splash');
     setTimeout(() => {
         splash.style.transition = 'opacity 1.5s ease';
@@ -2120,4 +1698,4 @@ RULES:
     init();
     </script>
 </body>
-</html>
+    </html>
