@@ -148,6 +148,7 @@
             border-right: 3px solid #666; font-family: var(--font-sans); font-size: 0.95rem;
         }
 
+        /* Gravatar UI */
         .gravatar-info {
             display: flex; align-items: center; gap: 15px; margin-top: 15px;
             padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 4px;
@@ -176,7 +177,9 @@
             animation: blink-dot 1.2s infinite;
         }
         @keyframes blink-dot { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
-        .nox-map-canvas { width: 100%; height: 220px; }
+        .nox-map-canvas {
+            width: 100%; height: 220px;
+        }
         .nox-map-footer {
             padding: 10px 14px;
             font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary);
@@ -229,6 +232,7 @@
         .osint-v a:hover { text-decoration: underline; }
         .osint-section-title { font-size: 0.68rem; color: var(--text-secondary); letter-spacing: 1px; margin: 8px 0 4px; }
 
+        /* Username results */
         .username-grid { padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 6px; }
         .username-chip {
             font-size: 0.68rem; padding: 4px 8px; border-radius: 2px; letter-spacing: 0.5px;
@@ -240,6 +244,7 @@
         .username-chip.found .dot   { background: #7fba8a; }
         .username-chip.notfound .dot{ background: #444; }
 
+        /* Breach badges */
         .breach-list { padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
         .breach-item {
             font-size: 0.72rem; padding: 6px 10px; border-radius: 2px;
@@ -248,6 +253,7 @@
         .breach-name { color: #ff6b6b; margin-bottom: 2px; }
         .breach-meta { color: var(--text-secondary); font-size: 0.65rem; }
 
+        /* EXIF */
         .exif-upload-area {
             margin-top: 15px; border: 1px dashed var(--accent-color); border-radius: 3px;
             padding: 20px; text-align: center; cursor: pointer; font-family: var(--font-mono);
@@ -257,10 +263,12 @@
         .exif-upload-area:hover { border-color: var(--accent-red); color: var(--text-primary); }
         .exif-upload-area input { display: none; }
 
+        /* ── IMAGE UPLOAD BUTTON ── */
         .img-upload-label { cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .img-upload-label:hover { color: var(--text-primary); }
         #img-upload-input { display: none; }
 
+        /* ── DISCLAIMER ── */
         .disclaimer {
             text-align: center; font-family: var(--font-mono); font-size: 0.62rem;
             color: #3a3a3a; padding-top: 6px; letter-spacing: 0.5px;
@@ -280,7 +288,9 @@
             90%  { opacity: 1; pointer-events: auto; }
             100% { opacity: 0; pointer-events: none; }
         }
-        .splash-logo-glow { animation: logo-pulse 2s ease-in-out 1.2s infinite; }
+        .splash-logo-glow {
+            animation: logo-pulse 2s ease-in-out 1.2s infinite;
+        }
         @keyframes logo-pulse {
             0%,100% { text-shadow: 0 0 40px rgba(139,0,0,0.6), 0 0 80px rgba(139,0,0,0.2); }
             50%     { text-shadow: 0 0 60px rgba(139,0,0,0.9), 0 0 120px rgba(139,0,0,0.4), 0 0 200px rgba(139,0,0,0.1); }
@@ -296,13 +306,18 @@
             95%  { opacity: 1; }
             100% { top: 100%; opacity: 0; }
         }
-        .splash-inner { display: flex; flex-direction: column; align-items: center; gap: 18px; }
-        .splash-bars { display: flex; gap: 8px; align-items: flex-end; height: 40px; margin-bottom: 8px; }
+        .splash-inner {
+            display: flex; flex-direction: column; align-items: center; gap: 18px;
+        }
+        .splash-bars {
+            display: flex; gap: 8px; align-items: flex-end; height: 40px; margin-bottom: 8px;
+        }
         .splash-bar {
             width: 4px; border-radius: 4px; background: var(--accent-red);
             box-shadow: 0 0 12px rgba(139,0,0,0.8);
             animation: splash-bar-rise 0.6s ease forwards;
-            transform-origin: bottom; opacity: 0;
+            transform-origin: bottom;
+            opacity: 0;
         }
         .splash-bar:nth-child(1) { height: 20px; animation-delay: 0.1s; animation-duration: 0.5s; }
         .splash-bar:nth-child(2) { height: 36px; animation-delay: 0.25s; animation-duration: 0.5s; }
@@ -312,8 +327,11 @@
             to   { opacity: 1; transform: scaleY(1); }
         }
         .splash-logo {
-            font-family: 'Merriweather', serif; font-weight: 700;
-            font-size: clamp(3.5rem, 12vw, 6rem); letter-spacing: 18px; color: #fff;
+            font-family: 'Merriweather', serif;
+            font-weight: 700;
+            font-size: clamp(3.5rem, 12vw, 6rem);
+            letter-spacing: 18px;
+            color: #fff;
             text-shadow: 0 0 40px rgba(139,0,0,0.6), 0 0 80px rgba(139,0,0,0.2);
             animation: splash-logo-in 1s cubic-bezier(0.16,1,0.3,1) 0.4s both;
             text-transform: uppercase;
@@ -325,8 +343,11 @@
             100% { opacity: 1; letter-spacing: 18px; filter: blur(0); }
         }
         .splash-sub {
-            font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
-            letter-spacing: 5px; color: var(--accent-red); text-transform: uppercase;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 5px;
+            color: var(--accent-red);
+            text-transform: uppercase;
             animation: splash-sub-in 0.6s ease 1.3s both;
         }
         @keyframes splash-sub-in {
@@ -335,13 +356,15 @@
         }
         .splash-line {
             height: 1px; background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
-            animation: splash-line-grow 0.8s ease 1.8s both; width: 0;
+            animation: splash-line-grow 0.8s ease 1.8s both;
+            width: 0;
         }
         @keyframes splash-line-grow {
             from { width: 0; opacity: 0; }
             to   { width: 260px; opacity: 1; }
         }
 
+        /* Custom Leaflet dark overrides */
         .leaflet-container { background: #0d0d0d !important; }
         .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(0.75) contrast(1.1); }
         .leaflet-control-zoom a { background: var(--bg-secondary) !important; color: var(--text-primary) !important; border-color: var(--border-color) !important; }
@@ -379,6 +402,7 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.5); font-size: 14px;
         }
 
+        /* CALL MODE */
         .call-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(18,18,18,0.96); z-index: 9999;
@@ -476,6 +500,7 @@
         </main>
     </div>
 
+    <!-- SPLASH SCREEN -->
     <div class="splash" id="splash">
         <div class="splash-scanline"></div>
         <div class="splash-inner">
@@ -668,363 +693,158 @@
         return block;
     };
 
-    const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const escHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     const scrollToBottom = () => chatContainer.scrollTop = chatContainer.scrollHeight;
 
     // ─────────────────────────────────────────────
-    //  FETCH WITH TIMEOUT HELPER
-    //  Wraps any fetch with an AbortController deadline.
+    //  AI-DRIVEN SPATIAL INTENT DETECTION
+    //  Returns null or { query, city, places: [{label, osm_tags}] }
+    //  Supports multiple place types mentioned in one message
     // ─────────────────────────────────────────────
-    const fetchWithTimeout = (url, options = {}, timeoutMs = 8000) => {
-        const ctrl = new AbortController();
-        const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-        return fetch(url, { ...options, signal: ctrl.signal })
-            .finally(() => clearTimeout(timer));
-    };
+    const detectSpatialIntent = async (userText) => {
+        const systemPrompt = `You are a spatial intent classifier for a detective investigation app.
+Analyse the operator message and decide if any real-world places need to be looked up on a map.
+Extract EVERY distinct place type mentioned, even if described indirectly or in any word order.
 
-    // ─────────────────────────────────────────────
-    //  OSM TAG DICTIONARY
-    // ─────────────────────────────────────────────
-    const OSM_TAGS = {
-        cafe:         [{amenity:'cafe'}],
-        coffee:       [{amenity:'cafe'}],
-        restaurant:   [{amenity:'restaurant'}],
-        bar:          [{amenity:'bar'}],
-        pub:          [{amenity:'pub'},{amenity:'bar'}],
-        fast_food:    [{amenity:'fast_food'}],
-        bakery:       [{shop:'bakery'}],
-        supermarket:  [{shop:'supermarket'},{amenity:'supermarket'}],
-        grocery:      [{shop:'supermarket'},{shop:'convenience'}],
-        pharmacy:     [{amenity:'pharmacy'}],
-        hospital:     [{amenity:'hospital'}],
-        clinic:       [{amenity:'clinic'},{amenity:'hospital'}],
-        police:       [{amenity:'police'}],
-        fire_station: [{amenity:'fire_station'}],
-        post_office:  [{amenity:'post_office'}],
-        embassy:      [{amenity:'embassy'}],
-        prison:       [{amenity:'prison'}],
-        courthouse:   [{amenity:'courthouse'}],
-        school:       [{amenity:'school'}],
-        university:   [{amenity:'university'}],
-        college:      [{amenity:'college'}],
-        library:      [{amenity:'library'}],
-        train_station:[{railway:'station'},{public_transport:'station'}],
-        station:      [{railway:'station'},{public_transport:'station'}],
-        airport:      [{aeroway:'aerodrome'}],
-        bus_station:  [{amenity:'bus_station'}],
-        metro:        [{station:'subway'},{railway:'subway_entrance'}],
-        subway:       [{station:'subway'},{railway:'subway_entrance'}],
-        parking:      [{amenity:'parking'}],
-        fuel:         [{amenity:'fuel'}],
-        petrol:       [{amenity:'fuel'}],
-        gas_station:  [{amenity:'fuel'}],
-        bank:         [{amenity:'bank'}],
-        atm:          [{amenity:'atm'}],
-        park:         [{leisure:'park'}],
-        garden:       [{leisure:'garden'}],
-        playground:   [{leisure:'playground'}],
-        stadium:      [{leisure:'stadium'}],
-        gym:          [{leisure:'fitness_centre'},{amenity:'gym'}],
-        fitness:      [{leisure:'fitness_centre'}],
-        cinema:       [{amenity:'cinema'}],
-        theatre:      [{amenity:'theatre'}],
-        casino:       [{amenity:'casino'}],
-        zoo:          [{tourism:'zoo'}],
-        hotel:        [{tourism:'hotel'}],
-        hostel:       [{tourism:'hostel'}],
-        museum:       [{tourism:'museum'}],
-        gallery:      [{tourism:'gallery'}],
-        monument:     [{historic:'monument'}],
-        castle:       [{historic:'castle'}],
-        memorial:     [{historic:'memorial'}],
-        ruins:        [{historic:'ruins'}],
-        beach:        [{natural:'beach'}],
-        lake:         [{natural:'water'},{water:'lake'}],
-        river:        [{waterway:'river'}],
-        forest:       [{landuse:'forest'},{natural:'wood'}],
-        mountain:     [{natural:'peak'}],
-        peak:         [{natural:'peak'}],
-        fountain:     [{amenity:'fountain'}],
-        bridge:       [{man_made:'bridge'}],
-        tower:        [{man_made:'tower'},{man_made:'communications_tower'}],
-        lighthouse:   [{man_made:'lighthouse'}],
-        marina:       [{leisure:'marina'}],
-        market:       [{amenity:'marketplace'}],
-        mosque:       [{amenity:'place_of_worship',religion:'muslim'}],
-        church:       [{amenity:'place_of_worship',religion:'christian'}],
-        temple:       [{amenity:'place_of_worship',religion:'buddhist'},{amenity:'place_of_worship',religion:'hindu'}],
-        synagogue:    [{amenity:'place_of_worship',religion:'jewish'}],
-        worship:      [{amenity:'place_of_worship'}],
-        nightclub:    [{amenity:'nightclub'}],
-        spa:          [{leisure:'spa'}],
-        toilet:       [{amenity:'toilets'}],
-    };
+Reply ONLY with raw JSON, no markdown fences, no explanation:
+{
+  "needs_map": true,
+  "query": "short human label, e.g. 'fountain and library in London'",
+  "city": "city/region name or null",
+  "places": [
+    { "label": "fountain", "osm_tags": {"amenity":"fountain"} },
+    { "label": "library",  "osm_tags": {"amenity":"library"} }
+  ]
+}
 
-    // ─────────────────────────────────────────────
-    //  EXTRACT PLACE KEYWORDS (deterministic, no LLM)
-    // ─────────────────────────────────────────────
-    const extractPlaceKeywords = (text) => {
-        const lower = text.toLowerCase();
-        const found = [];
-        // Sort by length desc so multi-word keys match before sub-keys
-        const keys = Object.keys(OSM_TAGS).sort((a,b) => b.length - a.length);
-        for (const key of keys) {
-            const alias = key.replace(/_/g,' ');
-            if (lower.includes(alias) && !found.includes(key)) found.push(key);
-        }
-        return found;
-    };
+If no real place lookup is needed set needs_map to false and places to [].
 
-    // ─────────────────────────────────────────────
-    //  FIX #1 — extractCityHint
-    //  Original used /g flag on a const regex, causing exec() state to persist
-    //  across calls (infinite loop on second invocation). Now creates a fresh
-    //  regex instance per call and uses matchAll on a local string copy.
-    // ─────────────────────────────────────────────
-    const extractCityHint = (text) => {
-        const candidates = [];
+Common OSM tag mappings (use these exactly):
+fountain→{"amenity":"fountain"}, cafe→{"amenity":"cafe"}, restaurant→{"amenity":"restaurant"},
+hospital→{"amenity":"hospital"}, park→{"leisure":"park"}, museum→{"tourism":"museum"},
+hotel→{"tourism":"hotel"}, bar/pub→{"amenity":"bar"}, pharmacy→{"amenity":"pharmacy"},
+police→{"amenity":"police"}, library→{"amenity":"library"}, school→{"amenity":"school"},
+church/mosque/temple/synagogue→{"amenity":"place_of_worship"}, beach→{"natural":"beach"},
+supermarket→{"shop":"supermarket"}, cinema→{"amenity":"cinema"}, stadium→{"leisure":"stadium"},
+train station→{"railway":"station"}, airport→{"aeroway":"aerodrome"}, bank→{"amenity":"bank"},
+atm→{"amenity":"atm"}, petrol/gas→{"amenity":"fuel"}, parking→{"amenity":"parking"},
+castle→{"historic":"castle"}, monument→{"historic":"monument"}, market→{"amenity":"marketplace"},
+post office→{"amenity":"post_office"}, prison→{"amenity":"prison"}, embassy→{"amenity":"embassy"},
+harbour/marina→{"leisure":"marina"}, bridge→{"man_made":"bridge"}, tower→{"man_made":"tower"},
+zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amenity":"college"}`;
 
-        // Pattern 1: "in/at/near/around Paris", "in New York City", etc.
-        const pat1 = /\b(?:in|at|near|around|within|inside|outside|from|to)\s+([A-Z][a-zA-Z\s,]{2,40})/g;
-        for (const m of text.matchAll(pat1)) {
-            const raw = m[1].replace(/[^a-zA-Z\s,]/g, '').trim();
-            if (raw.length > 2) candidates.push(raw);
-        }
-
-        // Pattern 2: "City, Country" / "City, State"
-        const pat2 = /([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+){0,3})\s*,\s*([A-Z][a-zA-Z]+)/g;
-        for (const m of text.matchAll(pat2)) {
-            const raw = m[0].replace(/[^a-zA-Z\s,]/g, '').trim();
-            if (raw.length > 2) candidates.push(raw);
-        }
-
-        const stops = new Set(['the','a','an','it','this','that','there','here','where','what','which']);
-        return candidates.find(c => !stops.has(c.toLowerCase().split(' ')[0])) || null;
-    };
-
-    // ─────────────────────────────────────────────
-    //  FIX #2 — geocodePlace with timeout
-    // ─────────────────────────────────────────────
-    const geocodePlace = async (query, hint = null) => {
-        const q = hint ? `${query}, ${hint}` : query;
-        const params = new URLSearchParams({
-            q,
-            format: 'jsonv2',
-            limit: 5,
-            addressdetails: 1,
-            extratags: 1,
-            namedetails: 1,
-        });
         try {
-            const r = await fetchWithTimeout(
-                `https://nominatim.openstreetmap.org/search?${params}`,
-                { headers: { 'Accept-Language': 'en' } },
-                6000   // 6-second cap — was unlimited
-            );
-            return await r.json();
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: userText }
+                    ],
+                    temperature: 0.0,
+                    max_tokens: 300
+                })
+            });
+            const data = await response.json();
+            const raw = data.choices[0].message.content.trim().replace(/```json|```/g, '').trim();
+            const parsed = JSON.parse(raw);
+            if (!parsed.needs_map || !parsed.places?.length) return null;
+            return parsed;
         } catch(e) {
-            console.warn('NOX_GEOCODE_TIMEOUT_OR_ERR', e.message);
-            return [];
-        }
-    };
-
-    // ─────────────────────────────────────────────
-    //  geocodeCity with timeout
-    // ─────────────────────────────────────────────
-    const geocodeCity = async (cityHint) => {
-        const params = new URLSearchParams({
-            q: cityHint,
-            format: 'jsonv2',
-            limit: 3,
-            featuretype: 'city,state,country,settlement',
-            addressdetails: 1,
-        });
-        try {
-            const r = await fetchWithTimeout(
-                `https://nominatim.openstreetmap.org/search?${params}`,
-                { headers: { 'Accept-Language': 'en' } },
-                6000
-            );
-            const d = await r.json();
-            if (!d.length) return null;
-            const best = d.find(x => x.boundingbox) || d[0];
-            const bb = best.boundingbox;
-            return {
-                lat:   parseFloat(best.lat),
-                lon:   parseFloat(best.lon),
-                name:  best.display_name,
-                bbox_s: parseFloat(bb[0]),
-                bbox_n: parseFloat(bb[1]),
-                bbox_w: parseFloat(bb[2]),
-                bbox_e: parseFloat(bb[3]),
-            };
-        } catch(e) {
-            console.warn('NOX_GEOCITY_TIMEOUT_OR_ERR', e.message);
+            console.error('NOX_INTENT_ERR', e);
             return null;
         }
     };
 
     // ─────────────────────────────────────────────
-    //  FIX #3 — overpassFetch with AbortController timeout
-    //  Previous version had no timeout — a slow or hung Overpass server
-    //  would stall the entire pipeline indefinitely.
+    //  SPATIAL INTERCEPT PIPELINE (Overpass + Nominatim)
     // ─────────────────────────────────────────────
+    const geocodeCity = async (city) => {
+        const r = await fetch(`/api/geocode?q=${encodeURIComponent(city)}`);
+        const d = await r.json();
+        if (!d.length) return null;
+        const b = d[0].boundingbox;
+        return { lat: parseFloat(d[0].lat), lon: parseFloat(d[0].lon), bbox: b, name: d[0].display_name };
+    };
+
     const overpassFetch = async (ql) => {
-        const endpoints = [
-            'https://overpass-api.de/api/interpreter',
-            'https://overpass.kumi.systems/api/interpreter',
-        ];
-        for (const endpoint of endpoints) {
-            try {
-                const r = await fetchWithTimeout(
-                    endpoint,
-                    {
-                        method: 'POST',
-                        body: 'data=' + encodeURIComponent(ql),
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    },
-                    8000   // 8-second hard cap per endpoint — was unlimited
-                );
-                const d = await r.json();
-                return d.elements || [];
-            } catch(e) {
-                console.warn(`NOX_OVERPASS_FAIL (${endpoint}):`, e.message);
-                // Try next endpoint
-            }
-        }
-        return [];
+        const r = await fetch('/api/overpass', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ql })
+        });
+        return await r.json();
     };
 
-    // ─────────────────────────────────────────────
-    //  FIX #4 — overpassQuery with reduced radius escalation
-    //  Original tried up to 6 sequential requests (500m/2k/10k/25k + bbox).
-    //  Now: bbox → 1 fallback radius (5km). Sufficient for almost all queries.
-    // ─────────────────────────────────────────────
-    const overpassQuery = async (tagSets, geo) => {
-        const tagFilter = (tags) =>
-            Object.entries(tags).map(([k,v]) => `["${k}"="${v}"]`).join('');
-
-        // Try city bbox first (most precise, avoids cross-city hits)
-        if (geo.bbox_s !== undefined) {
-            const { bbox_s, bbox_w, bbox_n, bbox_e } = geo;
-            const bboxStr = `${bbox_s},${bbox_w},${bbox_n},${bbox_e}`;
-            const nodeQ = tagSets.map(t => `node${tagFilter(t)}(${bboxStr});`).join('');
-            const wayQ  = tagSets.map(t => `way${tagFilter(t)}(${bboxStr});`).join('');
-            const ql = `[out:json][timeout:12];(${nodeQ}${wayQ});out center 8;`;
-            const results = await overpassFetch(ql);
-            if (results.length > 0) return results;
-        }
-
-        // Single fallback radius: 5km around city centre (or 0,0 if no city)
-        // Avoids the original 4-step sequential escalation that caused hangs
-        const radius = 5000;
-        const around = `(around:${radius},${geo.lat},${geo.lon})`;
-        const nodeQ  = tagSets.map(t => `node${tagFilter(t)}${around};`).join('');
-        const wayQ   = tagSets.map(t => `way${tagFilter(t)}${around};`).join('');
-        const ql = `[out:json][timeout:12];(${nodeQ}${wayQ});out center 8;`;
-        return await overpassFetch(ql);
-    };
-
-    // ─────────────────────────────────────────────
-    //  Normalise raw Overpass elements
-    // ─────────────────────────────────────────────
     const normaliseElements = (elements, fallbackLabel) =>
-        elements
-            .map(el => ({
-                name:    el.tags?.name || el.tags?.['name:en'] || el.tags?.['alt_name'] || fallbackLabel,
-                lat:     parseFloat(el.lat ?? el.center?.lat),
-                lon:     parseFloat(el.lon ?? el.center?.lon),
-                type:    Object.entries(el.tags || {})
-                             .filter(([k]) => ['amenity','tourism','leisure','natural','shop','railway','aeroway','historic','man_made','waterway','landuse'].includes(k))
-                             .map(([k,v]) => `${k}=${v}`).join(' '),
-                address: [el.tags?.['addr:street'], el.tags?.['addr:housenumber'], el.tags?.['addr:city']].filter(Boolean).join(', ')
-            }))
-            .filter(el => !isNaN(el.lat) && !isNaN(el.lon));
+        elements.map(el => ({
+            name: el.tags?.name || el.tags?.['name:en'] || fallbackLabel,
+            lat:  el.lat || el.center?.lat,
+            lon:  el.lon || el.center?.lon,
+            type: Object.entries(el.tags||{})
+                    .filter(([k]) => ['amenity','tourism','leisure','natural','shop','railway','aeroway','historic','man_made'].includes(k))
+                    .map(([k,v]) => `${k}=${v}`).join(' '),
+            address: [el.tags?.['addr:street'], el.tags?.['addr:housenumber'], el.tags?.['addr:city']].filter(Boolean).join(' ')
+        })).filter(el => el.lat && el.lon);
 
-    // ─────────────────────────────────────────────
-    //  FIX #5 — runSpatialIntercept: top-level 15s timeout guard
-    //  Ensures the whole pipeline never hangs the UI for more than 15 seconds.
-    // ─────────────────────────────────────────────
-    const runSpatialIntercept = async (userText) => {
-        const timeout = new Promise(resolve => setTimeout(() => resolve(null), 15000));
-        return Promise.race([_spatialPipeline(userText), timeout]);
-    };
+    // Takes the intent object from detectSpatialIntent and fetches real locations
+    // Runs one Overpass query per place type, merges all results
+    const runSpatialIntercept = async (intent) => {
+        const { query, city, places } = intent;
+        let allElements = [];
 
-    const _spatialPipeline = async (userText) => {
         try {
-            const keywords = extractPlaceKeywords(userText);
-            const cityHint = extractCityHint(userText);
-
-            // No recognised place-type keywords → direct Nominatim name search
-            if (keywords.length === 0) {
-                const geoResults = await geocodePlace(userText, cityHint);
-                if (!geoResults.length) return null;
-                const best = geoResults[0];
-                return {
-                    query: userText.slice(0, 60),
-                    primary: {
-                        name:    best.display_name.split(',').slice(0,2).join(',').trim(),
-                        lat:     parseFloat(best.lat),
-                        lon:     parseFloat(best.lon),
-                        type:    best.type || best.category || '',
-                        address: best.display_name,
-                    },
-                    alternates: geoResults.slice(1, 5).map(r => ({
-                        name: r.display_name.split(',')[0].trim(),
-                        lat:  parseFloat(r.lat),
-                        lon:  parseFloat(r.lon),
-                    })),
-                };
-            }
-
-            // Geocode the city hint for a bounding box
             let geo = null;
-            if (cityHint) geo = await geocodeCity(cityHint);
-            if (!geo) geo = { lat: 0, lon: 0 }; // no bbox → radius mode
-
-            // Fetch Overpass results for each keyword (limit to first 2 keywords to avoid stacking)
-            const allResults = [];
-            for (const keyword of keywords.slice(0, 2)) {
-                const tagSets = OSM_TAGS[keyword] || [];
-                if (!tagSets.length) continue;
-                const elements = await overpassQuery(tagSets, geo);
-                const normalised = normaliseElements(elements, keyword);
-                normalised.sort((a,b) => (b.name !== keyword ? 1 : 0) - (a.name !== keyword ? 1 : 0));
-                allResults.push(...normalised.slice(0, 4));
+            let bbox = null;
+            if (city) {
+                geo = await geocodeCity(city);
+                if (geo) bbox = geo.bbox;
             }
 
-            if (!allResults.length) {
-                // Nominatim name-search fallback
-                const fallbackQuery = keywords.join(' ') + (cityHint ? ` in ${cityHint}` : '');
-                const geoResults = await geocodePlace(fallbackQuery, cityHint);
-                if (!geoResults.length) return null;
-                const best = geoResults[0];
+            // No tags at all — just pin the city
+            if (!places.length) {
+                if (!geo) return null;
                 return {
-                    query: fallbackQuery.slice(0, 60),
-                    primary: {
-                        name:    best.display_name.split(',').slice(0,2).join(',').trim(),
-                        lat:     parseFloat(best.lat),
-                        lon:     parseFloat(best.lon),
-                        type:    best.type || '',
-                        address: best.display_name,
-                    },
-                    alternates: geoResults.slice(1,5).map(r => ({
-                        name: r.display_name.split(',')[0].trim(),
-                        lat:  parseFloat(r.lat),
-                        lon:  parseFloat(r.lon),
-                    })),
+                    query,
+                    primary: { name: geo.name.split(',')[0], lat: geo.lat, lon: geo.lon, type: '', address: '' },
+                    alternates: []
                 };
             }
 
-            return {
-                query: (keywords.join('+') + (cityHint ? ' in '+cityHint : '')).slice(0, 60),
-                primary:    allResults[0],
-                alternates: allResults.slice(1, 6),
-            };
+            // Run one Overpass query per place type in parallel
+            const queries = places.map(place => {
+                const tf = Object.entries(place.osm_tags || {}).map(([k,v]) => `["${k}"="${v}"]`).join('');
+                if (!tf) return Promise.resolve([]);
+                let ql;
+                if (bbox) {
+                    const [s,n,w,e] = bbox;
+                    ql = `[out:json][timeout:15];(node${tf}(${s},${w},${n},${e});way${tf}(${s},${w},${n},${e}););out center 5;`;
+                } else {
+                    ql = `[out:json][timeout:15];node${tf};out 5;`;
+                }
+                return overpassFetch(ql)
+                    .then(d => normaliseElements(d.elements || [], place.label))
+                    .catch(() => []);
+            });
+
+            const results = await Promise.all(queries);
+            // Flatten: first result of each type becomes a pin; rest are alternates
+            results.forEach(group => { allElements.push(...group.slice(0, 3)); });
+
         } catch(e) {
-            console.error('NOX_SPATIAL_PIPELINE_ERR', e);
+            console.error('NOX_OVERPASS_ERR', e);
             return null;
         }
+
+        if (!allElements.length) return null;
+
+        return {
+            query,
+            primary:    allElements[0],
+            alternates: allElements.slice(1, 6)   // show up to 5 alternates across all types
+        };
     };
 
     // ─────────────────────────────────────────────
@@ -1041,61 +861,115 @@
     };
 
     // ─────────────────────────────────────────────
-    //  IP LOOKUP
+    //  IP LOOKUP  (ip-api.com — free, no key needed)
     // ─────────────────────────────────────────────
+    const IP_REGEX = /\b((?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))\b/g;
     const PRIVATE_IP = /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|127\.|0\.0\.0\.0|::1)/;
 
     const lookupIP = async (ip) => {
+        // Try multiple free CORS-friendly APIs in order
         const attempts = [
+            // 1. ip-api.com HTTPS (CORS allowed on https)
             async () => {
                 const r = await fetch(`https://ip-api.com/json/${ip}?fields=66846719`);
                 const d = await r.json();
                 if (d.status !== 'success') throw new Error(d.message);
-                return { query: d.query, country: d.country, countryCode: d.countryCode, regionName: d.regionName, city: d.city, lat: d.lat, lon: d.lon, isp: d.isp, org: d.org, as: d.as, proxy: d.proxy, hosting: d.hosting, vpn: d.proxy, tor: false };
+                return {
+                    query: d.query, country: d.country, countryCode: d.countryCode,
+                    regionName: d.regionName, city: d.city,
+                    lat: d.lat, lon: d.lon,
+                    isp: d.isp, org: d.org, as: d.as,
+                    proxy: d.proxy, hosting: d.hosting, vpn: d.proxy, tor: false
+                };
             },
+            // 2. ipapi.co
             async () => {
                 const r = await fetch(`https://ipapi.co/${ip}/json/`);
                 const d = await r.json();
                 if (d.error) throw new Error(d.reason);
-                return { query: d.ip, country: d.country_name, countryCode: d.country_code, regionName: d.region, city: d.city, lat: parseFloat(d.latitude), lon: parseFloat(d.longitude), isp: d.org||'Unknown', org: d.org||'Unknown', as: d.asn||'Unknown', proxy: false, hosting: false, vpn: false, tor: false };
+                return {
+                    query: d.ip, country: d.country_name, countryCode: d.country_code,
+                    regionName: d.region, city: d.city,
+                    lat: parseFloat(d.latitude), lon: parseFloat(d.longitude),
+                    isp: d.org || 'Unknown', org: d.org || 'Unknown',
+                    as: d.asn || 'Unknown',
+                    proxy: false, hosting: false, vpn: false, tor: false
+                };
             },
+            // 3. freeipapi.com
             async () => {
                 const r = await fetch(`https://freeipapi.com/api/json/${ip}`);
                 const d = await r.json();
                 if (!d.ipAddress) throw new Error('no data');
-                return { query: d.ipAddress, country: d.countryName, countryCode: d.countryCode, regionName: d.regionName, city: d.cityName, lat: parseFloat(d.latitude), lon: parseFloat(d.longitude), isp: d.isp||'Unknown', org: d.isp||'Unknown', as: 'Unknown', proxy: d.isProxy||false, hosting: false, vpn: false, tor: false };
+                return {
+                    query: d.ipAddress, country: d.countryName, countryCode: d.countryCode,
+                    regionName: d.regionName, city: d.cityName,
+                    lat: parseFloat(d.latitude), lon: parseFloat(d.longitude),
+                    isp: d.isp || 'Unknown', org: d.isp || 'Unknown', as: 'Unknown',
+                    proxy: d.isProxy || false, hosting: false, vpn: false, tor: false
+                };
             }
         ];
+
         for (const attempt of attempts) {
-            try { const result = await attempt(); if (result && result.country) return result; } catch(e) { console.warn('NOX_IP_ATTEMPT_FAILED', e.message); }
+            try {
+                const result = await attempt();
+                if (result && result.country) return result;
+            } catch(e) {
+                console.warn('NOX_IP_ATTEMPT_FAILED', e.message);
+            }
         }
-        return { query: ip, _error: true };
+        return { query: ip, _error: true }; // return stub so card can show failure
     };
 
     const buildIPCard = (d) => {
-        if (d._error) return `<div class="ip-card"><div class="ip-card-header"><span class="ip-address">${d.query}</span><span class="ip-tag proxy">LOOKUP_FAILED</span></div><div class="ip-grid"><div class="ip-row"><span class="ip-k">STATUS</span><span class="ip-v">All geolocation APIs unreachable.</span></div></div></div>`;
+        if (d._error) return `<div class="ip-card"><div class="ip-card-header"><span class="ip-address">${d.query}</span><span class="ip-tag proxy">LOOKUP_FAILED</span></div><div class="ip-grid"><div class="ip-row"><span class="ip-k">STATUS</span><span class="ip-v">All geolocation APIs unreachable. Check console for details.</span></div></div></div>`;
         const flag = `https://flagcdn.com/24x18/${(d.countryCode||'xx').toLowerCase()}.png`;
-        const tags = [d.proxy?'<span class="ip-tag proxy">PROXY</span>':'', d.vpn?'<span class="ip-tag proxy">VPN</span>':'', d.tor?'<span class="ip-tag proxy">TOR</span>':'', d.hosting?'<span class="ip-tag hosting">DATACENTER</span>':''].filter(Boolean).join('');
+        const tags = [
+            d.proxy   ? '<span class="ip-tag proxy">PROXY</span>'        : '',
+            d.vpn     ? '<span class="ip-tag proxy">VPN</span>'          : '',
+            d.tor     ? '<span class="ip-tag proxy">TOR</span>'          : '',
+            d.hosting ? '<span class="ip-tag hosting">DATACENTER</span>' : '',
+        ].filter(Boolean).join('');
         const lat = typeof d.lat === 'number' ? d.lat.toFixed(4) : '—';
         const lon = typeof d.lon === 'number' ? d.lon.toFixed(4) : '—';
-        return `<div class="ip-card"><div class="ip-card-header"><img src="${flag}" class="ip-flag" onerror="this.style.display='none'"><span class="ip-address">${d.query}</span>${tags}</div><div class="ip-grid"><div class="ip-row"><span class="ip-k">LOCATION</span><span class="ip-v">${d.city||'—'}, ${d.regionName||'—'}, ${d.country||'—'}</span></div><div class="ip-row"><span class="ip-k">COORDS</span><span class="ip-v">${lat}, ${lon}</span></div><div class="ip-row"><span class="ip-k">ISP</span><span class="ip-v">${d.isp||'—'}</span></div><div class="ip-row"><span class="ip-k">ORG</span><span class="ip-v">${d.org||'—'}</span></div><div class="ip-row"><span class="ip-k">ASN</span><span class="ip-v">${d.as||'—'}</span></div></div></div>`;
+        return `<div class="ip-card">
+            <div class="ip-card-header">
+                <img src="${flag}" class="ip-flag" onerror="this.style.display='none'">
+                <span class="ip-address">${d.query}</span>
+                ${tags}
+            </div>
+            <div class="ip-grid">
+                <div class="ip-row"><span class="ip-k">LOCATION</span><span class="ip-v">${d.city||'—'}, ${d.regionName||'—'}, ${d.country||'—'}</span></div>
+                <div class="ip-row"><span class="ip-k">COORDS</span><span class="ip-v">${lat}, ${lon}</span></div>
+                <div class="ip-row"><span class="ip-k">ISP</span><span class="ip-v">${d.isp||'—'}</span></div>
+                <div class="ip-row"><span class="ip-k">ORG</span><span class="ip-v">${d.org||'—'}</span></div>
+                <div class="ip-row"><span class="ip-k">ASN</span><span class="ip-v">${d.as||'—'}</span></div>
+            </div>
+        </div>`;
     };
 
     // ─────────────────────────────────────────────
-    //  WHOIS / DNS / SSL
+    //  WHOIS LOOKUP  (whois.freeaitools.online — CORS ok)
     // ─────────────────────────────────────────────
+
+
     const lookupWHOIS = async (domain) => {
         try {
+            const r = await fetch(`https://api.domainsdb.info/v1/domains/search?domain=${encodeURIComponent(domain)}&zone=${domain.split('.').pop()}`);
+            const d = await r.json();
+            // Also fetch rdap which is fully public
             const rdap = await fetch(`https://rdap.org/domain/${domain}`);
             const rd = rdap.ok ? await rdap.json() : null;
+
             let result = { domain, registered: false };
             if (rd) {
-                result.registered  = true;
-                result.registrar   = rd.entities?.find(e => e.roles?.includes('registrar'))?.vcardArray?.[1]?.find(v=>v[0]==='fn')?.[3] || 'Unknown';
-                result.created     = rd.events?.find(e => e.eventAction==='registration')?.eventDate?.slice(0,10) || '—';
-                result.expires     = rd.events?.find(e => e.eventAction==='expiration')?.eventDate?.slice(0,10) || '—';
-                result.updated     = rd.events?.find(e => e.eventAction==='last changed')?.eventDate?.slice(0,10) || '—';
-                result.status      = rd.status?.join(', ') || '—';
+                result.registered = true;
+                result.registrar = rd.entities?.find(e => e.roles?.includes('registrar'))?.vcardArray?.[1]?.find(v=>v[0]==='fn')?.[3] || 'Unknown';
+                result.created   = rd.events?.find(e => e.eventAction==='registration')?.eventDate?.slice(0,10) || '—';
+                result.expires   = rd.events?.find(e => e.eventAction==='expiration')?.eventDate?.slice(0,10) || '—';
+                result.updated   = rd.events?.find(e => e.eventAction==='last changed')?.eventDate?.slice(0,10) || '—';
+                result.status    = rd.status?.join(', ') || '—';
                 result.nameservers = rd.nameservers?.map(n => n.ldhName).join(', ') || '—';
             }
             return result;
@@ -1105,7 +979,12 @@
     const lookupDNS = async (domain) => {
         try {
             const types = ['A','MX','TXT','CNAME','NS'];
-            const results = await Promise.all(types.map(t => fetch(`https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=${t}`).then(r=>r.json()).then(d=>({type:t,answers:d.Answer||[]})).catch(()=>({type:t,answers:[]}))));
+            const results = await Promise.all(types.map(t =>
+                fetch(`https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=${t}`)
+                    .then(r => r.json())
+                    .then(d => ({ type: t, answers: d.Answer || [] }))
+                    .catch(() => ({ type: t, answers: [] }))
+            ));
             return results.filter(r => r.answers.length);
         } catch(e) { return null; }
     };
@@ -1116,38 +995,65 @@
             const d = await r.json();
             if (!Array.isArray(d) || !d.length) return null;
             const latest = d[0];
-            return { issuer: latest.issuer?.name||'—', notBefore: latest.not_before?.slice(0,10)||'—', notAfter: latest.not_after?.slice(0,10)||'—', dnsNames: latest.dns_names?.slice(0,10)||[] };
+            return {
+                issuer:    latest.issuer?.name || '—',
+                notBefore: latest.not_before?.slice(0,10) || '—',
+                notAfter:  latest.not_after?.slice(0,10)  || '—',
+                dnsNames:  latest.dns_names?.slice(0,10)  || []
+            };
         } catch(e) { return null; }
     };
 
     const buildDomainCard = (whois, dns, ssl, domain) => {
-        let html = `<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">DOMAIN_INTEL :: ${escHtml(domain.toUpperCase())}</span></div>`;
+        let html = `<div class="osint-card">
+            <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">DOMAIN_INTEL :: ${escHtml(domain.toUpperCase())}</span></div>`;
+
         if (whois?.registered) {
-            html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">REGISTRAR</span><span class="osint-v">${escHtml(whois.registrar)}</span></div><div class="osint-row"><span class="osint-k">CREATED</span><span class="osint-v">${whois.created}</span></div><div class="osint-row"><span class="osint-k">EXPIRES</span><span class="osint-v">${whois.expires}</span></div><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">${escHtml(whois.status)}</span></div><div class="osint-row"><span class="osint-k">NAMESERVERS</span><span class="osint-v">${escHtml(whois.nameservers)}</span></div></div>`;
+            html += `<div class="osint-grid">
+                <div class="osint-row"><span class="osint-k">REGISTRAR</span><span class="osint-v">${escHtml(whois.registrar)}</span></div>
+                <div class="osint-row"><span class="osint-k">CREATED</span><span class="osint-v">${whois.created}</span></div>
+                <div class="osint-row"><span class="osint-k">EXPIRES</span><span class="osint-v">${whois.expires}</span></div>
+                <div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">${escHtml(whois.status)}</span></div>
+                <div class="osint-row"><span class="osint-k">NAMESERVERS</span><span class="osint-v">${escHtml(whois.nameservers)}</span></div>
+            </div>`;
         } else {
             html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">Registration data unavailable</span></div></div>`;
         }
+
         if (ssl) {
-            html += `<div class="osint-grid"><div class="osint-section-title" style="padding:0 14px;">SSL CERTIFICATE</div><div class="osint-row"><span class="osint-k">ISSUER</span><span class="osint-v">${escHtml(ssl.issuer)}</span></div><div class="osint-row"><span class="osint-k">VALID</span><span class="osint-v">${ssl.notBefore} → ${ssl.notAfter}</span></div><div class="osint-row"><span class="osint-k">SANs</span><span class="osint-v">${ssl.dnsNames.map(escHtml).join(', ')}</span></div></div>`;
+            html += `<div class="osint-grid">
+                <div class="osint-section-title" style="padding:0 14px;">SSL CERTIFICATE</div>
+                <div class="osint-row"><span class="osint-k">ISSUER</span><span class="osint-v">${escHtml(ssl.issuer)}</span></div>
+                <div class="osint-row"><span class="osint-k">VALID</span><span class="osint-v">${ssl.notBefore} → ${ssl.notAfter}</span></div>
+                <div class="osint-row"><span class="osint-k">SANs</span><span class="osint-v">${ssl.dnsNames.map(escHtml).join(', ')}</span></div>
+            </div>`;
         }
+
         if (dns?.length) {
             html += `<div class="osint-grid"><div class="osint-section-title" style="padding:0 14px;">DNS RECORDS</div>`;
-            dns.forEach(rec => { html += `<div class="osint-row"><span class="osint-k">${rec.type}</span><span class="osint-v">${rec.answers.map(a=>escHtml(a.data)).join('<br>')}</span></div>`; });
+            dns.forEach(rec => {
+                const vals = rec.answers.map(a => escHtml(a.data)).join('<br>');
+                html += `<div class="osint-row"><span class="osint-k">${rec.type}</span><span class="osint-v">${vals}</span></div>`;
+            });
             html += `</div>`;
         }
+
         html += `</div>`;
         return html;
     };
 
     // ─────────────────────────────────────────────
-    //  EMAIL BREACH CHECK
+    //  EMAIL BREACH CHECK  (HaveIBeenPwned — no key for domain search)
+    //  Falls back to XposedOrNot API for individual email
     // ─────────────────────────────────────────────
     const checkBreaches = async (email) => {
         try {
+            // XposedOrNot — completely free, no key, CORS ok
             const r = await fetch(`https://api.xposedornot.com/v1/check-email/${encodeURIComponent(email)}`);
             if (r.status === 404) return { email, breaches: [], clean: true };
             const d = await r.json();
             if (!d.breaches) return null;
+            // Flatten breach list
             const breaches = d.breaches.flat ? d.breaches.flat() : d.breaches;
             return { email, breaches: Array.isArray(breaches) ? breaches : [], clean: false };
         } catch(e) { return null; }
@@ -1155,13 +1061,15 @@
 
     const buildBreachCard = (result) => {
         if (!result) return '';
-        let html = `<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">BREACH_SCAN :: ${escHtml(result.email)}</span></div>`;
+        let html = `<div class="osint-card">
+            <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">BREACH_SCAN :: ${escHtml(result.email)}</span></div>`;
         if (result.clean || !result.breaches.length) {
             html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v" style="color:#7fba8a">NO BREACHES DETECTED</span></div></div>`;
         } else {
-            html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">FOUND IN</span><span class="osint-v" style="color:#ff6b6b">${result.breaches.length} BREACH${result.breaches.length>1?'ES':''}</span></div></div><div class="breach-list">`;
+            html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">FOUND IN</span><span class="osint-v" style="color:#ff6b6b">${result.breaches.length} BREACH${result.breaches.length>1?'ES':''}</span></div></div>`;
+            html += `<div class="breach-list">`;
             result.breaches.slice(0,15).forEach(b => {
-                const name = typeof b === 'string' ? b : (b.breachID||b.name||JSON.stringify(b));
+                const name = typeof b === 'string' ? b : (b.breachID || b.name || JSON.stringify(b));
                 html += `<div class="breach-item"><div class="breach-name">${escHtml(name)}</div></div>`;
             });
             html += `</div>`;
@@ -1171,36 +1079,41 @@
     };
 
     // ─────────────────────────────────────────────
-    //  USERNAME SEARCH
+    //  USERNAME SEARCH  (checks profile URLs directly)
     // ─────────────────────────────────────────────
     const USERNAME_PLATFORMS = [
-        { name: 'GitHub',     url: u => `https://github.com/${u}` },
-        { name: 'Reddit',     url: u => `https://www.reddit.com/user/${u}/about.json` },
-        { name: 'HackerNews', url: u => `https://hacker-news.firebaseio.com/v0/user/${u}.json` },
-        { name: 'Instagram',  url: u => `https://www.instagram.com/${u}/` },
-        { name: 'TikTok',     url: u => `https://www.tiktok.com/@${u}` },
-        { name: 'Twitter/X',  url: u => `https://twitter.com/${u}` },
-        { name: 'LinkedIn',   url: u => `https://www.linkedin.com/in/${u}` },
-        { name: 'Pinterest',  url: u => `https://www.pinterest.com/${u}/` },
-        { name: 'Twitch',     url: u => `https://www.twitch.tv/${u}` },
-        { name: 'YouTube',    url: u => `https://www.youtube.com/@${u}` },
-        { name: 'SoundCloud', url: u => `https://soundcloud.com/${u}` },
-        { name: 'Keybase',    url: u => `https://keybase.io/${u}` },
-        { name: 'Gitlab',     url: u => `https://gitlab.com/${u}` },
-        { name: 'Medium',     url: u => `https://medium.com/@${u}` },
-        { name: 'Dev.to',     url: u => `https://dev.to/${u}` },
-        { name: 'Steam',      url: u => `https://steamcommunity.com/id/${u}` },
-        { name: 'Spotify',    url: u => `https://open.spotify.com/user/${u}` },
-        { name: 'Patreon',    url: u => `https://www.patreon.com/${u}` },
-        { name: 'Fiverr',     url: u => `https://www.fiverr.com/${u}` },
-        { name: 'Gravatar',   url: u => `https://en.gravatar.com/${u}.json` },
+        { name: 'GitHub',      url: u => `https://github.com/${u}`,                    check: 'html' },
+        { name: 'Reddit',      url: u => `https://www.reddit.com/user/${u}/about.json`, check: 'json' },
+        { name: 'HackerNews',  url: u => `https://hacker-news.firebaseio.com/v0/user/${u}.json`, check: 'json' },
+        { name: 'Instagram',   url: u => `https://www.instagram.com/${u}/`,             check: 'html' },
+        { name: 'TikTok',      url: u => `https://www.tiktok.com/@${u}`,                check: 'html' },
+        { name: 'Twitter/X',   url: u => `https://twitter.com/${u}`,                    check: 'html' },
+        { name: 'LinkedIn',    url: u => `https://www.linkedin.com/in/${u}`,            check: 'html' },
+        { name: 'Pinterest',   url: u => `https://www.pinterest.com/${u}/`,             check: 'html' },
+        { name: 'Twitch',      url: u => `https://www.twitch.tv/${u}`,                  check: 'html' },
+        { name: 'YouTube',     url: u => `https://www.youtube.com/@${u}`,               check: 'html' },
+        { name: 'SoundCloud',  url: u => `https://soundcloud.com/${u}`,                 check: 'html' },
+        { name: 'Keybase',     url: u => `https://keybase.io/${u}`,                     check: 'html' },
+        { name: 'Gitlab',      url: u => `https://gitlab.com/${u}`,                     check: 'html' },
+        { name: 'Medium',      url: u => `https://medium.com/@${u}`,                    check: 'html' },
+        { name: 'Dev.to',      url: u => `https://dev.to/${u}`,                         check: 'html' },
+        { name: 'Steam',       url: u => `https://steamcommunity.com/id/${u}`,          check: 'html' },
+        { name: 'Spotify',     url: u => `https://open.spotify.com/user/${u}`,          check: 'html' },
+        { name: 'Patreon',     url: u => `https://www.patreon.com/${u}`,                check: 'html' },
+        { name: 'Fiverr',      url: u => `https://www.fiverr.com/${u}`,                 check: 'html' },
+        { name: 'Gravatar',    url: u => `https://en.gravatar.com/${u}.json`,           check: 'json' },
     ];
 
     const searchUsername = async (username) => {
         const results = await Promise.all(USERNAME_PLATFORMS.map(async p => {
             const url = p.url(username);
-            try { await fetch(url, { method: 'HEAD', mode: 'no-cors' }); return { platform: p.name, url, found: true }; }
-            catch(e) { return { platform: p.name, url, found: false }; }
+            try {
+                const r = await fetch(url, { method: 'HEAD', mode: 'no-cors' });
+                // no-cors means opaque response — status 0 means it got somewhere (not blocked entirely)
+                return { platform: p.name, url, found: true };
+            } catch(e) {
+                return { platform: p.name, url, found: false };
+            }
         }));
         return results;
     };
@@ -1208,24 +1121,35 @@
     const buildUsernameCard = (username, results) => {
         const found    = results.filter(r => r.found);
         const notFound = results.filter(r => !r.found);
-        let html = `<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">USERNAME_SWEEP :: ${escHtml(username)}</span></div><div class="osint-grid"><div class="osint-row"><span class="osint-k">HITS</span><span class="osint-v" style="color:#7fba8a">${found.length} / ${results.length} platforms</span></div></div><div class="username-grid">`;
-        found.forEach(r => { html += `<a href="${r.url}" target="_blank" class="username-chip found"><div class="dot"></div>${escHtml(r.platform)}</a>`; });
-        notFound.forEach(r => { html += `<span class="username-chip notfound"><div class="dot"></div>${escHtml(r.platform)}</span>`; });
+        let html = `<div class="osint-card">
+            <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">USERNAME_SWEEP :: ${escHtml(username)}</span></div>
+            <div class="osint-grid">
+                <div class="osint-row"><span class="osint-k">HITS</span><span class="osint-v" style="color:#7fba8a">${found.length} / ${results.length} platforms</span></div>
+            </div>
+            <div class="username-grid">`;
+        found.forEach(r => {
+            html += `<a href="${r.url}" target="_blank" class="username-chip found"><div class="dot"></div>${escHtml(r.platform)}</a>`;
+        });
+        notFound.forEach(r => {
+            html += `<span class="username-chip notfound"><div class="dot"></div>${escHtml(r.platform)}</span>`;
+        });
         html += `</div></div>`;
         return html;
     };
 
     // ─────────────────────────────────────────────
-    //  EXIF READER
+    //  EXIF READER  (injected as a UI element into the chat)
     // ─────────────────────────────────────────────
     const buildExifUploader = (preloadedFile = null) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'osint-card';
         wrapper.style.marginTop = '15px';
+
         const header = document.createElement('div');
         header.className = 'osint-card-header';
         header.innerHTML = `<div class="blink"></div><span class="osint-card-title">EXIF_EXTRACTOR :: DROP IMAGE TO ANALYSE</span>`;
         wrapper.appendChild(header);
+
         const dropArea = document.createElement('div');
         dropArea.className = 'exif-upload-area';
         dropArea.innerHTML = `<i class="fas fa-camera" style="font-size:1.5rem;margin-bottom:8px;display:block"></i>Click or drag an image here`;
@@ -1233,28 +1157,58 @@
         fileInput.type = 'file';
         fileInput.accept = 'image/*';
         dropArea.appendChild(fileInput);
+
         const resultsDiv = document.createElement('div');
         resultsDiv.className = 'osint-grid';
         resultsDiv.style.display = 'none';
+
         const processFile = async (file) => {
             dropArea.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Extracting metadata...`;
             try {
                 const exif = await exifr.parse(file, true);
                 resultsDiv.style.display = 'flex';
                 resultsDiv.innerHTML = '';
+
                 if (!exif || !Object.keys(exif).length) {
-                    resultsDiv.innerHTML = `<div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">No EXIF metadata found.</span></div>`;
+                    resultsDiv.innerHTML = `<div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">No EXIF metadata found in this file.</span></div>`;
                     dropArea.innerHTML = `<i class="fas fa-check"></i> ${escHtml(file.name)}`;
                     return;
                 }
-                const fields = [['MAKE',exif.Make],['MODEL',exif.Model],['SOFTWARE',exif.Software],['DATE_TAKEN',exif.DateTimeOriginal||exif.DateTime],['GPS_LAT',exif.latitude],['GPS_LON',exif.longitude],['GPS_ALT',exif.GPSAltitude?`${exif.GPSAltitude.toFixed(1)}m`:null],['WIDTH',exif.ImageWidth||exif.ExifImageWidth],['HEIGHT',exif.ImageHeight||exif.ExifImageHeight],['F_STOP',exif.FNumber?`f/${exif.FNumber}`:null],['EXPOSURE',exif.ExposureTime?`1/${Math.round(1/exif.ExposureTime)}s`:null],['ISO',exif.ISO],['FOCAL_LEN',exif.FocalLength?`${exif.FocalLength}mm`:null]];
-                fields.filter(([,v]) => v != null).forEach(([k,v]) => { resultsDiv.innerHTML += `<div class="osint-row"><span class="osint-k">${k}</span><span class="osint-v">${escHtml(String(v))}</span></div>`; });
+
+                const fields = [
+                    ['MAKE',        exif.Make],
+                    ['MODEL',       exif.Model],
+                    ['SOFTWARE',    exif.Software],
+                    ['DATE_TAKEN',  exif.DateTimeOriginal || exif.DateTime],
+                    ['GPS_LAT',     exif.latitude],
+                    ['GPS_LON',     exif.longitude],
+                    ['GPS_ALT',     exif.GPSAltitude ? `${exif.GPSAltitude.toFixed(1)}m` : null],
+                    ['WIDTH',       exif.ImageWidth || exif.ExifImageWidth],
+                    ['HEIGHT',      exif.ImageHeight || exif.ExifImageHeight],
+                    ['F_STOP',      exif.FNumber ? `f/${exif.FNumber}` : null],
+                    ['EXPOSURE',    exif.ExposureTime ? `1/${Math.round(1/exif.ExposureTime)}s` : null],
+                    ['ISO',         exif.ISO],
+                    ['FOCAL_LEN',   exif.FocalLength ? `${exif.FocalLength}mm` : null],
+                ];
+                fields.filter(([,v]) => v != null).forEach(([k,v]) => {
+                    resultsDiv.innerHTML += `<div class="osint-row"><span class="osint-k">${k}</span><span class="osint-v">${escHtml(String(v))}</span></div>`;
+                });
+
+                // If GPS found — add map pin
                 if (exif.latitude && exif.longitude) {
-                    const mapData = { query: `Photo location: ${file.name}`, primary: { name: `Photo GPS: ${exif.latitude.toFixed(5)}, ${exif.longitude.toFixed(5)}`, lat: exif.latitude, lon: exif.longitude, type: 'exif_gps', address: '' }, alternates: [] };
-                    wrapper.appendChild(buildMapBlock(mapData));
+                    const mapData = {
+                        query: `Photo location: ${file.name}`,
+                        primary: { name: `Photo GPS: ${exif.latitude.toFixed(5)}, ${exif.longitude.toFixed(5)}`, lat: exif.latitude, lon: exif.longitude, type: 'exif_gps', address: '' },
+                        alternates: []
+                    };
+                    const mapBlock = buildMapBlock(mapData);
+                    wrapper.appendChild(mapBlock);
+
+                    // Also feed to NOX as context
                     userInput.value = `EXIF GPS data extracted from ${file.name}: coordinates ${exif.latitude.toFixed(6)}, ${exif.longitude.toFixed(6)}. Camera: ${exif.Make||'?'} ${exif.Model||'?'}. Date: ${exif.DateTimeOriginal||'unknown'}. Analyse this location.`;
                     sendMessage();
                 }
+
                 dropArea.innerHTML = `<i class="fas fa-check" style="color:#7fba8a"></i> ${escHtml(file.name)}`;
             } catch(e) {
                 resultsDiv.style.display = 'flex';
@@ -1262,19 +1216,26 @@
                 dropArea.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:#ff6b6b"></i> Failed`;
             }
         };
+
         dropArea.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
         dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.style.borderColor='var(--accent-red)'; });
         dropArea.addEventListener('dragleave', () => { dropArea.style.borderColor=''; });
         dropArea.addEventListener('drop', e => { e.preventDefault(); dropArea.style.borderColor=''; if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]); });
+
         wrapper.appendChild(dropArea);
         wrapper.appendChild(resultsDiv);
+
+        // If a file was passed directly (from upload button), process immediately
         if (preloadedFile) processFile(preloadedFile);
+
         return wrapper;
     };
 
     // ─────────────────────────────────────────────
-    //  INTENT CLASSIFIER (AI — for OSINT types only)
+    //  UNIFIED AI INTENT CLASSIFIER
+    //  One call figures out ALL OSINT intents from natural language.
+    //  Returns { emails, ips, domains, usernames, wants_exif, wants_spatial }
     // ─────────────────────────────────────────────
     const classifyIntent = async (text) => {
         const systemPrompt = `You are a strict OSINT intent classifier. Extract ONLY what the operator is explicitly asking to investigate.
@@ -1282,24 +1243,44 @@ Reply ONLY with raw JSON, no markdown, no explanation:
 {
   "emails":        ["only literal email addresses the operator wants investigated"],
   "ips":           ["only literal IPv4 addresses the operator wants traced"],
-  "domains":       ["only standalone domain names e.g. example.com — NEVER include gmail.com yahoo.com etc."],
+  "domains":       ["only standalone domain names the operator wants looked up e.g. example.com - NEVER include email provider domains like gmail.com yahoo.com hotmail.com protonmail.com"],
   "usernames":     ["only usernames/handles the operator wants searched across social platforms"],
   "wants_exif":    false,
   "wants_spatial": false
 }
 
-wants_spatial: true if the operator mentions any real-world place name, landmark, city, address, or asks to locate/find somewhere on a map.
-wants_exif: true only if operator asks about image/photo metadata.
-Always return all fields. Use [] for empty arrays.`;
+STRICT rules — only include something if the operator is EXPLICITLY asking to investigate it:
+- emails: must be a real email address literally typed e.g. john@example.com
+- ips: must be a real IPv4 address literally typed e.g. 185.220.101.34. Do NOT invent IPs.
+- domains: must be a standalone domain the operator wants WHOIS/DNS on. Do NOT extract domains from email addresses. Do NOT include common email providers.
+- usernames: only if operator explicitly asks to find/search/check someone's social presence
+- wants_exif: true ONLY if operator asks about image/photo metadata
+- wants_spatial: true ONLY if operator mentions a real-world location to find on a map
+
+If the operator mentions an IP to trace → put it in ips, set wants_spatial false (spatial is for place names, not IPs).
+If the operator mentions a place name → set wants_spatial true, do NOT put anything in ips or domains.
+These tools are mutually exclusive per message — do not mix them.
+
+Always return all fields. Use [] for empty arrays, false for booleans.`;
+
         try {
             const r = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages: [{ role:"system", content: systemPrompt },{ role:"user", content: text }], temperature: 0.0, max_tokens: 300 })
+                body: JSON.stringify({
+                    model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: text }
+                    ],
+                    temperature: 0.0,
+                    max_tokens: 300
+                })
             });
             const data = await r.json();
             const raw = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
             const parsed = JSON.parse(raw);
+            // Sanitise
             return {
                 emails:        Array.isArray(parsed.emails)    ? parsed.emails    : [],
                 ips:           Array.isArray(parsed.ips)       ? parsed.ips       : [],
@@ -1309,6 +1290,8 @@ Always return all fields. Use [] for empty arrays.`;
                 wants_spatial: !!parsed.wants_spatial,
             };
         } catch(e) {
+            console.error('NOX_CLASSIFY_ERR', e);
+            // Fallback: basic regex extraction so nothing is totally lost
             const emailFallback = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g) || [];
             const ipFallback    = [...text.matchAll(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g)].map(m=>m[0]);
             return { emails: emailFallback, ips: ipFallback, domains: [], usernames: [], wants_exif: false, wants_spatial: false };
@@ -1323,14 +1306,17 @@ Always return all fields. Use [] for empty arrays.`;
         if (!message) return;
         const currentCase = cases.find(c => c.id === currentCaseId);
         if (currentCase.messages.length <= 1) currentCase.title = message.substring(0, 30);
+
         currentCase.messages.push({ role: 'user', content: message });
         if (!isGraphView) appendMessageUI('user', message);
         userInput.value = '';
         userInput.style.height = 'auto';
         if (isGraphView) renderGraph();
 
+        // Typing indicator
         const typingDiv = document.createElement('div');
         typingDiv.className = 'message assistant-msg';
+
         typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">Analyzing...</div>`;
         if (!isGraphView) { chatContainer.appendChild(typingDiv); scrollToBottom(); }
         if (isCallMode) { callStatus.textContent = "ANALYZING..."; callSpectrum.classList.remove('active'); }
@@ -1339,20 +1325,25 @@ Always return all fields. Use [] for empty arrays.`;
         let mapData = null;
         let osintContext = '';
 
+        // Single AI call classifies all intent from natural language
         const intent = await classifyIntent(message);
 
+        // Spatial intent (separate dedicated classifier for map accuracy)
+        const spatialIntent = intent.wants_spatial ? await detectSpatialIntent(message) : null;
+
+        // Run all enrichments in parallel based on classified intent
         const email0    = intent.emails[0]    || null;
         const domain0   = intent.domains[0]   || null;
         const username0 = intent.usernames[0] || null;
         const publicIPs = intent.ips.filter(ip => !PRIVATE_IP.test(ip));
 
         const [gravatarResult, breachResult, whoisResult, dnsResult, sslResult, usernameResults, ...ipResults] = await Promise.all([
-            email0    ? fetchGravatar(email0)    : Promise.resolve(null),
-            email0    ? checkBreaches(email0)    : Promise.resolve(null),
-            domain0   ? lookupWHOIS(domain0)     : Promise.resolve(null),
-            domain0   ? lookupDNS(domain0)       : Promise.resolve(null),
-            domain0   ? lookupSSL(domain0)       : Promise.resolve(null),
-            username0 ? searchUsername(username0) : Promise.resolve(null),
+            email0    ? fetchGravatar(email0)                          : Promise.resolve(null),
+            email0    ? checkBreaches(email0)                          : Promise.resolve(null),
+            domain0   ? lookupWHOIS(domain0)                           : Promise.resolve(null),
+            domain0   ? lookupDNS(domain0)                             : Promise.resolve(null),
+            domain0   ? lookupSSL(domain0)                             : Promise.resolve(null),
+            username0 ? searchUsername(username0)                      : Promise.resolve(null),
             ...publicIPs.map(ip => lookupIP(ip))
         ]);
 
@@ -1383,40 +1374,49 @@ Always return all fields. Use [] for empty arrays.`;
             scrollToBottom();
         }
 
+        // Build IP cards + collect map data from first geolocatable IP
         ipResults.forEach((d, i) => {
             if (!d) return;
             injectionHTML += `\n\n${buildIPCard(d)}`;
             if (d._error) return;
             if (i === 0) {
-                osintContext += ` IP: ${d.query} → ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'}. ISP: ${d.isp||'?'}. Coords: ${d.lat},${d.lon}.${d.proxy?' PROXY/VPN.':''}${d.hosting?' DATACENTER.':''}`;
+                osintContext += ` IP: ${d.query} → ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'}. ISP: ${d.isp||'?'}. Org: ${d.org||'?'}. Coords: ${d.lat},${d.lon}.${d.proxy?' PROXY/VPN.':''}${d.hosting?' DATACENTER.':''}`;
                 if (!mapData && d.lat && d.lon) {
-                    mapData = { query: `IP ${d.query}`, primary: { name: `${d.city||'Unknown'}, ${d.country||'?'} — ${d.isp||'?'}`, lat: d.lat, lon: d.lon, type: 'ip_geolocation', address: `${d.city||''}, ${d.regionName||''}, ${d.country||''}` }, alternates: [] };
+                    mapData = {
+                        query: `IP ${d.query}`,
+                        primary: { name: `${d.city||'Unknown'}, ${d.country||'?'} — ${d.isp||'?'}`, lat: d.lat, lon: d.lon, type: 'ip_geolocation', address: `${d.city||''}, ${d.regionName||''}, ${d.country||''}` },
+                        alternates: []
+                    };
                 }
             }
         });
 
-        if (intent.wants_spatial) {
+        // Spatial intent map (overrides IP map if both present)
+        if (spatialIntent) {
             if (!isGraphView && typingDiv.querySelector('.msg-content')) {
                 typingDiv.querySelector('.msg-content').textContent = 'Running spatial intercept...';
             }
-            const spatialResult = await runSpatialIntercept(message);
-            if (spatialResult) {
-                mapData = spatialResult;
-                osintContext += ` LOCATION: ${spatialResult.primary.name} at ${spatialResult.primary.lat.toFixed(5)},${spatialResult.primary.lon.toFixed(5)}.`;
+            const spatialMap = await runSpatialIntercept(spatialIntent);
+            if (spatialMap) {
+                mapData = spatialMap;
+                osintContext += ` LOCATION: ${spatialMap.primary.name} at ${spatialMap.primary.lat.toFixed(5)},${spatialMap.primary.lon.toFixed(5)}.`;
             }
         }
 
         try {
+            // Build clearly separated context blocks per tool so AI doesn't mix them
             const contextBlocks = [];
             if (ipResults.some(d => d && !d._error)) {
-                const ipLines = ipResults.filter(d=>d&&!d._error).map(d=>`IP ${d.query}: ${d.city||'?'}, ${d.country||'?'} | ISP: ${d.isp||'?'} | Coords: ${d.lat},${d.lon}${d.proxy?' | PROXY/VPN':''}${d.hosting?' | DATACENTER':''}`).join('\n');
+                const ipLines = ipResults.filter(d=>d&&!d._error).map(d=>
+                    `IP ${d.query}: ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'} | ISP: ${d.isp||'?'} | Org: ${d.org||'?'} | Coords: ${d.lat},${d.lon}${d.proxy?' | PROXY/VPN':''}${d.hosting?' | DATACENTER':''}`
+                ).join('\n');
                 contextBlocks.push(`[IP_GEOLOCATION]\n${ipLines}`);
             }
             if (whoisResult?.registered || dnsResult?.length || sslResult) {
                 const domainLines = [];
-                if (whoisResult?.registered) domainLines.push(`WHOIS: ${domain0} | Registrar: ${whoisResult.registrar} | Created: ${whoisResult.created} | Expires: ${whoisResult.expires}`);
+                if (whoisResult?.registered) domainLines.push(`WHOIS: ${domain0} | Registrar: ${whoisResult.registrar} | Created: ${whoisResult.created} | Expires: ${whoisResult.expires} | Status: ${whoisResult.status}`);
                 if (dnsResult?.length) domainLines.push(`DNS: ${dnsResult.map(r=>`${r.type}: ${r.answers.map(a=>a.data).join(', ')}`).join(' | ')}`);
-                if (sslResult) domainLines.push(`SSL: Issuer: ${sslResult.issuer} | Valid: ${sslResult.notBefore} to ${sslResult.notAfter}`);
+                if (sslResult) domainLines.push(`SSL: Issuer: ${sslResult.issuer} | Valid: ${sslResult.notBefore} to ${sslResult.notAfter} | SANs: ${sslResult.dnsNames.join(', ')}`);
                 contextBlocks.push(`[DOMAIN_INTEL: ${domain0}]\n${domainLines.join('\n')}`);
             }
             if (breachResult && !breachResult.clean && breachResult.breaches.length) {
@@ -1430,30 +1430,45 @@ Always return all fields. Use [] for empty arrays.`;
                 contextBlocks.push(`[SPATIAL_INTERCEPT]\nPrimary: ${mapData.primary.name} | Coords: ${mapData.primary.lat.toFixed(5)},${mapData.primary.lon.toFixed(5)}${mapData.alternates.length ? ' | Alternates: '+mapData.alternates.map(a=>a.name).join(', ') : ''}`);
             }
 
-            const systemContent = "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags.\n\nEach [BLOCK] below is a separate OSINT result — treat them independently. Do not conflate different data sources." + (contextBlocks.length ? '\n\n' + contextBlocks.join('\n\n') : '');
+            const systemContent = "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags.\n\nEach [BLOCK] below is a separate OSINT result — treat them independently. Do not conflate IP geolocation with spatial map data, do not attribute domain info to an IP, do not mix tools. Reference each block accurately on its own terms." + (contextBlocks.length ? '\n\n' + contextBlocks.join('\n\n') : '');
 
-            const apiMessages = [{ role: "system", content: systemContent }];
+            const apiMessages = [{
+                role: "system",
+                content: systemContent
+            }];
             currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role: m.role, content: m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'') }));
 
-            const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages: apiMessages, temperature: 0.7 }) });
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages: apiMessages, temperature: 0.7 })
+            });
+
             if (!isGraphView) typingDiv.remove();
             const data      = await response.json();
             const replyText = data.choices[0].message.content;
+
             const mapComment = mapData ? `<!--NOXMAP:${JSON.stringify(mapData)}-->` : '';
             const fullReply  = replyText + injectionHTML + mapComment;
+
             currentCase.messages.push({ role: 'assistant', content: fullReply });
             saveState();
+
             if (isGraphView) renderGraph();
             else appendMessageUI('assistant', fullReply);
 
             if (isCallMode && 'speechSynthesis' in window) {
                 const cleanSpeech = replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi, '$1').replace(/<[^>]*>?/gm, '');
                 const utterance   = new SpeechSynthesisUtterance(cleanSpeech);
-                utterance.pitch = 0.7; utterance.rate = 0.95;
+                utterance.pitch   = 0.7;
+                utterance.rate    = 0.95;
                 utterance.onstart = () => { if (isCallMode) { callSpectrum.classList.add('active'); callStatus.textContent = "NOX_UNIT TRANSMITTING"; } };
                 utterance.onend   = () => { if (isCallMode) { callSpectrum.classList.remove('active'); callStatus.textContent = "AWAITING INPUT..."; } };
                 window.speechSynthesis.speak(utterance);
-            } else if (isCallMode) { callStatus.textContent = "AWAITING INPUT..."; }
+            } else if (isCallMode) {
+                callStatus.textContent = "AWAITING INPUT...";
+            }
+
         } catch(e) {
             if (!isGraphView) { typingDiv.remove(); appendMessageUI('assistant', 'SIGNAL LOST: Link unstable.'); }
             if (isCallMode) callStatus.textContent = "SIGNAL INTERRUPTED";
@@ -1470,13 +1485,20 @@ Always return all fields. Use [] for empty arrays.`;
         const edges = new vis.DataSet([]);
         const seenEntities = new Set();
         const delBtn = document.getElementById('node-delete-btn');
+
         const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
         const ipRegex    = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
         const phoneRegex = /(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
         const noxRegex   = /\[EVIDENCE:\s*(.*?)\]/gi;
+
         currentCase.messages.forEach(msg => {
             const text = msg.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'');
-            const matches = [...[...text.matchAll(emailRegex)].map(m=>({val:m[0],color:'#2c4a5e',shape:'box'})),...[...text.matchAll(ipRegex)].map(m=>({val:m[0],color:'#4a5e2c',shape:'ellipse'})),...[...text.matchAll(phoneRegex)].map(m=>({val:m[0],color:'#5e4a2c',shape:'ellipse'})),...[...text.matchAll(noxRegex)].map(m=>({val:m[1],color:'#8b0000',shape:'hexagon'}))];
+            const matches = [
+                ...[...text.matchAll(emailRegex)].map(m => ({ val:m[0], color:'#2c4a5e', shape:'box' })),
+                ...[...text.matchAll(ipRegex)].map(m    => ({ val:m[0], color:'#4a5e2c', shape:'ellipse' })),
+                ...[...text.matchAll(phoneRegex)].map(m => ({ val:m[0], color:'#5e4a2c', shape:'ellipse' })),
+                ...[...text.matchAll(noxRegex)].map(m   => ({ val:m[1], color:'#8b0000', shape:'hexagon' }))
+            ];
             matches.forEach(match => {
                 const id = match.val.trim();
                 if (!id || seenEntities.has(id)) return;
@@ -1486,9 +1508,15 @@ Always return all fields. Use [] for empty arrays.`;
                 edges.add({ from:'ROOT', to:id, color:{color:'#455a64'} });
             });
         });
+
         const container = document.getElementById('evidence-board');
         if (network) network.destroy();
-        network = new vis.Network(container, {nodes,edges}, { physics:{stabilization:true,barnesHut:{springLength:150}}, nodes:{borderWidth:2,shadow:true}, edges:{width:1.5,shadow:true} });
+        network = new vis.Network(container, {nodes,edges}, {
+            physics: { stabilization:true, barnesHut:{springLength:150} },
+            nodes: { borderWidth:2, shadow:true },
+            edges: { width:1.5, shadow:true }
+        });
+
         let selectedNodeId = null;
         const hideBtn = () => { delBtn.style.display='none'; };
         network.on("click", hideBtn);
@@ -1499,16 +1527,34 @@ Always return all fields. Use [] for empty arrays.`;
                 if (nodeId === 'ROOT') return;
                 selectedNodeId = nodeId;
                 const domPos = network.canvasToDOM(network.getPositions([nodeId])[nodeId]);
-                delBtn.style.display = 'flex'; delBtn.style.left = (domPos.x-15)+'px'; delBtn.style.top = (domPos.y-45)+'px';
+                delBtn.style.display  = 'flex';
+                delBtn.style.left = (domPos.x - 15) + 'px';
+                delBtn.style.top  = (domPos.y - 45) + 'px';
             }
         });
-        delBtn.onclick = e => { e.stopPropagation(); if (selectedNodeId) { if (!currentCase.blacklist) currentCase.blacklist=[]; currentCase.blacklist.push(selectedNodeId); saveState(); nodes.remove(selectedNodeId); hideBtn(); } };
+        delBtn.onclick = e => {
+            e.stopPropagation();
+            if (selectedNodeId) {
+                if (!currentCase.blacklist) currentCase.blacklist = [];
+                currentCase.blacklist.push(selectedNodeId);
+                saveState(); nodes.remove(selectedNodeId); hideBtn();
+            }
+        };
     };
 
     const toggleGraphView = () => {
         isGraphView = !isGraphView;
-        if (isGraphView) { chatContainer.style.display='none'; evidenceBoard.style.display='block'; graphToggleBtn.classList.add('active'); renderGraph(); }
-        else { chatContainer.style.display='flex'; evidenceBoard.style.display='none'; graphToggleBtn.classList.remove('active'); scrollToBottom(); }
+        if (isGraphView) {
+            chatContainer.style.display = 'none';
+            evidenceBoard.style.display = 'block';
+            graphToggleBtn.classList.add('active');
+            renderGraph();
+        } else {
+            chatContainer.style.display = 'flex';
+            evidenceBoard.style.display = 'none';
+            graphToggleBtn.classList.remove('active');
+            scrollToBottom();
+        }
     };
 
     // ─────────────────────────────────────────────
@@ -1518,18 +1564,24 @@ Always return all fields. Use [] for empty arrays.`;
         const currentCase = cases.find(c => c.id === currentCaseId);
         if (!currentCase) return;
         let log = `NOX DIGITAL DETECTIVE | INVESTIGATION LOG\n===========================================\nCASE_ID:   ${currentCase.id}\nTITLE:     ${currentCase.title}\nTIMESTAMP: ${new Date(currentCase.timestamp).toLocaleString()}\n===========================================\n\n`;
-        currentCase.messages.forEach(msg => { const label = msg.role==='assistant'?'[NOX_UNIT]':'[OPERATOR]'; const clean = msg.content.replace(/<[^>]*>?/gm,'').replace(/<!--NOXMAP:[\s\S]*?-->/g,''); log += `${label}\n${clean}\n\n`; });
-        const blob = new Blob([log],{type:'text/plain'});
+        currentCase.messages.forEach(msg => {
+            const label   = msg.role === 'assistant' ? '[NOX_UNIT]' : '[OPERATOR]';
+            const clean   = msg.content.replace(/<[^>]*>?/gm,'').replace(/<!--NOXMAP:[\s\S]*?-->/g,'');
+            log += `${label}\n${clean}\n\n`;
+        });
+        const blob = new Blob([log], {type:'text/plain'});
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
-        a.href=url; a.download=`${currentCase.id}.txt`;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+        a.href = url; a.download = `${currentCase.id}.txt`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     };
 
     // ─────────────────────────────────────────────
-    //  SIDEBAR / EVENTS
+    //  SIDEBAR / EVENT LISTENERS
     // ─────────────────────────────────────────────
     const toggleSidebar = () => { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); document.body.classList.toggle('sidebar-open'); };
+
     menuBtn.addEventListener('click',         toggleSidebar);
     closeSidebarBtn.addEventListener('click', toggleSidebar);
     sidebarOverlay.addEventListener('click',  toggleSidebar);
@@ -1537,9 +1589,9 @@ Always return all fields. Use [] for empty arrays.`;
     sendBtn.addEventListener('click',         sendMessage);
     exportBtn.addEventListener('click',       downloadLog);
     graphToggleBtn.addEventListener('click',  toggleGraphView);
-    clearBtn.addEventListener('click', () => { if(confirm('Purge logs?')) deleteCase(currentCaseId); });
+    clearBtn.addEventListener('click',        () => { if(confirm('Purge logs?')) deleteCase(currentCaseId); });
     userInput.addEventListener('input',  function() { this.style.height='auto'; this.style.height=(this.scrollHeight)+'px'; });
-    userInput.addEventListener('keydown', e => { if (e.key==='Enter'&&!e.shiftKey) { e.preventDefault(); sendMessage(); } });
+    userInput.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
 
     // ─────────────────────────────────────────────
     //  ARCHIVE
@@ -1549,15 +1601,16 @@ Always return all fields. Use [] for empty arrays.`;
         cases.forEach(c => {
             if (!c || !c.id) return;
             const li = document.createElement('li');
-            li.className = `case-item ${c.id===currentCaseId?'active':''}`;
+            li.className = `case-item ${c.id === currentCaseId ? 'active' : ''}`;
             const textSpan = document.createElement('span');
             textSpan.className = 'case-item-text';
             textSpan.textContent = c.title;
             const delBtn = document.createElement('button');
             delBtn.className = 'case-delete-btn';
             delBtn.innerHTML = '<i class="fas fa-trash"></i>';
+
             let pressTimer;
-            const startPress  = () => { pressTimer = setTimeout(()=>{ document.querySelectorAll('.case-item').forEach(i=>i.classList.remove('show-delete')); li.classList.add('show-delete'); }, 600); };
+            const startPress  = () => { pressTimer = setTimeout(() => { document.querySelectorAll('.case-item').forEach(i => i.classList.remove('show-delete')); li.classList.add('show-delete'); }, 600); };
             const cancelPress = () => clearTimeout(pressTimer);
             li.addEventListener('touchstart', startPress, {passive:true});
             li.addEventListener('mousedown',  startPress);
@@ -1567,12 +1620,15 @@ Always return all fields. Use [] for empty arrays.`;
             li.addEventListener('click', e => {
                 if (e.target.closest('.case-delete-btn')) return;
                 if (li.classList.contains('show-delete')) { li.classList.remove('show-delete'); return; }
-                currentCaseId = c.id; saveState();
-                if (isGraphView) { renderGraph(); caseIdDisplay.textContent=currentCaseId; } else renderChat();
+                currentCaseId = c.id;
+                saveState();
+                if (isGraphView) { renderGraph(); caseIdDisplay.textContent = currentCaseId; } else renderChat();
                 if (window.innerWidth < 768) toggleSidebar();
             });
             delBtn.addEventListener('click', e => { e.stopPropagation(); deleteCase(c.id); });
-            li.appendChild(textSpan); li.appendChild(delBtn); caseListEl.appendChild(li);
+            li.appendChild(textSpan);
+            li.appendChild(delBtn);
+            caseListEl.appendChild(li);
         });
     };
 
@@ -1592,33 +1648,44 @@ Always return all fields. Use [] for empty arrays.`;
         callTriggerBtn.innerHTML = '<i class="fas fa-phone-alt"></i>';
         callTriggerBtn.title = "Call Mode";
         document.querySelector('.header-right').prepend(callTriggerBtn);
+
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition = null;
+
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
-            recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-US';
-            callTriggerBtn.addEventListener('click', () => { isCallMode=true; callOverlay.classList.add('active'); callStatus.textContent="SECURE LINE ESTABLISHED"; });
-            callEndBtn.addEventListener('click', () => { isCallMode=false; callOverlay.classList.remove('active'); recognition.stop(); window.speechSynthesis.cancel(); callSpectrum.classList.remove('active'); callMicBtn.classList.remove('listening'); });
-            callMicBtn.addEventListener('click', () => { if(callMicBtn.classList.contains('listening')) recognition.stop(); else { window.speechSynthesis.cancel(); recognition.start(); } });
-            recognition.onstart  = () => { callMicBtn.classList.add('listening'); callSpectrum.classList.add('active'); callStatus.textContent="LISTENING..."; };
-            recognition.onresult = e  => { userInput.value=e.results[0][0].transcript; callStatus.textContent="TRANSMITTING..."; sendMessage(); };
-            recognition.onerror  = () => { callMicBtn.classList.remove('listening'); callSpectrum.classList.remove('active'); callStatus.textContent="SIGNAL INTERRUPTED"; };
-            recognition.onend    = () => { callMicBtn.classList.remove('listening'); if(isCallMode&&callStatus.textContent!=="TRANSMITTING..."){callStatus.textContent="AWAITING INPUT..."; callSpectrum.classList.remove('active');} };
-        } else { callTriggerBtn.style.display='none'; }
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            callTriggerBtn.addEventListener('click', () => { isCallMode = true; callOverlay.classList.add('active'); callStatus.textContent = "SECURE LINE ESTABLISHED"; });
+            callEndBtn.addEventListener('click', () => { isCallMode = false; callOverlay.classList.remove('active'); recognition.stop(); window.speechSynthesis.cancel(); callSpectrum.classList.remove('active'); callMicBtn.classList.remove('listening'); });
+            callMicBtn.addEventListener('click', () => { if (callMicBtn.classList.contains('listening')) recognition.stop(); else { window.speechSynthesis.cancel(); recognition.start(); } });
+            recognition.onstart  = () => { callMicBtn.classList.add('listening'); callSpectrum.classList.add('active'); callStatus.textContent = "LISTENING..."; };
+            recognition.onresult = e  => { userInput.value = e.results[0][0].transcript; callStatus.textContent = "TRANSMITTING..."; sendMessage(); };
+            recognition.onerror  = e  => { callMicBtn.classList.remove('listening'); callSpectrum.classList.remove('active'); callStatus.textContent = "SIGNAL INTERRUPTED"; };
+            recognition.onend    = () => { callMicBtn.classList.remove('listening'); if (isCallMode && callStatus.textContent !== "TRANSMITTING...") { callStatus.textContent = "AWAITING INPUT..."; callSpectrum.classList.remove('active'); } };
+        } else {
+            callTriggerBtn.style.display = 'none';
+        }
     };
 
+    // ── IMAGE UPLOAD BUTTON → direct EXIF processing ──
     document.getElementById('img-upload-input').addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        e.target.value = '';
+        e.target.value = ''; // reset so same file can be re-selected
+
         const exifMsg = document.createElement('div');
         exifMsg.className = 'message assistant-msg';
         exifMsg.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated — processing ${escHtml(file.name)}</div>`;
-        exifMsg.querySelector('.msg-content').appendChild(buildExifUploader(file));
+        const uploader = buildExifUploader(file); // pass file directly
+        exifMsg.querySelector('.msg-content').appendChild(uploader);
         chatContainer.appendChild(exifMsg);
         scrollToBottom();
     });
 
+    // ── SPLASH: remove from DOM after full animation (9s hold + 1.5s fade = 10.5s) ──
     const splash = document.getElementById('splash');
     setTimeout(() => {
         splash.style.transition = 'opacity 1.5s ease';
@@ -1631,4 +1698,4 @@ Always return all fields. Use [] for empty arrays.`;
     init();
     </script>
 </body>
-</html>
+    </html>
