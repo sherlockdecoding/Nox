@@ -13,11 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
@@ -27,55 +22,132 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Create package.json
+      - name: Create Android WebView project
         run: |
-          cat > package.json << 'EOF'
-          {
-            "name": "nox",
-            "version": "1.0.0",
-            "description": "NOX Digital Detective"
+          mkdir -p NoxApp/app/src/main/java/com/nox/detective
+          mkdir -p NoxApp/app/src/main/res/layout
+          mkdir -p NoxApp/app/src/main/res/values
+          mkdir -p NoxApp/app/src/main/res/mipmap-hdpi
+          mkdir -p NoxApp/gradle/wrapper
+
+          # settings.gradle
+          cat > NoxApp/settings.gradle << 'EOF'
+          rootProject.name = "NOX"
+          include ':app'
+          EOF
+
+          # build.gradle (root)
+          cat > NoxApp/build.gradle << 'EOF'
+          buildscript {
+              repositories { google(); mavenCentral() }
+              dependencies { classpath 'com.android.tools.build:gradle:8.2.0' }
+          }
+          allprojects {
+              repositories { google(); mavenCentral() }
           }
           EOF
 
-      - name: Install Capacitor
-        run: npm install @capacitor/core @capacitor/cli @capacitor/android
-
-      - name: Create capacitor config
-        run: |
-          cat > capacitor.config.json << 'EOF'
-          {
-            "appId": "com.nox.detective",
-            "appName": "NOX",
-            "webDir": ".",
-            "server": {
-              "url": "https://nox-ai.vercel.app",
-              "cleartext": true
-            }
+          # build.gradle (app)
+          cat > NoxApp/app/build.gradle << 'EOF'
+          apply plugin: 'com.android.application'
+          android {
+              compileSdkVersion 34
+              defaultConfig {
+                  applicationId "com.nox.detective"
+                  minSdkVersion 21
+                  targetSdkVersion 34
+                  versionCode 1
+                  versionName "1.0"
+              }
+              buildTypes {
+                  release { minifyEnabled false }
+              }
+              namespace "com.nox.detective"
           }
           EOF
 
-      - name: Add Android platform
-        run: npx cap add android
+          # gradle wrapper properties
+          cat > NoxApp/gradle/wrapper/gradle-wrapper.properties << 'EOF'
+          distributionBase=GRADLE_USER_HOME
+          distributionPath=wrapper/dists
+          distributionUrl=https\://services.gradle.org/distributions/gradle-8.4-bin.zip
+          zipStoreBase=GRADLE_USER_HOME
+          zipStorePath=wrapper/dists
+          EOF
 
-      - name: Create missing plugins file
+          # Download gradle wrapper jar
+          curl -o NoxApp/gradle/wrapper/gradle-wrapper.jar \
+            https://raw.githubusercontent.com/gradle/gradle/v8.4.0/gradle/wrapper/gradle-wrapper.jar || \
+          wget -O NoxApp/gradle/wrapper/gradle-wrapper.jar \
+            https://raw.githubusercontent.com/gradle/gradle/v8.4.0/gradle/wrapper/gradle-wrapper.jar
+
+          # gradlew script
+          cat > NoxApp/gradlew << 'GRADLEW'
+          #!/bin/sh
+          exec java -jar "$(dirname "$0")/gradle/wrapper/gradle-wrapper.jar" "$@"
+          GRADLEW
+          chmod +x NoxApp/gradlew
+
+          # AndroidManifest.xml
+          cat > NoxApp/app/src/main/AndroidManifest.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <uses-permission android:name="android.permission.INTERNET"/>
+              <application
+                  android:allowBackup="true"
+                  android:label="NOX"
+                  android:theme="@style/AppTheme">
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN"/>
+                          <category android:name="android.intent.category.LAUNCHER"/>
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+          # MainActivity.java
+          cat > NoxApp/app/src/main/java/com/nox/detective/MainActivity.java << 'EOF'
+          package com.nox.detective;
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+          public class MainActivity extends Activity {
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  WebView webView = new WebView(this);
+                  setContentView(webView);
+                  WebSettings settings = webView.getSettings();
+                  settings.setJavaScriptEnabled(true);
+                  settings.setDomStorageEnabled(true);
+                  webView.setWebViewClient(new WebViewClient());
+                  webView.loadUrl("https://nox-ai.vercel.app");
+              }
+          }
+          EOF
+
+          # styles.xml
+          cat > NoxApp/app/src/main/res/values/styles.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar"/>
+          </resources>
+          EOF
+
+      - name: Build APK
         run: |
-          mkdir -p android/app/src/main/assets
-          echo '[]' > android/app/src/main/assets/capacitor.plugins.json
-
-      - name: Sync Capacitor
-        run: npx cap sync android
-
-      - name: Make gradlew executable
-        run: chmod +x android/gradlew
-
-      - name: Build Debug APK
-        run: |
-          cd android
+          cd NoxApp
           ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: NOX-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: NoxApp/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
