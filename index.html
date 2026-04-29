@@ -148,7 +148,6 @@
             border-right: 3px solid #666; font-family: var(--font-sans); font-size: 0.95rem;
         }
 
-        /* Gravatar UI */
         .gravatar-info {
             display: flex; align-items: center; gap: 15px; margin-top: 15px;
             padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 4px;
@@ -156,41 +155,29 @@
         .gravatar-img { width: 50px; height: 50px; border-radius: 4px; border: 1px solid var(--accent-color); }
         .gravatar-name { font-family: var(--font-mono); font-size: 0.8rem; color: #fff; letter-spacing: 1px; }
 
-        /* ── SPATIAL INTERCEPT MAP ── */
         .nox-map-block {
-            margin-top: 16px;
-            border: 1px solid var(--accent-color);
-            border-radius: 3px;
-            overflow: hidden;
-            background: #0d0d0d;
+            margin-top: 16px; border: 1px solid var(--accent-color); border-radius: 3px;
+            overflow: hidden; background: #0d0d0d;
         }
         .nox-map-header {
-            background: rgba(139,0,0,0.15);
-            border-bottom: 1px solid var(--accent-color);
-            padding: 8px 14px;
-            display: flex; align-items: center; gap: 10px;
-            font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 1.5px;
-            color: var(--accent-red);
+            background: rgba(139,0,0,0.15); border-bottom: 1px solid var(--accent-color);
+            padding: 8px 14px; display: flex; align-items: center; gap: 10px;
+            font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 1.5px; color: var(--accent-red);
         }
         .nox-map-header .blink {
             width: 7px; height: 7px; border-radius: 50%; background: var(--accent-red);
             animation: blink-dot 1.2s infinite;
         }
         @keyframes blink-dot { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
-        .nox-map-canvas {
-            width: 100%; height: 220px;
-        }
+        .nox-map-canvas { width: 100%; height: 220px; }
         .nox-map-footer {
-            padding: 10px 14px;
-            font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary);
-            border-top: 1px solid var(--border-color);
-            line-height: 1.7;
+            padding: 10px 14px; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary);
+            border-top: 1px solid var(--border-color); line-height: 1.7;
         }
         .nox-map-footer .coord-line { color: #7fba8a; }
         .nox-map-footer .alt-line { color: var(--text-secondary); }
         .nox-map-footer .alt-line span { color: #c8a96e; }
 
-        /* ── IP LOOKUP CARD ── */
         .ip-card {
             margin-top: 15px; border: 1px solid var(--accent-color); border-radius: 3px;
             background: rgba(0,0,0,0.3); overflow: hidden; font-family: var(--font-mono);
@@ -209,7 +196,6 @@
         .ip-k { color: var(--accent-red); min-width: 72px; flex-shrink: 0; }
         .ip-v { color: var(--text-primary); word-break: break-all; }
 
-        /* ── SHARED OSINT CARD BASE ── */
         .osint-card {
             margin-top: 15px; border: 1px solid var(--accent-color); border-radius: 3px;
             background: rgba(0,0,0,0.3); overflow: hidden; font-family: var(--font-mono);
@@ -232,7 +218,6 @@
         .osint-v a:hover { text-decoration: underline; }
         .osint-section-title { font-size: 0.68rem; color: var(--text-secondary); letter-spacing: 1px; margin: 8px 0 4px; }
 
-        /* Username results */
         .username-grid { padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 6px; }
         .username-chip {
             font-size: 0.68rem; padding: 4px 8px; border-radius: 2px; letter-spacing: 0.5px;
@@ -244,16 +229,13 @@
         .username-chip.found .dot   { background: #7fba8a; }
         .username-chip.notfound .dot{ background: #444; }
 
-        /* Breach badges */
         .breach-list { padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
         .breach-item {
             font-size: 0.72rem; padding: 6px 10px; border-radius: 2px;
             border-left: 3px solid var(--accent-red); background: rgba(139,0,0,0.1);
         }
         .breach-name { color: #ff6b6b; margin-bottom: 2px; }
-        .breach-meta { color: var(--text-secondary); font-size: 0.65rem; }
 
-        /* EXIF */
         .exif-upload-area {
             margin-top: 15px; border: 1px dashed var(--accent-color); border-radius: 3px;
             padding: 20px; text-align: center; cursor: pointer; font-family: var(--font-mono);
@@ -261,113 +243,65 @@
             background: rgba(0,0,0,0.2);
         }
         .exif-upload-area:hover { border-color: var(--accent-red); color: var(--text-primary); }
-        .exif-upload-area input { display: none; }
 
-        /* ── IMAGE UPLOAD BUTTON ── */
         .img-upload-label { cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .img-upload-label:hover { color: var(--text-primary); }
         #img-upload-input { display: none; }
 
-        /* ── DISCLAIMER ── */
         .disclaimer {
             text-align: center; font-family: var(--font-mono); font-size: 0.62rem;
             color: #3a3a3a; padding-top: 6px; letter-spacing: 0.5px;
             user-select: none; -webkit-user-select: none;
         }
 
-        /* ── SPLASH SCREEN ── */
+        /* SPLASH */
         .splash {
-            position: fixed; inset: 0; z-index: 99999;
-            background: var(--bg-primary);
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
-            animation: splash-exit 0.6s ease 3.5s forwards;
-        }
-        @keyframes splash-exit {
-            0%   { opacity: 1; pointer-events: auto; }
-            90%  { opacity: 1; pointer-events: auto; }
-            100% { opacity: 0; pointer-events: none; }
-        }
-        .splash-logo-glow {
-            animation: logo-pulse 2s ease-in-out 1.2s infinite;
-        }
-        @keyframes logo-pulse {
-            0%,100% { text-shadow: 0 0 40px rgba(139,0,0,0.6), 0 0 80px rgba(139,0,0,0.2); }
-            50%     { text-shadow: 0 0 60px rgba(139,0,0,0.9), 0 0 120px rgba(139,0,0,0.4), 0 0 200px rgba(139,0,0,0.1); }
+            position: fixed; inset: 0; z-index: 99999; background: var(--bg-primary);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
         }
         .splash-scanline {
             position: absolute; left: 0; right: 0; height: 2px;
             background: linear-gradient(90deg, transparent, rgba(139,0,0,0.4), transparent);
             animation: scanline 2.5s linear 1s infinite;
         }
-        @keyframes scanline {
-            0%   { top: 0%; opacity: 0; }
-            5%   { opacity: 1; }
-            95%  { opacity: 1; }
-            100% { top: 100%; opacity: 0; }
-        }
-        .splash-inner {
-            display: flex; flex-direction: column; align-items: center; gap: 18px;
-        }
-        .splash-bars {
-            display: flex; gap: 8px; align-items: flex-end; height: 40px; margin-bottom: 8px;
-        }
+        @keyframes scanline { 0%{top:0%;opacity:0;} 5%{opacity:1;} 95%{opacity:1;} 100%{top:100%;opacity:0;} }
+        .splash-inner { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+        .splash-bars { display: flex; gap: 8px; align-items: flex-end; height: 40px; margin-bottom: 8px; }
         .splash-bar {
             width: 4px; border-radius: 4px; background: var(--accent-red);
             box-shadow: 0 0 12px rgba(139,0,0,0.8);
-            animation: splash-bar-rise 0.6s ease forwards;
-            transform-origin: bottom;
-            opacity: 0;
+            animation: splash-bar-rise 0.6s ease forwards; transform-origin: bottom; opacity: 0;
         }
-        .splash-bar:nth-child(1) { height: 20px; animation-delay: 0.1s; animation-duration: 0.5s; }
-        .splash-bar:nth-child(2) { height: 36px; animation-delay: 0.25s; animation-duration: 0.5s; }
-        .splash-bar:nth-child(3) { height: 26px; animation-delay: 0.4s; animation-duration: 0.5s; }
-        @keyframes splash-bar-rise {
-            from { opacity: 0; transform: scaleY(0); }
-            to   { opacity: 1; transform: scaleY(1); }
-        }
+        .splash-bar:nth-child(1) { height:20px; animation-delay:0.1s; }
+        .splash-bar:nth-child(2) { height:36px; animation-delay:0.25s; }
+        .splash-bar:nth-child(3) { height:26px; animation-delay:0.4s; }
+        @keyframes splash-bar-rise { from{opacity:0;transform:scaleY(0);} to{opacity:1;transform:scaleY(1);} }
         .splash-logo {
-            font-family: 'Merriweather', serif;
-            font-weight: 700;
-            font-size: clamp(3.5rem, 12vw, 6rem);
-            letter-spacing: 18px;
-            color: #fff;
-            text-shadow: 0 0 40px rgba(139,0,0,0.6), 0 0 80px rgba(139,0,0,0.2);
-            animation: splash-logo-in 1s cubic-bezier(0.16,1,0.3,1) 0.4s both;
-            text-transform: uppercase;
+            font-family:'Merriweather',serif; font-weight:700;
+            font-size:clamp(3.5rem,12vw,6rem); letter-spacing:18px; color:#fff;
+            text-shadow:0 0 40px rgba(139,0,0,0.6),0 0 80px rgba(139,0,0,0.2);
+            animation:splash-logo-in 1s cubic-bezier(0.16,1,0.3,1) 0.4s both; text-transform:uppercase;
         }
         @keyframes splash-logo-in {
-            0%   { opacity: 0; letter-spacing: 80px; filter: blur(8px); }
-            50%  { opacity: 0.8; letter-spacing: 12px; filter: blur(1px); }
-            75%  { letter-spacing: 20px; }
-            100% { opacity: 1; letter-spacing: 18px; filter: blur(0); }
+            0%{opacity:0;letter-spacing:80px;filter:blur(8px);}
+            50%{opacity:0.8;letter-spacing:12px;filter:blur(1px);}
+            75%{letter-spacing:20px;}
+            100%{opacity:1;letter-spacing:18px;filter:blur(0);}
         }
         .splash-sub {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 5px;
-            color: var(--accent-red);
-            text-transform: uppercase;
-            animation: splash-sub-in 0.6s ease 1.3s both;
+            font-family:'JetBrains Mono',monospace; font-size:0.7rem;
+            letter-spacing:5px; color:var(--accent-red); text-transform:uppercase;
+            animation:splash-sub-in 0.6s ease 1.3s both;
         }
-        @keyframes splash-sub-in {
-            from { opacity: 0; transform: translateY(6px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes splash-sub-in { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
         .splash-line {
-            height: 1px; background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
-            animation: splash-line-grow 0.8s ease 1.8s both;
-            width: 0;
+            height:1px; background:linear-gradient(90deg,transparent,var(--accent-red),transparent);
+            animation:splash-line-grow 0.8s ease 1.8s both; width:0;
         }
-        @keyframes splash-line-grow {
-            from { width: 0; opacity: 0; }
-            to   { width: 260px; opacity: 1; }
-        }
+        @keyframes splash-line-grow { from{width:0;opacity:0;} to{width:260px;opacity:1;} }
 
-        /* Custom Leaflet dark overrides */
         .leaflet-container { background: #0d0d0d !important; }
         .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(0.75) contrast(1.1); }
-        .leaflet-control-zoom a { background: var(--bg-secondary) !important; color: var(--text-primary) !important; border-color: var(--border-color) !important; }
+        .leaflet-control-zoom a { background:var(--bg-secondary)!important; color:var(--text-primary)!important; border-color:var(--border-color)!important; }
 
         .input-area { 
             flex-shrink: 0; padding: 10px 15px calc(10px + env(safe-area-inset-bottom)); 
@@ -386,13 +320,7 @@
             background: transparent; border: none; color: var(--accent-color);
             font-size: 1.3rem; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center;
         }
-
-        @media (min-width: 768px) {
-            .sidebar { left: -var(--sidebar-width); }
-            body.sidebar-open .sidebar { left: 0; }
-            body.sidebar-open .main-content { margin-left: var(--sidebar-width); }
-            .input-area { padding: 20px 40px 40px 40px; }
-        }
+        @media (min-width: 768px) { .input-area { padding: 20px 40px 40px 40px; } }
 
         #node-delete-btn {
             position: absolute; display: none;
@@ -407,47 +335,104 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(18,18,18,0.96); z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-            backdrop-filter: blur(8px);
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(8px);
         }
         .call-overlay.active { opacity: 1; pointer-events: auto; }
-        .call-status {
-            font-family: var(--font-mono); color: var(--text-secondary);
-            margin-bottom: 50px; letter-spacing: 2px; text-transform: uppercase; font-size: 1rem;
-        }
-        .spectrum-container {
-            display: flex; align-items: center; gap: 10px; height: 120px; margin-bottom: 80px;
-        }
-        .spectrum-bar {
-            width: 14px; height: 20px; background-color: var(--accent-red);
-            border-radius: 8px; transition: height 0.15s ease;
-            box-shadow: 0 0 15px rgba(139,0,0,0.8);
-        }
+        .call-status { font-family:var(--font-mono); color:var(--text-secondary); margin-bottom:50px; letter-spacing:2px; text-transform:uppercase; font-size:1rem; }
+        .spectrum-container { display:flex; align-items:center; gap:10px; height:120px; margin-bottom:80px; }
+        .spectrum-bar { width:14px; height:20px; background-color:var(--accent-red); border-radius:8px; box-shadow:0 0 15px rgba(139,0,0,0.8); }
         .spectrum-container.active .spectrum-bar { animation: pulse-wave 1.2s ease-in-out infinite; }
-        .spectrum-container.active .spectrum-bar:nth-child(1) { animation-delay: 0.0s; }
-        .spectrum-container.active .spectrum-bar:nth-child(2) { animation-delay: 0.15s; }
-        .spectrum-container.active .spectrum-bar:nth-child(3) { animation-delay: 0.3s; }
-        .spectrum-container.active .spectrum-bar:nth-child(4) { animation-delay: 0.45s; }
-        .spectrum-container.active .spectrum-bar:nth-child(5) { animation-delay: 0.6s; }
+        .spectrum-container.active .spectrum-bar:nth-child(1){animation-delay:0.0s;}
+        .spectrum-container.active .spectrum-bar:nth-child(2){animation-delay:0.15s;}
+        .spectrum-container.active .spectrum-bar:nth-child(3){animation-delay:0.3s;}
+        .spectrum-container.active .spectrum-bar:nth-child(4){animation-delay:0.45s;}
+        .spectrum-container.active .spectrum-bar:nth-child(5){animation-delay:0.6s;}
         @keyframes pulse-wave { 0%,100%{height:20px;} 50%{height:100px;} }
-
-        .call-controls { display: flex; gap: 50px; align-items: center; }
-        .call-btn {
-            width: 70px; height: 70px; border-radius: 50%; border: none;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; cursor: pointer; transition: all 0.2s;
-            color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        .call-btn-end { background-color: #333; }
-        .call-btn-end:hover { background-color: #555; }
-        .call-btn-mic { background-color: var(--accent-red); }
-        .call-btn-mic:hover { background-color: #a00000; }
-        .call-btn-mic.listening { 
-            background-color: #ff2222; 
-            box-shadow: 0 0 25px rgba(255,34,34,0.6); 
-            animation: pulse-mic 1.5s infinite;
-        }
+        .call-controls { display:flex; gap:50px; align-items:center; }
+        .call-btn { width:70px; height:70px; border-radius:50%; border:none; display:flex; align-items:center; justify-content:center; font-size:1.8rem; cursor:pointer; color:white; box-shadow:0 4px 15px rgba(0,0,0,0.3); }
+        .call-btn-end { background-color:#333; }
+        .call-btn-end:hover { background-color:#555; }
+        .call-btn-mic { background-color:var(--accent-red); }
+        .call-btn-mic.listening { background-color:#ff2222; box-shadow:0 0 25px rgba(255,34,34,0.6); animation:pulse-mic 1.5s infinite; }
         @keyframes pulse-mic { 0%{transform:scale(1);} 50%{transform:scale(1.05);} 100%{transform:scale(1);} }
+
+        /* ── CCTV CARD ── */
+        .cctv-card {
+            margin-top: 15px; border: 1px solid var(--accent-color); border-radius: 3px;
+            background: rgba(0,0,0,0.4); overflow: hidden; font-family: var(--font-mono);
+        }
+        .cctv-card-header {
+            display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+            background: rgba(139,0,0,0.12); border-bottom: 1px solid var(--accent-color);
+            font-size: 0.72rem; letter-spacing: 1.5px; color: var(--accent-red);
+        }
+        .cctv-card-header .rec-dot {
+            width: 8px; height: 8px; border-radius: 50%; background: var(--accent-red);
+            box-shadow: 0 0 6px var(--accent-red); animation: blink-dot 1s infinite; flex-shrink: 0;
+        }
+        .cctv-meta-bar {
+            display: flex; gap: 16px; padding: 8px 14px; border-bottom: 1px solid var(--border-color);
+            font-size: 0.65rem; color: var(--text-secondary); flex-wrap: wrap;
+        }
+        .cctv-meta-bar .meta-item { display: flex; gap: 5px; align-items: center; }
+        .cctv-meta-bar .meta-label { color: var(--accent-red); }
+        .cctv-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1px; background: var(--border-color);
+        }
+        .cctv-feed { background: #000; position: relative; aspect-ratio: 16/9; overflow: hidden; }
+        .cctv-feed iframe { width: 100%; height: 100%; border: none; display: block; }
+        .cctv-feed img.feed-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .cctv-feed-overlay {
+            position: absolute; inset: 0; pointer-events: none;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .cctv-feed-top { display: flex; justify-content: space-between; align-items: flex-start; padding: 6px 8px; }
+        .cctv-feed-label {
+            font-family: var(--font-mono); font-size: 0.6rem; color: rgba(255,255,255,0.85);
+            background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 1px;
+            letter-spacing: 0.8px; max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .cctv-feed-rec {
+            font-family: var(--font-mono); font-size: 0.55rem; color: #ff4444;
+            background: rgba(0,0,0,0.7); padding: 2px 5px; border-radius: 1px;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .cctv-feed-rec .rdot { width:5px; height:5px; border-radius:50%; background:#ff4444; animation:blink-dot 1s infinite; }
+        .cctv-feed-bottom { padding: 6px 8px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .cctv-coord-tag {
+            font-family: var(--font-mono); font-size: 0.58rem; color: rgba(127,186,138,0.9);
+            background: rgba(0,0,0,0.65); padding: 2px 5px; border-radius: 1px;
+        }
+        .cctv-cam-id {
+            font-family: var(--font-mono); font-size: 0.58rem; color: rgba(255,255,255,0.5);
+            background: rgba(0,0,0,0.65); padding: 2px 5px; border-radius: 1px;
+        }
+        .cctv-nosignal {
+            width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg,rgba(255,255,255,0.03) 0px,rgba(255,255,255,0.03) 1px,transparent 1px,transparent 3px),#080808;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+        }
+        .cctv-nosignal-text { font-family:var(--font-mono); font-size:0.65rem; color:#333; letter-spacing:1.5px; animation:flicker 4s infinite; }
+        @keyframes flicker { 0%,100%{opacity:0.4;} 92%{opacity:0.4;} 93%{opacity:0.1;} 94%{opacity:0.4;} 96%{opacity:0.1;} 97%{opacity:0.4;} }
+        .cctv-footer {
+            padding: 8px 14px; font-size: 0.65rem; color: var(--text-secondary);
+            border-top: 1px solid var(--border-color); line-height: 1.8;
+            display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px;
+        }
+        .cctv-footer a { color: #7fba8a; text-decoration: none; }
+        .cctv-footer a:hover { text-decoration: underline; }
+
+        /* cam probe */
+        .cam-probe-card { margin-top:15px; border:1px solid var(--accent-color); border-radius:3px; background:rgba(0,0,0,0.4); overflow:hidden; font-family:var(--font-mono); }
+        .cam-probe-header { display:flex; align-items:center; gap:10px; padding:10px 14px; background:rgba(139,0,0,0.12); border-bottom:1px solid var(--accent-color); font-size:0.72rem; letter-spacing:1.5px; color:var(--accent-red); }
+        .cam-probe-feeds { display:flex; flex-wrap:wrap; gap:1px; background:var(--border-color); }
+        .cam-probe-feed { background:#000; position:relative; width:100%; min-height:180px; }
+        .cam-probe-feed img { width:100%; max-height:300px; object-fit:contain; display:block; }
+        .cam-probe-meta { padding:10px 14px; display:flex; flex-direction:column; gap:4px; }
+        .cam-probe-row { display:flex; gap:12px; font-size:0.7rem; }
+        .cam-probe-k { color:var(--accent-red); min-width:80px; flex-shrink:0; }
+        .cam-probe-v { color:var(--text-primary); word-break:break-all; }
     </style>
 </head>
 <body>
@@ -500,33 +485,25 @@
         </main>
     </div>
 
-    <!-- SPLASH SCREEN -->
     <div class="splash" id="splash">
         <div class="splash-scanline"></div>
         <div class="splash-inner">
-            <div class="splash-bars">
-                <div class="splash-bar"></div>
-                <div class="splash-bar"></div>
-                <div class="splash-bar"></div>
-            </div>
-            <div class="splash-logo splash-logo-glow">NOX</div>
+            <div class="splash-bars"><div class="splash-bar"></div><div class="splash-bar"></div><div class="splash-bar"></div></div>
+            <div class="splash-logo">NOX</div>
             <div class="splash-sub">DIGITAL DETECTIVE SYSTEM</div>
-            <div class="splash-line" id="splash-line"></div>
+            <div class="splash-line"></div>
         </div>
     </div>
 
     <div class="call-overlay" id="call-overlay">
         <div class="call-status" id="call-status">SECURE LINE ESTABLISHED</div>
         <div class="spectrum-container" id="call-spectrum">
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div><div class="spectrum-bar"></div><div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div><div class="spectrum-bar"></div>
         </div>
         <div class="call-controls">
-            <button class="call-btn call-btn-end" id="call-btn-end" title="End Call"><i class="fas fa-times"></i></button>
-            <button class="call-btn call-btn-mic" id="call-btn-mic" title="Push to Talk"><i class="fas fa-microphone"></i></button>
+            <button class="call-btn call-btn-end" id="call-btn-end"><i class="fas fa-times"></i></button>
+            <button class="call-btn call-btn-mic" id="call-btn-mic"><i class="fas fa-microphone"></i></button>
         </div>
     </div>
 
@@ -535,79 +512,52 @@
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
     <script>
-    // ─────────────────────────────────────────────
-    //  CONFIG
-    // ─────────────────────────────────────────────
     const API_URL = "https://hermes.ai.unturf.com/v1/chat/completions";
 
-    const chatContainer     = document.getElementById('chat-container');
-    const evidenceBoard     = document.getElementById('evidence-board');
-    const userInput         = document.getElementById('user-input');
-    const sendBtn           = document.getElementById('send-btn');
-    const caseIdDisplay     = document.getElementById('case-id-display');
-    const caseListEl        = document.getElementById('case-list');
-    const sidebar           = document.getElementById('sidebar');
-    const sidebarOverlay    = document.getElementById('sidebar-overlay');
-    const menuBtn           = document.getElementById('menu-btn');
-    const closeSidebarBtn   = document.getElementById('close-sidebar');
-    const newCaseBtn        = document.getElementById('new-case-btn');
-    const clearBtn          = document.getElementById('clear-btn');
-    const exportBtn         = document.getElementById('export-btn');
-    const graphToggleBtn    = document.getElementById('graph-toggle-btn');
-    const callOverlay       = document.getElementById('call-overlay');
-    const callSpectrum      = document.getElementById('call-spectrum');
-    const callMicBtn        = document.getElementById('call-btn-mic');
-    const callEndBtn        = document.getElementById('call-btn-end');
-    const callStatus        = document.getElementById('call-status');
+    const chatContainer  = document.getElementById('chat-container');
+    const evidenceBoard  = document.getElementById('evidence-board');
+    const userInput      = document.getElementById('user-input');
+    const sendBtn        = document.getElementById('send-btn');
+    const caseIdDisplay  = document.getElementById('case-id-display');
+    const caseListEl     = document.getElementById('case-list');
+    const sidebar        = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    const menuBtn        = document.getElementById('menu-btn');
+    const closeSidebarBtn= document.getElementById('close-sidebar');
+    const newCaseBtn     = document.getElementById('new-case-btn');
+    const clearBtn       = document.getElementById('clear-btn');
+    const exportBtn      = document.getElementById('export-btn');
+    const graphToggleBtn = document.getElementById('graph-toggle-btn');
+    const callOverlay    = document.getElementById('call-overlay');
+    const callSpectrum   = document.getElementById('call-spectrum');
+    const callMicBtn     = document.getElementById('call-btn-mic');
+    const callEndBtn     = document.getElementById('call-btn-end');
+    const callStatus     = document.getElementById('call-status');
 
-    let cases         = [];
-    let currentCaseId = null;
-    let isGraphView   = false;
-    let isCallMode    = false;
-    let network       = null;
-    let mapInstances  = {};
+    let cases = [], currentCaseId = null, isGraphView = false, isCallMode = false, network = null, mapInstances = {};
 
-    // ─────────────────────────────────────────────
-    //  STATE
-    // ─────────────────────────────────────────────
+    // ── STATE ──
     const init = () => {
         loadState();
         if (cases.length === 0) createNewCase();
-        else {
-            currentCaseId = localStorage.getItem('nox_active_case') || cases[0].id;
-            renderChat();
-            renderArchive();
-        }
+        else { currentCaseId = localStorage.getItem('nox_active_case') || cases[0].id; renderChat(); renderArchive(); }
     };
-    const loadState  = () => { const s = localStorage.getItem('nox_cases'); if (s) cases = JSON.parse(s); };
-    const saveState  = () => { localStorage.setItem('nox_cases', JSON.stringify(cases)); localStorage.setItem('nox_active_case', currentCaseId); renderArchive(); };
+    const loadState = () => { const s = localStorage.getItem('nox_cases'); if (s) cases = JSON.parse(s); };
+    const saveState = () => { localStorage.setItem('nox_cases', JSON.stringify(cases)); localStorage.setItem('nox_active_case', currentCaseId); renderArchive(); };
     const generateCaseId = () => 'NX-' + Math.floor(Math.random() * 9000 + 1000) + '-LOG';
 
     const createNewCase = () => {
-        const newCase = {
-            id: generateCaseId(),
-            title: 'New Investigation...',
-            messages: [{ role: 'assistant', content: 'System active. Neural links established. How can I assist with your investigation?' }],
-            timestamp: Date.now()
-        };
-        cases.unshift(newCase);
-        currentCaseId = newCase.id;
-        saveState();
+        const nc = { id: generateCaseId(), title: 'New Investigation...', messages: [{ role:'assistant', content:'System active. Neural links established. How can I assist with your investigation?' }], timestamp: Date.now() };
+        cases.unshift(nc); currentCaseId = nc.id; saveState();
         if (isGraphView) renderGraph(); else renderChat();
         if (sidebar.classList.contains('open')) toggleSidebar();
     };
 
-    // ─────────────────────────────────────────────
-    //  RENDER CHAT
-    // ─────────────────────────────────────────────
+    // ── RENDER CHAT ──
     const renderChat = () => {
-        chatContainer.innerHTML = '';
-        mapInstances = {};
-        const currentCase = cases.find(c => c.id === currentCaseId);
-        if (currentCase) {
-            caseIdDisplay.textContent = currentCase.id;
-            currentCase.messages.forEach(msg => appendMessageUI(msg.role, msg.content, false));
-        }
+        chatContainer.innerHTML = ''; mapInstances = {};
+        const cc = cases.find(c => c.id === currentCaseId);
+        if (cc) { caseIdDisplay.textContent = cc.id; cc.messages.forEach(msg => appendMessageUI(msg.role, msg.content, false)); }
         scrollToBottom();
     };
 
@@ -615,1087 +565,716 @@
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${role}-msg`;
         const label = role === 'assistant' ? 'NOX_UNIT' : 'OPERATOR';
-
         const mapMatch = content.match(/<!--NOXMAP:([\s\S]*?)-->/);
         let prose = content.replace(/<!--NOXMAP:[\s\S]*?-->/g, '').trim();
-
-        msgDiv.innerHTML = `<div class="msg-header">${label}</div><div class="msg-content">${prose}</div>`;
+        const htmlMatch = prose.match(/([\s\S]*?)(<div class="(?:osint-card|cctv-card|ip-card|cam-probe-card|gravatar-info)[\s\S]*)/);
+        let proseText = htmlMatch ? htmlMatch[1].trim() : prose;
+        let injectHTML = htmlMatch ? htmlMatch[2] : '';
+        msgDiv.innerHTML = `<div class="msg-header">${label}</div><div class="msg-content">${escHtml(proseText)}</div>`;
         chatContainer.appendChild(msgDiv);
-
-        if (mapMatch) {
-            try {
-                const mapData = JSON.parse(mapMatch[1]);
-                const mapBlock = buildMapBlock(mapData);
-                msgDiv.querySelector('.msg-content').appendChild(mapBlock);
-            } catch(e) { console.error('NOX_MAP_PARSE_ERR', e); }
-        }
-
+        const contentEl = msgDiv.querySelector('.msg-content');
+        if (injectHTML) { const h = document.createElement('div'); h.innerHTML = injectHTML; contentEl.appendChild(h); }
+        if (mapMatch) { try { contentEl.appendChild(buildMapBlock(JSON.parse(mapMatch[1]))); } catch(e){} }
         scrollToBottom();
     };
 
-    // ─────────────────────────────────────────────
-    //  MAP BLOCK BUILDER
-    // ─────────────────────────────────────────────
+    // ── MAP ──
     const buildMapBlock = (data) => {
         const mapId = 'nox-map-' + Date.now() + '-' + Math.random().toString(36).slice(2,6);
-
         const block = document.createElement('div');
         block.className = 'nox-map-block';
-
-        const altsHtml = data.alternates && data.alternates.length
-            ? data.alternates.map((a,i) =>
-                `<div class="alt-line">ALT_${String(i+1).padStart(2,'0')}: <span>${escHtml(a.name)}</span> — ${a.lat.toFixed(5)}, ${a.lon.toFixed(5)}</div>`
-              ).join('')
+        const altsHtml = data.alternates?.length
+            ? data.alternates.map((a,i)=>`<div class="alt-line">ALT_${String(i+1).padStart(2,'0')}: <span>${escHtml(a.name)}</span> — ${a.lat.toFixed(5)}, ${a.lon.toFixed(5)}</div>`).join('')
             : '<div class="alt-line">NO_ALTERNATES_FOUND</div>';
-
-        block.innerHTML = `
-            <div class="nox-map-header">
-                <div class="blink"></div>
-                SPATIAL_INTERCEPT :: ${escHtml(data.query.toUpperCase())}
-            </div>
-            <div class="nox-map-canvas" id="${mapId}"></div>
-            <div class="nox-map-footer">
-                <div class="coord-line">▸ PRIMARY TARGET: ${escHtml(data.primary.name)}</div>
-                <div class="coord-line">  LAT: ${data.primary.lat.toFixed(6)} | LON: ${data.primary.lon.toFixed(6)}</div>
-                ${altsHtml}
-            </div>`;
-
+        block.innerHTML = `<div class="nox-map-header"><div class="blink"></div>SPATIAL_INTERCEPT :: ${escHtml(data.query.toUpperCase())}</div><div class="nox-map-canvas" id="${mapId}"></div><div class="nox-map-footer"><div class="coord-line">▸ PRIMARY TARGET: ${escHtml(data.primary.name)}</div><div class="coord-line">  LAT: ${data.primary.lat.toFixed(6)} | LON: ${data.primary.lon.toFixed(6)}</div>${altsHtml}</div>`;
         setTimeout(() => {
-            const mapEl = document.getElementById(mapId);
-            if (!mapEl) return;
-            const m = L.map(mapId, { zoomControl: true, attributionControl: false }).setView([data.primary.lat, data.primary.lon], 16);
+            const mapEl = document.getElementById(mapId); if (!mapEl) return;
+            const m = L.map(mapId, {zoomControl:true,attributionControl:false}).setView([data.primary.lat, data.primary.lon], 16);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
-
-            const redIcon = L.divIcon({
-                className: '',
-                html: `<div style="width:14px;height:14px;border-radius:50%;background:#8b0000;border:2px solid #ff4444;box-shadow:0 0 10px rgba(139,0,0,0.8);"></div>`,
-                iconSize: [14,14], iconAnchor:[7,7]
+            const redIcon = L.divIcon({className:'',html:`<div style="width:14px;height:14px;border-radius:50%;background:#8b0000;border:2px solid #ff4444;box-shadow:0 0 10px rgba(139,0,0,0.8);"></div>`,iconSize:[14,14],iconAnchor:[7,7]});
+            L.marker([data.primary.lat,data.primary.lon],{icon:redIcon}).addTo(m).bindPopup(`<b>${data.primary.name}</b>`);
+            data.alternates?.forEach(a => {
+                const gi = L.divIcon({className:'',html:`<div style="width:10px;height:10px;border-radius:50%;background:#455a64;border:1.5px solid #7a9aaa;"></div>`,iconSize:[10,10],iconAnchor:[5,5]});
+                L.marker([a.lat,a.lon],{icon:gi}).addTo(m).bindPopup(`<b>${a.name}</b>`);
             });
-            L.marker([data.primary.lat, data.primary.lon], {icon: redIcon})
-             .addTo(m)
-             .bindPopup(`<b>${data.primary.name}</b><br>${data.primary.type||''}<br>${data.primary.address||''}`);
-
-            if (data.alternates) {
-                data.alternates.forEach(a => {
-                    const greyIcon = L.divIcon({
-                        className: '',
-                        html: `<div style="width:10px;height:10px;border-radius:50%;background:#455a64;border:1.5px solid #7a9aaa;"></div>`,
-                        iconSize:[10,10], iconAnchor:[5,5]
-                    });
-                    L.marker([a.lat, a.lon], {icon: greyIcon}).addTo(m).bindPopup(`<b>${a.name}</b>`);
-                });
-            }
-
-            mapInstances[mapId] = m;
-            m.invalidateSize();
+            mapInstances[mapId] = m; m.invalidateSize();
         }, 100);
-
         return block;
     };
 
-    const escHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     const scrollToBottom = () => chatContainer.scrollTop = chatContainer.scrollHeight;
 
-    // ─────────────────────────────────────────────
-    //  AI-DRIVEN SPATIAL INTENT DETECTION
-    //  Returns null or { query, city, places: [{label, osm_tags}] }
-    //  Supports multiple place types mentioned in one message
-    // ─────────────────────────────────────────────
+    // ── SPATIAL INTENT ──
     const detectSpatialIntent = async (userText) => {
-        const systemPrompt = `You are a spatial intent classifier for a detective investigation app.
-Analyse the operator message and decide if any real-world places need to be looked up on a map.
-Extract EVERY distinct place type mentioned, even if described indirectly or in any word order.
-
-Reply ONLY with raw JSON, no markdown fences, no explanation:
-{
-  "needs_map": true,
-  "query": "short human label, e.g. 'fountain and library in London'",
-  "city": "city/region name or null",
-  "places": [
-    { "label": "fountain", "osm_tags": {"amenity":"fountain"} },
-    { "label": "library",  "osm_tags": {"amenity":"library"} }
-  ]
-}
-
-If no real place lookup is needed set needs_map to false and places to [].
-
-Common OSM tag mappings (use these exactly):
-fountain→{"amenity":"fountain"}, cafe→{"amenity":"cafe"}, restaurant→{"amenity":"restaurant"},
-hospital→{"amenity":"hospital"}, park→{"leisure":"park"}, museum→{"tourism":"museum"},
-hotel→{"tourism":"hotel"}, bar/pub→{"amenity":"bar"}, pharmacy→{"amenity":"pharmacy"},
-police→{"amenity":"police"}, library→{"amenity":"library"}, school→{"amenity":"school"},
-church/mosque/temple/synagogue→{"amenity":"place_of_worship"}, beach→{"natural":"beach"},
-supermarket→{"shop":"supermarket"}, cinema→{"amenity":"cinema"}, stadium→{"leisure":"stadium"},
-train station→{"railway":"station"}, airport→{"aeroway":"aerodrome"}, bank→{"amenity":"bank"},
-atm→{"amenity":"atm"}, petrol/gas→{"amenity":"fuel"}, parking→{"amenity":"parking"},
-castle→{"historic":"castle"}, monument→{"historic":"monument"}, market→{"amenity":"marketplace"},
-post office→{"amenity":"post_office"}, prison→{"amenity":"prison"}, embassy→{"amenity":"embassy"},
-harbour/marina→{"leisure":"marina"}, bridge→{"man_made":"bridge"}, tower→{"man_made":"tower"},
-zoo→{"tourism":"zoo"}, university→{"amenity":"university"}, college→{"amenity":"college"}`;
-
         try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",
-                    messages: [
-                        { role: "system", content: systemPrompt },
-                        { role: "user", content: userText }
-                    ],
-                    temperature: 0.0,
-                    max_tokens: 300
-                })
-            });
-            const data = await response.json();
-            const raw = data.choices[0].message.content.trim().replace(/```json|```/g, '').trim();
-            const parsed = JSON.parse(raw);
+            const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ model:"adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", temperature:0.0, max_tokens:300,
+                    messages:[{role:"system",content:`You are a spatial intent classifier. Reply ONLY with raw JSON:
+{"needs_map":true,"query":"label","city":"city or null","places":[{"label":"name","osm_tags":{"amenity":"cafe"}}]}
+If no place lookup needed: {"needs_map":false,"query":"","city":null,"places":[]}
+OSM tags: fountain→amenity:fountain, cafe→amenity:cafe, restaurant→amenity:restaurant, hospital→amenity:hospital, park→leisure:park, museum→tourism:museum, hotel→tourism:hotel, bar→amenity:bar, library→amenity:library, school→amenity:school, church→amenity:place_of_worship, beach→natural:beach, stadium→leisure:stadium, station→railway:station, airport→aeroway:aerodrome, castle→historic:castle, zoo→tourism:zoo, university→amenity:university`},
+                    {role:"user",content:userText}]})});
+            const data = await r.json();
+            const parsed = JSON.parse(data.choices[0].message.content.trim().replace(/```json|```/g,'').trim());
             if (!parsed.needs_map || !parsed.places?.length) return null;
             return parsed;
-        } catch(e) {
-            console.error('NOX_INTENT_ERR', e);
-            return null;
-        }
+        } catch(e) { return null; }
     };
 
-    // ─────────────────────────────────────────────
-    //  SPATIAL INTERCEPT PIPELINE (Overpass + Nominatim)
-    // ─────────────────────────────────────────────
     const geocodeCity = async (city) => {
         const r = await fetch(`/api/geocode?q=${encodeURIComponent(city)}`);
         const d = await r.json();
         if (!d.length) return null;
-        const b = d[0].boundingbox;
-        return { lat: parseFloat(d[0].lat), lon: parseFloat(d[0].lon), bbox: b, name: d[0].display_name };
+        return { lat:parseFloat(d[0].lat), lon:parseFloat(d[0].lon), bbox:d[0].boundingbox, name:d[0].display_name };
     };
 
     const overpassFetch = async (ql) => {
-        const r = await fetch('/api/overpass', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ql })
-        });
+        const r = await fetch('/api/overpass', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ql})});
         return await r.json();
     };
 
     const normaliseElements = (elements, fallbackLabel) =>
         elements.map(el => ({
             name: el.tags?.name || el.tags?.['name:en'] || fallbackLabel,
-            lat:  el.lat || el.center?.lat,
-            lon:  el.lon || el.center?.lon,
-            type: Object.entries(el.tags||{})
-                    .filter(([k]) => ['amenity','tourism','leisure','natural','shop','railway','aeroway','historic','man_made'].includes(k))
-                    .map(([k,v]) => `${k}=${v}`).join(' '),
-            address: [el.tags?.['addr:street'], el.tags?.['addr:housenumber'], el.tags?.['addr:city']].filter(Boolean).join(' ')
+            lat: el.lat || el.center?.lat, lon: el.lon || el.center?.lon,
+            type: Object.entries(el.tags||{}).filter(([k])=>['amenity','tourism','leisure','natural','shop','railway','aeroway','historic'].includes(k)).map(([k,v])=>`${k}=${v}`).join(' '),
+            address: [el.tags?.['addr:street'],el.tags?.['addr:housenumber'],el.tags?.['addr:city']].filter(Boolean).join(' ')
         })).filter(el => el.lat && el.lon);
 
-    // Takes the intent object from detectSpatialIntent and fetches real locations
-    // Runs one Overpass query per place type, merges all results
     const runSpatialIntercept = async (intent) => {
-        const { query, city, places } = intent;
         let allElements = [];
-
         try {
-            let geo = null;
-            let bbox = null;
-            if (city) {
-                geo = await geocodeCity(city);
-                if (geo) bbox = geo.bbox;
-            }
-
-            // No tags at all — just pin the city
-            if (!places.length) {
-                if (!geo) return null;
-                return {
-                    query,
-                    primary: { name: geo.name.split(',')[0], lat: geo.lat, lon: geo.lon, type: '', address: '' },
-                    alternates: []
-                };
-            }
-
-            // Run one Overpass query per place type in parallel
-            const queries = places.map(place => {
-                const tf = Object.entries(place.osm_tags || {}).map(([k,v]) => `["${k}"="${v}"]`).join('');
+            let geo = null, bbox = null;
+            if (intent.city) { geo = await geocodeCity(intent.city); if (geo) bbox = geo.bbox; }
+            if (!intent.places.length) { if (!geo) return null; return {query:intent.query,primary:{name:geo.name.split(',')[0],lat:geo.lat,lon:geo.lon,type:'',address:''},alternates:[]}; }
+            const queries = intent.places.map(place => {
+                const tf = Object.entries(place.osm_tags||{}).map(([k,v])=>`["${k}"="${v}"]`).join('');
                 if (!tf) return Promise.resolve([]);
                 let ql;
-                if (bbox) {
-                    const [s,n,w,e] = bbox;
-                    ql = `[out:json][timeout:15];(node${tf}(${s},${w},${n},${e});way${tf}(${s},${w},${n},${e}););out center 5;`;
-                } else {
-                    ql = `[out:json][timeout:15];node${tf};out 5;`;
-                }
-                return overpassFetch(ql)
-                    .then(d => normaliseElements(d.elements || [], place.label))
-                    .catch(() => []);
+                if (bbox) { const [s,n,w,e]=bbox; ql=`[out:json][timeout:15];(node${tf}(${s},${w},${n},${e});way${tf}(${s},${w},${n},${e}););out center 5;`; }
+                else { ql=`[out:json][timeout:15];node${tf};out 5;`; }
+                return overpassFetch(ql).then(d=>normaliseElements(d.elements||[],place.label)).catch(()=>[]);
             });
-
             const results = await Promise.all(queries);
-            // Flatten: first result of each type becomes a pin; rest are alternates
-            results.forEach(group => { allElements.push(...group.slice(0, 3)); });
-
-        } catch(e) {
-            console.error('NOX_OVERPASS_ERR', e);
-            return null;
-        }
-
+            results.forEach(g => { allElements.push(...g.slice(0,3)); });
+        } catch(e) { return null; }
         if (!allElements.length) return null;
-
-        return {
-            query,
-            primary:    allElements[0],
-            alternates: allElements.slice(1, 6)   // show up to 5 alternates across all types
-        };
+        return {query:intent.query,primary:allElements[0],alternates:allElements.slice(1,6)};
     };
 
-    // ─────────────────────────────────────────────
-    //  GRAVATAR
-    // ─────────────────────────────────────────────
+    // ── GRAVATAR ──
     const fetchGravatar = async (email) => {
         const hash = CryptoJS.MD5(email.trim().toLowerCase()).toString();
         const imgUrl = `https://www.gravatar.com/avatar/${hash}?s=200&d=identicon`;
         try {
             const r = await fetch(`https://en.gravatar.com/${hash}.json`);
-            if (r.ok) { const d = await r.json(); const p = d.entry[0]; return { name: p.displayName||p.preferredUsername||"ID_REDACTED", image: p.thumbnailUrl||imgUrl }; }
+            if (r.ok) { const d = await r.json(); const p = d.entry[0]; return {name:p.displayName||p.preferredUsername||"ID_REDACTED",image:p.thumbnailUrl||imgUrl}; }
         } catch(e) {}
-        return { name: "ENCRYPTED_ID", image: imgUrl };
+        return {name:"ENCRYPTED_ID",image:imgUrl};
     };
 
-    // ─────────────────────────────────────────────
-    //  IP LOOKUP  (ip-api.com — free, no key needed)
-    // ─────────────────────────────────────────────
-    const IP_REGEX = /\b((?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?))\b/g;
+    // ── IP LOOKUP ──
     const PRIVATE_IP = /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|127\.|0\.0\.0\.0|::1)/;
 
     const lookupIP = async (ip) => {
-        // Try multiple free CORS-friendly APIs in order
         const attempts = [
-            // 1. ip-api.com HTTPS (CORS allowed on https)
-            async () => {
-                const r = await fetch(`https://ip-api.com/json/${ip}?fields=66846719`);
-                const d = await r.json();
-                if (d.status !== 'success') throw new Error(d.message);
-                return {
-                    query: d.query, country: d.country, countryCode: d.countryCode,
-                    regionName: d.regionName, city: d.city,
-                    lat: d.lat, lon: d.lon,
-                    isp: d.isp, org: d.org, as: d.as,
-                    proxy: d.proxy, hosting: d.hosting, vpn: d.proxy, tor: false
-                };
-            },
-            // 2. ipapi.co
-            async () => {
-                const r = await fetch(`https://ipapi.co/${ip}/json/`);
-                const d = await r.json();
-                if (d.error) throw new Error(d.reason);
-                return {
-                    query: d.ip, country: d.country_name, countryCode: d.country_code,
-                    regionName: d.region, city: d.city,
-                    lat: parseFloat(d.latitude), lon: parseFloat(d.longitude),
-                    isp: d.org || 'Unknown', org: d.org || 'Unknown',
-                    as: d.asn || 'Unknown',
-                    proxy: false, hosting: false, vpn: false, tor: false
-                };
-            },
-            // 3. freeipapi.com
-            async () => {
-                const r = await fetch(`https://freeipapi.com/api/json/${ip}`);
-                const d = await r.json();
-                if (!d.ipAddress) throw new Error('no data');
-                return {
-                    query: d.ipAddress, country: d.countryName, countryCode: d.countryCode,
-                    regionName: d.regionName, city: d.cityName,
-                    lat: parseFloat(d.latitude), lon: parseFloat(d.longitude),
-                    isp: d.isp || 'Unknown', org: d.isp || 'Unknown', as: 'Unknown',
-                    proxy: d.isProxy || false, hosting: false, vpn: false, tor: false
-                };
-            }
+            async () => { const r=await fetch(`https://ip-api.com/json/${ip}?fields=66846719`); const d=await r.json(); if(d.status!=='success') throw new Error(); return {query:d.query,country:d.country,countryCode:d.countryCode,regionName:d.regionName,city:d.city,lat:d.lat,lon:d.lon,isp:d.isp,org:d.org,as:d.as,proxy:d.proxy,hosting:d.hosting,vpn:d.proxy,tor:false}; },
+            async () => { const r=await fetch(`https://ipapi.co/${ip}/json/`); const d=await r.json(); if(d.error) throw new Error(); return {query:d.ip,country:d.country_name,countryCode:d.country_code,regionName:d.region,city:d.city,lat:parseFloat(d.latitude),lon:parseFloat(d.longitude),isp:d.org||'Unknown',org:d.org||'Unknown',as:d.asn||'Unknown',proxy:false,hosting:false,vpn:false,tor:false}; },
+            async () => { const r=await fetch(`https://freeipapi.com/api/json/${ip}`); const d=await r.json(); if(!d.ipAddress) throw new Error(); return {query:d.ipAddress,country:d.countryName,countryCode:d.countryCode,regionName:d.regionName,city:d.cityName,lat:parseFloat(d.latitude),lon:parseFloat(d.longitude),isp:d.isp||'Unknown',org:d.isp||'Unknown',as:'Unknown',proxy:d.isProxy||false,hosting:false,vpn:false,tor:false}; }
         ];
-
-        for (const attempt of attempts) {
-            try {
-                const result = await attempt();
-                if (result && result.country) return result;
-            } catch(e) {
-                console.warn('NOX_IP_ATTEMPT_FAILED', e.message);
-            }
-        }
-        return { query: ip, _error: true }; // return stub so card can show failure
+        for (const a of attempts) { try { const r=await a(); if(r&&r.country) return r; } catch(e){} }
+        return {query:ip,_error:true};
     };
 
     const buildIPCard = (d) => {
-        if (d._error) return `<div class="ip-card"><div class="ip-card-header"><span class="ip-address">${d.query}</span><span class="ip-tag proxy">LOOKUP_FAILED</span></div><div class="ip-grid"><div class="ip-row"><span class="ip-k">STATUS</span><span class="ip-v">All geolocation APIs unreachable. Check console for details.</span></div></div></div>`;
-        const flag = `https://flagcdn.com/24x18/${(d.countryCode||'xx').toLowerCase()}.png`;
-        const tags = [
-            d.proxy   ? '<span class="ip-tag proxy">PROXY</span>'        : '',
-            d.vpn     ? '<span class="ip-tag proxy">VPN</span>'          : '',
-            d.tor     ? '<span class="ip-tag proxy">TOR</span>'          : '',
-            d.hosting ? '<span class="ip-tag hosting">DATACENTER</span>' : '',
-        ].filter(Boolean).join('');
-        const lat = typeof d.lat === 'number' ? d.lat.toFixed(4) : '—';
-        const lon = typeof d.lon === 'number' ? d.lon.toFixed(4) : '—';
-        return `<div class="ip-card">
-            <div class="ip-card-header">
-                <img src="${flag}" class="ip-flag" onerror="this.style.display='none'">
-                <span class="ip-address">${d.query}</span>
-                ${tags}
-            </div>
-            <div class="ip-grid">
-                <div class="ip-row"><span class="ip-k">LOCATION</span><span class="ip-v">${d.city||'—'}, ${d.regionName||'—'}, ${d.country||'—'}</span></div>
-                <div class="ip-row"><span class="ip-k">COORDS</span><span class="ip-v">${lat}, ${lon}</span></div>
-                <div class="ip-row"><span class="ip-k">ISP</span><span class="ip-v">${d.isp||'—'}</span></div>
-                <div class="ip-row"><span class="ip-k">ORG</span><span class="ip-v">${d.org||'—'}</span></div>
-                <div class="ip-row"><span class="ip-k">ASN</span><span class="ip-v">${d.as||'—'}</span></div>
-            </div>
-        </div>`;
+        if (d._error) return `<div class="ip-card"><div class="ip-card-header"><span class="ip-address">${d.query}</span><span class="ip-tag proxy">LOOKUP_FAILED</span></div></div>`;
+        const flag=`https://flagcdn.com/24x18/${(d.countryCode||'xx').toLowerCase()}.png`;
+        const tags=[d.proxy?'<span class="ip-tag proxy">PROXY</span>':'',d.vpn?'<span class="ip-tag proxy">VPN</span>':'',d.hosting?'<span class="ip-tag hosting">DATACENTER</span>':''].filter(Boolean).join('');
+        return `<div class="ip-card"><div class="ip-card-header"><img src="${flag}" class="ip-flag" onerror="this.style.display='none'"><span class="ip-address">${d.query}</span>${tags}</div><div class="ip-grid"><div class="ip-row"><span class="ip-k">LOCATION</span><span class="ip-v">${d.city||'—'}, ${d.regionName||'—'}, ${d.country||'—'}</span></div><div class="ip-row"><span class="ip-k">COORDS</span><span class="ip-v">${typeof d.lat==='number'?d.lat.toFixed(4):'—'}, ${typeof d.lon==='number'?d.lon.toFixed(4):'—'}</span></div><div class="ip-row"><span class="ip-k">ISP</span><span class="ip-v">${d.isp||'—'}</span></div><div class="ip-row"><span class="ip-k">ORG</span><span class="ip-v">${d.org||'—'}</span></div><div class="ip-row"><span class="ip-k">ASN</span><span class="ip-v">${d.as||'—'}</span></div></div></div>`;
     };
 
-    // ─────────────────────────────────────────────
-    //  WHOIS LOOKUP  (whois.freeaitools.online — CORS ok)
-    // ─────────────────────────────────────────────
-
-
+    // ── WHOIS / DNS / SSL ──
     const lookupWHOIS = async (domain) => {
         try {
-            const r = await fetch(`https://api.domainsdb.info/v1/domains/search?domain=${encodeURIComponent(domain)}&zone=${domain.split('.').pop()}`);
-            const d = await r.json();
-            // Also fetch rdap which is fully public
-            const rdap = await fetch(`https://rdap.org/domain/${domain}`);
-            const rd = rdap.ok ? await rdap.json() : null;
-
-            let result = { domain, registered: false };
-            if (rd) {
-                result.registered = true;
-                result.registrar = rd.entities?.find(e => e.roles?.includes('registrar'))?.vcardArray?.[1]?.find(v=>v[0]==='fn')?.[3] || 'Unknown';
-                result.created   = rd.events?.find(e => e.eventAction==='registration')?.eventDate?.slice(0,10) || '—';
-                result.expires   = rd.events?.find(e => e.eventAction==='expiration')?.eventDate?.slice(0,10) || '—';
-                result.updated   = rd.events?.find(e => e.eventAction==='last changed')?.eventDate?.slice(0,10) || '—';
-                result.status    = rd.status?.join(', ') || '—';
-                result.nameservers = rd.nameservers?.map(n => n.ldhName).join(', ') || '—';
-            }
+            const r=await fetch(`https://rdap.org/domain/${domain}`); const rd=r.ok?await r.json():null;
+            const result={domain,registered:false};
+            if(rd){result.registered=true;result.registrar=rd.entities?.find(e=>e.roles?.includes('registrar'))?.vcardArray?.[1]?.find(v=>v[0]==='fn')?.[3]||'Unknown';result.created=rd.events?.find(e=>e.eventAction==='registration')?.eventDate?.slice(0,10)||'—';result.expires=rd.events?.find(e=>e.eventAction==='expiration')?.eventDate?.slice(0,10)||'—';result.status=rd.status?.join(', ')||'—';result.nameservers=rd.nameservers?.map(n=>n.ldhName).join(', ')||'—';}
             return result;
-        } catch(e) { return null; }
+        } catch(e){return null;}
     };
 
     const lookupDNS = async (domain) => {
         try {
-            const types = ['A','MX','TXT','CNAME','NS'];
-            const results = await Promise.all(types.map(t =>
-                fetch(`https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=${t}`)
-                    .then(r => r.json())
-                    .then(d => ({ type: t, answers: d.Answer || [] }))
-                    .catch(() => ({ type: t, answers: [] }))
-            ));
-            return results.filter(r => r.answers.length);
-        } catch(e) { return null; }
+            const types=['A','MX','TXT','CNAME','NS'];
+            const results=await Promise.all(types.map(t=>fetch(`https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=${t}`).then(r=>r.json()).then(d=>({type:t,answers:d.Answer||[]})).catch(()=>({type:t,answers:[]}))));
+            return results.filter(r=>r.answers.length);
+        } catch(e){return null;}
     };
 
     const lookupSSL = async (domain) => {
         try {
-            const r = await fetch(`https://api.certspotter.com/v1/issuances?domain=${encodeURIComponent(domain)}&include_subdomains=true&expand=dns_names`);
-            const d = await r.json();
-            if (!Array.isArray(d) || !d.length) return null;
-            const latest = d[0];
-            return {
-                issuer:    latest.issuer?.name || '—',
-                notBefore: latest.not_before?.slice(0,10) || '—',
-                notAfter:  latest.not_after?.slice(0,10)  || '—',
-                dnsNames:  latest.dns_names?.slice(0,10)  || []
-            };
-        } catch(e) { return null; }
+            const r=await fetch(`https://api.certspotter.com/v1/issuances?domain=${encodeURIComponent(domain)}&include_subdomains=true&expand=dns_names`);
+            const d=await r.json(); if(!Array.isArray(d)||!d.length) return null;
+            return {issuer:d[0].issuer?.name||'—',notBefore:d[0].not_before?.slice(0,10)||'—',notAfter:d[0].not_after?.slice(0,10)||'—',dnsNames:d[0].dns_names?.slice(0,10)||[]};
+        } catch(e){return null;}
     };
 
     const buildDomainCard = (whois, dns, ssl, domain) => {
-        let html = `<div class="osint-card">
-            <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">DOMAIN_INTEL :: ${escHtml(domain.toUpperCase())}</span></div>`;
-
-        if (whois?.registered) {
-            html += `<div class="osint-grid">
-                <div class="osint-row"><span class="osint-k">REGISTRAR</span><span class="osint-v">${escHtml(whois.registrar)}</span></div>
-                <div class="osint-row"><span class="osint-k">CREATED</span><span class="osint-v">${whois.created}</span></div>
-                <div class="osint-row"><span class="osint-k">EXPIRES</span><span class="osint-v">${whois.expires}</span></div>
-                <div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">${escHtml(whois.status)}</span></div>
-                <div class="osint-row"><span class="osint-k">NAMESERVERS</span><span class="osint-v">${escHtml(whois.nameservers)}</span></div>
-            </div>`;
-        } else {
-            html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">Registration data unavailable</span></div></div>`;
-        }
-
-        if (ssl) {
-            html += `<div class="osint-grid">
-                <div class="osint-section-title" style="padding:0 14px;">SSL CERTIFICATE</div>
-                <div class="osint-row"><span class="osint-k">ISSUER</span><span class="osint-v">${escHtml(ssl.issuer)}</span></div>
-                <div class="osint-row"><span class="osint-k">VALID</span><span class="osint-v">${ssl.notBefore} → ${ssl.notAfter}</span></div>
-                <div class="osint-row"><span class="osint-k">SANs</span><span class="osint-v">${ssl.dnsNames.map(escHtml).join(', ')}</span></div>
-            </div>`;
-        }
-
-        if (dns?.length) {
-            html += `<div class="osint-grid"><div class="osint-section-title" style="padding:0 14px;">DNS RECORDS</div>`;
-            dns.forEach(rec => {
-                const vals = rec.answers.map(a => escHtml(a.data)).join('<br>');
-                html += `<div class="osint-row"><span class="osint-k">${rec.type}</span><span class="osint-v">${vals}</span></div>`;
-            });
-            html += `</div>`;
-        }
-
-        html += `</div>`;
-        return html;
+        let html=`<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">DOMAIN_INTEL :: ${escHtml(domain.toUpperCase())}</span></div>`;
+        if(whois?.registered){html+=`<div class="osint-grid"><div class="osint-row"><span class="osint-k">REGISTRAR</span><span class="osint-v">${escHtml(whois.registrar)}</span></div><div class="osint-row"><span class="osint-k">CREATED</span><span class="osint-v">${whois.created}</span></div><div class="osint-row"><span class="osint-k">EXPIRES</span><span class="osint-v">${whois.expires}</span></div><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">${escHtml(whois.status)}</span></div><div class="osint-row"><span class="osint-k">NAMESERVERS</span><span class="osint-v">${escHtml(whois.nameservers)}</span></div></div>`;}
+        else{html+=`<div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">Registration data unavailable</span></div></div>`;}
+        if(ssl){html+=`<div class="osint-grid"><div class="osint-section-title" style="padding:0 14px;">SSL CERTIFICATE</div><div class="osint-row"><span class="osint-k">ISSUER</span><span class="osint-v">${escHtml(ssl.issuer)}</span></div><div class="osint-row"><span class="osint-k">VALID</span><span class="osint-v">${ssl.notBefore} → ${ssl.notAfter}</span></div><div class="osint-row"><span class="osint-k">SANs</span><span class="osint-v">${ssl.dnsNames.map(escHtml).join(', ')}</span></div></div>`;}
+        if(dns?.length){html+=`<div class="osint-grid"><div class="osint-section-title" style="padding:0 14px;">DNS RECORDS</div>`;dns.forEach(rec=>{html+=`<div class="osint-row"><span class="osint-k">${rec.type}</span><span class="osint-v">${rec.answers.map(a=>escHtml(a.data)).join('<br>')}</span></div>`;});html+=`</div>`;}
+        html+=`</div>`; return html;
     };
 
-    // ─────────────────────────────────────────────
-    //  EMAIL BREACH CHECK  (HaveIBeenPwned — no key for domain search)
-    //  Falls back to XposedOrNot API for individual email
-    // ─────────────────────────────────────────────
+    // ── BREACH / USERNAME / EXIF ──
     const checkBreaches = async (email) => {
         try {
-            // XposedOrNot — completely free, no key, CORS ok
-            const r = await fetch(`https://api.xposedornot.com/v1/check-email/${encodeURIComponent(email)}`);
-            if (r.status === 404) return { email, breaches: [], clean: true };
-            const d = await r.json();
-            if (!d.breaches) return null;
-            // Flatten breach list
-            const breaches = d.breaches.flat ? d.breaches.flat() : d.breaches;
-            return { email, breaches: Array.isArray(breaches) ? breaches : [], clean: false };
-        } catch(e) { return null; }
+            const r=await fetch(`https://api.xposedornot.com/v1/check-email/${encodeURIComponent(email)}`);
+            if(r.status===404) return {email,breaches:[],clean:true};
+            const d=await r.json(); if(!d.breaches) return null;
+            const breaches=d.breaches.flat?d.breaches.flat():d.breaches;
+            return {email,breaches:Array.isArray(breaches)?breaches:[],clean:false};
+        } catch(e){return null;}
     };
 
     const buildBreachCard = (result) => {
-        if (!result) return '';
-        let html = `<div class="osint-card">
-            <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">BREACH_SCAN :: ${escHtml(result.email)}</span></div>`;
-        if (result.clean || !result.breaches.length) {
-            html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v" style="color:#7fba8a">NO BREACHES DETECTED</span></div></div>`;
-        } else {
-            html += `<div class="osint-grid"><div class="osint-row"><span class="osint-k">FOUND IN</span><span class="osint-v" style="color:#ff6b6b">${result.breaches.length} BREACH${result.breaches.length>1?'ES':''}</span></div></div>`;
-            html += `<div class="breach-list">`;
-            result.breaches.slice(0,15).forEach(b => {
-                const name = typeof b === 'string' ? b : (b.breachID || b.name || JSON.stringify(b));
-                html += `<div class="breach-item"><div class="breach-name">${escHtml(name)}</div></div>`;
-            });
-            html += `</div>`;
-        }
-        html += `</div>`;
-        return html;
+        if(!result) return '';
+        let html=`<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">BREACH_SCAN :: ${escHtml(result.email)}</span></div>`;
+        if(result.clean||!result.breaches.length){html+=`<div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v" style="color:#7fba8a">NO BREACHES DETECTED</span></div></div>`;}
+        else{html+=`<div class="osint-grid"><div class="osint-row"><span class="osint-k">FOUND IN</span><span class="osint-v" style="color:#ff6b6b">${result.breaches.length} BREACH${result.breaches.length>1?'ES':''}</span></div></div><div class="breach-list">`;result.breaches.slice(0,15).forEach(b=>{const name=typeof b==='string'?b:(b.breachID||b.name||JSON.stringify(b));html+=`<div class="breach-item"><div class="breach-name">${escHtml(name)}</div></div>`;});html+=`</div>`;}
+        html+=`</div>`; return html;
     };
 
-    // ─────────────────────────────────────────────
-    //  USERNAME SEARCH  (checks profile URLs directly)
-    // ─────────────────────────────────────────────
     const USERNAME_PLATFORMS = [
-        { name: 'GitHub',      url: u => `https://github.com/${u}`,                    check: 'html' },
-        { name: 'Reddit',      url: u => `https://www.reddit.com/user/${u}/about.json`, check: 'json' },
-        { name: 'HackerNews',  url: u => `https://hacker-news.firebaseio.com/v0/user/${u}.json`, check: 'json' },
-        { name: 'Instagram',   url: u => `https://www.instagram.com/${u}/`,             check: 'html' },
-        { name: 'TikTok',      url: u => `https://www.tiktok.com/@${u}`,                check: 'html' },
-        { name: 'Twitter/X',   url: u => `https://twitter.com/${u}`,                    check: 'html' },
-        { name: 'LinkedIn',    url: u => `https://www.linkedin.com/in/${u}`,            check: 'html' },
-        { name: 'Pinterest',   url: u => `https://www.pinterest.com/${u}/`,             check: 'html' },
-        { name: 'Twitch',      url: u => `https://www.twitch.tv/${u}`,                  check: 'html' },
-        { name: 'YouTube',     url: u => `https://www.youtube.com/@${u}`,               check: 'html' },
-        { name: 'SoundCloud',  url: u => `https://soundcloud.com/${u}`,                 check: 'html' },
-        { name: 'Keybase',     url: u => `https://keybase.io/${u}`,                     check: 'html' },
-        { name: 'Gitlab',      url: u => `https://gitlab.com/${u}`,                     check: 'html' },
-        { name: 'Medium',      url: u => `https://medium.com/@${u}`,                    check: 'html' },
-        { name: 'Dev.to',      url: u => `https://dev.to/${u}`,                         check: 'html' },
-        { name: 'Steam',       url: u => `https://steamcommunity.com/id/${u}`,          check: 'html' },
-        { name: 'Spotify',     url: u => `https://open.spotify.com/user/${u}`,          check: 'html' },
-        { name: 'Patreon',     url: u => `https://www.patreon.com/${u}`,                check: 'html' },
-        { name: 'Fiverr',      url: u => `https://www.fiverr.com/${u}`,                 check: 'html' },
-        { name: 'Gravatar',    url: u => `https://en.gravatar.com/${u}.json`,           check: 'json' },
+        {name:'GitHub',url:u=>`https://github.com/${u}`},{name:'Reddit',url:u=>`https://www.reddit.com/user/${u}/about.json`},
+        {name:'HackerNews',url:u=>`https://hacker-news.firebaseio.com/v0/user/${u}.json`},{name:'Instagram',url:u=>`https://www.instagram.com/${u}/`},
+        {name:'TikTok',url:u=>`https://www.tiktok.com/@${u}`},{name:'Twitter/X',url:u=>`https://twitter.com/${u}`},
+        {name:'LinkedIn',url:u=>`https://www.linkedin.com/in/${u}`},{name:'Pinterest',url:u=>`https://www.pinterest.com/${u}/`},
+        {name:'Twitch',url:u=>`https://www.twitch.tv/${u}`},{name:'YouTube',url:u=>`https://www.youtube.com/@${u}`},
+        {name:'SoundCloud',url:u=>`https://soundcloud.com/${u}`},{name:'Keybase',url:u=>`https://keybase.io/${u}`},
+        {name:'Gitlab',url:u=>`https://gitlab.com/${u}`},{name:'Medium',url:u=>`https://medium.com/@${u}`},
+        {name:'Dev.to',url:u=>`https://dev.to/${u}`},{name:'Steam',url:u=>`https://steamcommunity.com/id/${u}`},
+        {name:'Spotify',url:u=>`https://open.spotify.com/user/${u}`},{name:'Patreon',url:u=>`https://www.patreon.com/${u}`},
+        {name:'Fiverr',url:u=>`https://www.fiverr.com/${u}`},{name:'Gravatar',url:u=>`https://en.gravatar.com/${u}.json`},
     ];
 
-    const searchUsername = async (username) => {
-        const results = await Promise.all(USERNAME_PLATFORMS.map(async p => {
-            const url = p.url(username);
-            try {
-                const r = await fetch(url, { method: 'HEAD', mode: 'no-cors' });
-                // no-cors means opaque response — status 0 means it got somewhere (not blocked entirely)
-                return { platform: p.name, url, found: true };
-            } catch(e) {
-                return { platform: p.name, url, found: false };
-            }
-        }));
-        return results;
-    };
+    const searchUsername = async (username) => Promise.all(USERNAME_PLATFORMS.map(async p => {
+        try { await fetch(p.url(username),{method:'HEAD',mode:'no-cors'}); return {platform:p.name,url:p.url(username),found:true}; }
+        catch(e) { return {platform:p.name,url:p.url(username),found:false}; }
+    }));
 
     const buildUsernameCard = (username, results) => {
-        const found    = results.filter(r => r.found);
-        const notFound = results.filter(r => !r.found);
-        let html = `<div class="osint-card">
-            <div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">USERNAME_SWEEP :: ${escHtml(username)}</span></div>
-            <div class="osint-grid">
-                <div class="osint-row"><span class="osint-k">HITS</span><span class="osint-v" style="color:#7fba8a">${found.length} / ${results.length} platforms</span></div>
-            </div>
-            <div class="username-grid">`;
-        found.forEach(r => {
-            html += `<a href="${r.url}" target="_blank" class="username-chip found"><div class="dot"></div>${escHtml(r.platform)}</a>`;
-        });
-        notFound.forEach(r => {
-            html += `<span class="username-chip notfound"><div class="dot"></div>${escHtml(r.platform)}</span>`;
-        });
-        html += `</div></div>`;
-        return html;
+        const found=results.filter(r=>r.found), notFound=results.filter(r=>!r.found);
+        let html=`<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">USERNAME_SWEEP :: ${escHtml(username)}</span></div><div class="osint-grid"><div class="osint-row"><span class="osint-k">HITS</span><span class="osint-v" style="color:#7fba8a">${found.length} / ${results.length} platforms</span></div></div><div class="username-grid">`;
+        found.forEach(r=>{html+=`<a href="${r.url}" target="_blank" class="username-chip found"><div class="dot"></div>${escHtml(r.platform)}</a>`;});
+        notFound.forEach(r=>{html+=`<span class="username-chip notfound"><div class="dot"></div>${escHtml(r.platform)}</span>`;});
+        return html+`</div></div>`;
     };
 
-    // ─────────────────────────────────────────────
-    //  EXIF READER  (injected as a UI element into the chat)
-    // ─────────────────────────────────────────────
-    const buildExifUploader = (preloadedFile = null) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'osint-card';
-        wrapper.style.marginTop = '15px';
-
-        const header = document.createElement('div');
-        header.className = 'osint-card-header';
-        header.innerHTML = `<div class="blink"></div><span class="osint-card-title">EXIF_EXTRACTOR :: DROP IMAGE TO ANALYSE</span>`;
+    const buildExifUploader = (preloadedFile=null) => {
+        const wrapper=document.createElement('div'); wrapper.className='osint-card'; wrapper.style.marginTop='15px';
+        const header=document.createElement('div'); header.className='osint-card-header';
+        header.innerHTML=`<div class="blink"></div><span class="osint-card-title">EXIF_EXTRACTOR :: DROP IMAGE TO ANALYSE</span>`;
         wrapper.appendChild(header);
-
-        const dropArea = document.createElement('div');
-        dropArea.className = 'exif-upload-area';
-        dropArea.innerHTML = `<i class="fas fa-camera" style="font-size:1.5rem;margin-bottom:8px;display:block"></i>Click or drag an image here`;
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.accept = 'image/*';
+        const dropArea=document.createElement('div'); dropArea.className='exif-upload-area';
+        dropArea.innerHTML=`<i class="fas fa-camera" style="font-size:1.5rem;margin-bottom:8px;display:block"></i>Click or drag an image here`;
+        const fileInput=document.createElement('input'); fileInput.type='file'; fileInput.accept='image/*';
         dropArea.appendChild(fileInput);
-
-        const resultsDiv = document.createElement('div');
-        resultsDiv.className = 'osint-grid';
-        resultsDiv.style.display = 'none';
-
-        const processFile = async (file) => {
-            dropArea.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Extracting metadata...`;
-            try {
-                const exif = await exifr.parse(file, true);
-                resultsDiv.style.display = 'flex';
-                resultsDiv.innerHTML = '';
-
-                if (!exif || !Object.keys(exif).length) {
-                    resultsDiv.innerHTML = `<div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">No EXIF metadata found in this file.</span></div>`;
-                    dropArea.innerHTML = `<i class="fas fa-check"></i> ${escHtml(file.name)}`;
-                    return;
-                }
-
-                const fields = [
-                    ['MAKE',        exif.Make],
-                    ['MODEL',       exif.Model],
-                    ['SOFTWARE',    exif.Software],
-                    ['DATE_TAKEN',  exif.DateTimeOriginal || exif.DateTime],
-                    ['GPS_LAT',     exif.latitude],
-                    ['GPS_LON',     exif.longitude],
-                    ['GPS_ALT',     exif.GPSAltitude ? `${exif.GPSAltitude.toFixed(1)}m` : null],
-                    ['WIDTH',       exif.ImageWidth || exif.ExifImageWidth],
-                    ['HEIGHT',      exif.ImageHeight || exif.ExifImageHeight],
-                    ['F_STOP',      exif.FNumber ? `f/${exif.FNumber}` : null],
-                    ['EXPOSURE',    exif.ExposureTime ? `1/${Math.round(1/exif.ExposureTime)}s` : null],
-                    ['ISO',         exif.ISO],
-                    ['FOCAL_LEN',   exif.FocalLength ? `${exif.FocalLength}mm` : null],
-                ];
-                fields.filter(([,v]) => v != null).forEach(([k,v]) => {
-                    resultsDiv.innerHTML += `<div class="osint-row"><span class="osint-k">${k}</span><span class="osint-v">${escHtml(String(v))}</span></div>`;
-                });
-
-                // If GPS found — add map pin
-                if (exif.latitude && exif.longitude) {
-                    const mapData = {
-                        query: `Photo location: ${file.name}`,
-                        primary: { name: `Photo GPS: ${exif.latitude.toFixed(5)}, ${exif.longitude.toFixed(5)}`, lat: exif.latitude, lon: exif.longitude, type: 'exif_gps', address: '' },
-                        alternates: []
-                    };
-                    const mapBlock = buildMapBlock(mapData);
-                    wrapper.appendChild(mapBlock);
-
-                    // Also feed to NOX as context
-                    userInput.value = `EXIF GPS data extracted from ${file.name}: coordinates ${exif.latitude.toFixed(6)}, ${exif.longitude.toFixed(6)}. Camera: ${exif.Make||'?'} ${exif.Model||'?'}. Date: ${exif.DateTimeOriginal||'unknown'}. Analyse this location.`;
-                    sendMessage();
-                }
-
-                dropArea.innerHTML = `<i class="fas fa-check" style="color:#7fba8a"></i> ${escHtml(file.name)}`;
-            } catch(e) {
-                resultsDiv.style.display = 'flex';
-                resultsDiv.innerHTML = `<div class="osint-row"><span class="osint-k">ERROR</span><span class="osint-v">${e.message}</span></div>`;
-                dropArea.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:#ff6b6b"></i> Failed`;
-            }
+        const resultsDiv=document.createElement('div'); resultsDiv.className='osint-grid'; resultsDiv.style.display='none';
+        const processFile=async(file)=>{
+            dropArea.innerHTML=`<i class="fas fa-spinner fa-spin"></i> Extracting metadata...`;
+            try{
+                const exif=await exifr.parse(file,true); resultsDiv.style.display='flex'; resultsDiv.innerHTML='';
+                if(!exif||!Object.keys(exif).length){resultsDiv.innerHTML=`<div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">No EXIF metadata found.</span></div>`;dropArea.innerHTML=`<i class="fas fa-check"></i> ${escHtml(file.name)}`;return;}
+                [['MAKE',exif.Make],['MODEL',exif.Model],['SOFTWARE',exif.Software],['DATE_TAKEN',exif.DateTimeOriginal||exif.DateTime],['GPS_LAT',exif.latitude],['GPS_LON',exif.longitude],['GPS_ALT',exif.GPSAltitude?`${exif.GPSAltitude.toFixed(1)}m`:null],['WIDTH',exif.ImageWidth||exif.ExifImageWidth],['HEIGHT',exif.ImageHeight||exif.ExifImageHeight],['F_STOP',exif.FNumber?`f/${exif.FNumber}`:null],['EXPOSURE',exif.ExposureTime?`1/${Math.round(1/exif.ExposureTime)}s`:null],['ISO',exif.ISO],['FOCAL_LEN',exif.FocalLength?`${exif.FocalLength}mm`:null]].filter(([,v])=>v!=null).forEach(([k,v])=>{resultsDiv.innerHTML+=`<div class="osint-row"><span class="osint-k">${k}</span><span class="osint-v">${escHtml(String(v))}</span></div>`;});
+                if(exif.latitude&&exif.longitude){wrapper.appendChild(buildMapBlock({query:`Photo location: ${file.name}`,primary:{name:`Photo GPS: ${exif.latitude.toFixed(5)}, ${exif.longitude.toFixed(5)}`,lat:exif.latitude,lon:exif.longitude,type:'exif_gps',address:''},alternates:[]}));userInput.value=`EXIF GPS from ${file.name}: ${exif.latitude.toFixed(6)}, ${exif.longitude.toFixed(6)}. Camera: ${exif.Make||'?'} ${exif.Model||'?'}. Analyse this location.`;sendMessage();}
+                dropArea.innerHTML=`<i class="fas fa-check" style="color:#7fba8a"></i> ${escHtml(file.name)}`;
+            }catch(e){resultsDiv.style.display='flex';resultsDiv.innerHTML=`<div class="osint-row"><span class="osint-k">ERROR</span><span class="osint-v">${e.message}</span></div>`;dropArea.innerHTML=`<i class="fas fa-exclamation-triangle" style="color:#ff6b6b"></i> Failed`;}
         };
-
-        dropArea.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
-        dropArea.addEventListener('dragover', e => { e.preventDefault(); dropArea.style.borderColor='var(--accent-red)'; });
-        dropArea.addEventListener('dragleave', () => { dropArea.style.borderColor=''; });
-        dropArea.addEventListener('drop', e => { e.preventDefault(); dropArea.style.borderColor=''; if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]); });
-
-        wrapper.appendChild(dropArea);
-        wrapper.appendChild(resultsDiv);
-
-        // If a file was passed directly (from upload button), process immediately
-        if (preloadedFile) processFile(preloadedFile);
-
+        dropArea.addEventListener('click',()=>fileInput.click());
+        fileInput.addEventListener('change',e=>{if(e.target.files[0])processFile(e.target.files[0]);});
+        dropArea.addEventListener('dragover',e=>{e.preventDefault();dropArea.style.borderColor='var(--accent-red)';});
+        dropArea.addEventListener('dragleave',()=>{dropArea.style.borderColor='';});
+        dropArea.addEventListener('drop',e=>{e.preventDefault();dropArea.style.borderColor='';if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0]);});
+        wrapper.appendChild(dropArea); wrapper.appendChild(resultsDiv);
+        if(preloadedFile) processFile(preloadedFile);
         return wrapper;
     };
 
-    // ─────────────────────────────────────────────
-    //  UNIFIED AI INTENT CLASSIFIER
-    //  One call figures out ALL OSINT intents from natural language.
-    //  Returns { emails, ips, domains, usernames, wants_exif, wants_spatial }
-    // ─────────────────────────────────────────────
-    const classifyIntent = async (text) => {
-        const systemPrompt = `You are a strict OSINT intent classifier. Extract ONLY what the operator is explicitly asking to investigate.
-Reply ONLY with raw JSON, no markdown, no explanation:
-{
-  "emails":        ["only literal email addresses the operator wants investigated"],
-  "ips":           ["only literal IPv4 addresses the operator wants traced"],
-  "domains":       ["only standalone domain names the operator wants looked up e.g. example.com - NEVER include email provider domains like gmail.com yahoo.com hotmail.com protonmail.com"],
-  "usernames":     ["only usernames/handles the operator wants searched across social platforms"],
-  "wants_exif":    false,
-  "wants_spatial": false
-}
+    // ══════════════════════════════════════════════
+    //  CCTV MODULE — FIXED (YouTube embeds + Windy fallback)
+    // ══════════════════════════════════════════════
 
-STRICT rules — only include something if the operator is EXPLICITLY asking to investigate it:
-- emails: must be a real email address literally typed e.g. john@example.com
-- ips: must be a real IPv4 address literally typed e.g. 185.220.101.34. Do NOT invent IPs.
-- domains: must be a standalone domain the operator wants WHOIS/DNS on. Do NOT extract domains from email addresses. Do NOT include common email providers.
-- usernames: only if operator explicitly asks to find/search/check someone's social presence
-- wants_exif: true ONLY if operator asks about image/photo metadata
-- wants_spatial: true ONLY if operator mentions a real-world location to find on a map
+    const COUNTRY_CODE_MAP = {
+        'united states':'US','usa':'US','us':'US','america':'US','united kingdom':'GB','uk':'GB','britain':'GB','england':'GB',
+        'germany':'DE','france':'FR','italy':'IT','spain':'ES','japan':'JP','china':'CN','russia':'RU','canada':'CA',
+        'australia':'AU','brazil':'BR','india':'IN','mexico':'MX','netherlands':'NL','poland':'PL','ukraine':'UA','turkey':'TR',
+        'sweden':'SE','norway':'NO','denmark':'DK','finland':'FI','switzerland':'CH','austria':'AT','belgium':'BE','portugal':'PT',
+        'czech republic':'CZ','czechia':'CZ','hungary':'HU','romania':'RO','south korea':'KR','korea':'KR','taiwan':'TW',
+        'hong kong':'HK','singapore':'SG','thailand':'TH','indonesia':'ID','malaysia':'MY','argentina':'AR','chile':'CL',
+        'colombia':'CO','peru':'PE','south africa':'ZA','nigeria':'NG','egypt':'EG','iran':'IR','israel':'IL','saudi arabia':'SA',
+        'pakistan':'PK','vietnam':'VN','philippines':'PH','new zealand':'NZ','greece':'GR','ireland':'IE','scotland':'GB','wales':'GB',
+    };
 
-If the operator mentions an IP to trace → put it in ips, set wants_spatial false (spatial is for place names, not IPs).
-If the operator mentions a place name → set wants_spatial true, do NOT put anything in ips or domains.
-These tools are mutually exclusive per message — do not mix them.
+    // Curated reliable public YouTube 24/7 livestreams by country code
+    const CURATED_STREAMS = {
+        'US':[
+            {title:'Times Square NYC',city:'New York',country:'USA',lat:40.7580,lon:-73.9855,ytId:'dQw4w9WgXcQ'},
+            {title:'Las Vegas Strip',city:'Las Vegas',country:'USA',lat:36.1147,lon:-115.1728,ytId:'d7xHFTR4pes'},
+            {title:'Miami Beach Cam',city:'Miami',country:'USA',lat:25.7825,lon:-80.1300,ytId:'0XBtnBlA67w'},
+        ],
+        'JP':[
+            {title:'Shibuya Crossing',city:'Tokyo',country:'Japan',lat:35.6595,lon:139.7005,ytId:'kCkHuiEr8RQ'},
+            {title:'Tokyo Tower View',city:'Tokyo',country:'Japan',lat:35.6586,lon:139.7454,ytId:'yOOCI7Zi_XA'},
+        ],
+        'FR':[
+            {title:'Eiffel Tower Paris',city:'Paris',country:'France',lat:48.8584,lon:2.2945,ytId:'N-pijhHFAEQ'},
+            {title:'Paris City Live',city:'Paris',country:'France',lat:48.8566,lon:2.3522,ytId:'PyuTSxZT8EA'},
+        ],
+        'GB':[
+            {title:'London Eye',city:'London',country:'UK',lat:51.5033,lon:-0.1196,ytId:'MK6OaaBtGuo'},
+            {title:'Tower Bridge',city:'London',country:'UK',lat:51.5055,lon:-0.0754,ytId:'2yT_rFhkVd8'},
+        ],
+        'DE':[
+            {title:'Brandenburg Gate Berlin',city:'Berlin',country:'Germany',lat:52.5163,lon:13.3777,ytId:'hgFHMnPNHbI'},
+            {title:'Munich Marienplatz',city:'Munich',country:'Germany',lat:48.1374,lon:11.5755,ytId:'dUzOE77DALY'},
+        ],
+        'IT':[
+            {title:'Venice Grand Canal',city:'Venice',country:'Italy',lat:45.4408,lon:12.3155,ytId:'_2IWHe9OSwQ'},
+            {title:'Rome Colosseum',city:'Rome',country:'Italy',lat:41.8902,lon:12.4922,ytId:'wFEhLLGnRNM'},
+        ],
+        'AU':[
+            {title:'Sydney Opera House',city:'Sydney',country:'Australia',lat:-33.8568,lon:151.2153,ytId:'v1LcAfsFKM4'},
+            {title:'Great Barrier Reef',city:'Queensland',country:'Australia',lat:-18.2871,lon:147.6992,ytId:'X4fF5BX_7yE'},
+        ],
+        'CA':[
+            {title:'Niagara Falls',city:'Ontario',country:'Canada',lat:43.0962,lon:-79.0377,ytId:'FZ2_bQoNLs0'},
+            {title:'Vancouver Harbour',city:'Vancouver',country:'Canada',lat:49.2827,lon:-123.1207,ytId:'3K2UDxKGqbY'},
+        ],
+        'DEFAULT':[
+            {title:'Times Square NYC',city:'New York',country:'USA',lat:40.7580,lon:-73.9855,ytId:'dQw4w9WgXcQ'},
+            {title:'Shibuya Crossing',city:'Tokyo',country:'Japan',lat:35.6595,lon:139.7005,ytId:'kCkHuiEr8RQ'},
+            {title:'Eiffel Tower Paris',city:'Paris',country:'France',lat:48.8584,lon:2.2945,ytId:'N-pijhHFAEQ'},
+            {title:'London Eye',city:'London',country:'UK',lat:51.5033,lon:-0.1196,ytId:'MK6OaaBtGuo'},
+            {title:'Niagara Falls',city:'Ontario',country:'Canada',lat:43.0962,lon:-79.0377,ytId:'FZ2_bQoNLs0'},
+            {title:'Sydney Opera House',city:'Sydney',country:'Australia',lat:-33.8568,lon:151.2153,ytId:'v1LcAfsFKM4'},
+        ]
+    };
 
-Always return all fields. Use [] for empty arrays, false for booleans.`;
+    // Try Windy API first for real webcam thumbnails, fall back to curated YouTube
+    const fetchPublicCams = async (countryCode, maxCams=6) => {
+        // Attempt Windy API via CORS proxy
+        const windyCams = await tryWindyAPI(countryCode, maxCams);
+        if (windyCams && windyCams.length >= 2) return windyCams;
 
+        // Fall back to curated YouTube streams
+        const pool = (countryCode && CURATED_STREAMS[countryCode]) || CURATED_STREAMS['DEFAULT'];
+        return pool.slice(0, maxCams).map((c,i) => ({
+            camId:`curated-${countryCode||'WW'}-${i}`,
+            title:c.title, city:c.city, country:c.country, lat:c.lat, lon:c.lon, ytId:c.ytId, thumb:null
+        }));
+    };
+
+    const tryWindyAPI = async (countryCode, maxCams) => {
         try {
-            const r = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",
-                    messages: [
-                        { role: "system", content: systemPrompt },
-                        { role: "user", content: text }
-                    ],
-                    temperature: 0.0,
-                    max_tokens: 300
-                })
+            const url = countryCode
+                ? `https://api.windy.com/webcams/api/v3/webcams?country=${countryCode}&limit=${maxCams}&fields=webcamId,title,location,image`
+                : `https://api.windy.com/webcams/api/v3/webcams?limit=${maxCams}&fields=webcamId,title,location,image`;
+            const proxies=[`https://corsproxy.io/?url=${encodeURIComponent(url)}`,`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`];
+            for (const proxyUrl of proxies) {
+                try {
+                    const r = await fetch(proxyUrl,{signal:AbortSignal.timeout(8000)});
+                    if (!r.ok) continue;
+                    let json = proxyUrl.includes('allorigins') ? JSON.parse((await r.json()).contents||'{}') : await r.json();
+                    const cams = (json.webcams||[]).map((w,i)=>({
+                        camId:w.webcamId||`windy-${i}`, title:w.title||'UNKNOWN',
+                        city:w.location?.city||'—', country:w.location?.country||'—',
+                        lat:w.location?.latitude||null, lon:w.location?.longitude||null,
+                        ytId:null, thumb:w.image?.current?.preview||w.image?.sizes?.medium?.url||null
+                    })).filter(c => c.thumb && !c.thumb.includes('imgur') && !c.thumb.includes('no-image'));
+                    if (cams.length >= 2) return cams;
+                } catch(e) { console.warn('NOX_WINDY_PROXY',e.message); }
+            }
+        } catch(e) {}
+        return null;
+    };
+
+    const buildCCTVCard = (cams, countryLabel) => {
+        const total = cams.length;
+        const ts = new Date().toISOString().replace('T',' ').slice(0,19)+' UTC';
+        const card = document.createElement('div');
+        card.className = 'cctv-card';
+        card.innerHTML = `
+            <div class="cctv-card-header">
+                <div class="rec-dot"></div>
+                CCTV_INTERCEPT :: ${escHtml((countryLabel||'WORLDWIDE').toUpperCase())} — ${total} FEED${total!==1?'S':''} ACQUIRED
+            </div>
+            <div class="cctv-meta-bar">
+                <div class="meta-item"><span class="meta-label">TIMESTAMP:</span> ${ts}</div>
+                <div class="meta-item"><span class="meta-label">SOURCE:</span> PUBLIC_WEBCAM_REGISTRY</div>
+                <div class="meta-item"><span class="meta-label">AUTH:</span> NONE REQUIRED</div>
+            </div>`;
+        const grid = document.createElement('div');
+        grid.className = 'cctv-grid';
+        if (!cams.length) {
+            grid.innerHTML = `<div style="padding:20px;font-family:var(--font-mono);font-size:0.75rem;color:var(--text-secondary);grid-column:1/-1;">NO FEEDS INTERCEPTED</div>`;
+        } else {
+            cams.forEach((cam, idx) => {
+                const feedEl = document.createElement('div');
+                feedEl.className = 'cctv-feed';
+                const label = [cam.city, cam.country].filter(x=>x&&x!=='—').join(', ') || cam.title || 'UNKNOWN';
+                const camLabel = `CAM-${String(idx+1).padStart(3,'0')}`;
+
+                if (cam.ytId) {
+                    // YouTube embed — reliable, no CORS issues
+                    const iframe = document.createElement('iframe');
+                    iframe.src = `https://www.youtube.com/embed/${cam.ytId}?autoplay=0&mute=1&controls=1&modestbranding=1&rel=0`;
+                    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                    iframe.allowFullscreen = true;
+                    iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;pointer-events:auto;';
+                    feedEl.appendChild(iframe);
+                } else if (cam.thumb) {
+                    const img = document.createElement('img');
+                    img.className = 'feed-img'; img.alt = camLabel; img.loading = 'lazy'; img.src = cam.thumb;
+                    img.addEventListener('error', () => {
+                        feedEl.innerHTML='';
+                        const ns=document.createElement('div'); ns.className='cctv-nosignal';
+                        ns.innerHTML=`<i class="fas fa-video-slash" style="font-size:1.2rem;color:#333"></i><div class="cctv-nosignal-text">NO SIGNAL</div>`;
+                        feedEl.appendChild(ns); feedEl.appendChild(makeFeedOverlay(label,camLabel,cam));
+                    });
+                    feedEl.appendChild(img);
+                } else {
+                    const ns=document.createElement('div'); ns.className='cctv-nosignal';
+                    ns.innerHTML=`<i class="fas fa-video-slash" style="font-size:1.2rem;color:#333"></i><div class="cctv-nosignal-text">NO SIGNAL</div>`;
+                    feedEl.appendChild(ns);
+                }
+                feedEl.appendChild(makeFeedOverlay(label, camLabel, cam));
+                grid.appendChild(feedEl);
             });
-            const data = await r.json();
-            const raw = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
-            const parsed = JSON.parse(raw);
-            // Sanitise
-            return {
-                emails:        Array.isArray(parsed.emails)    ? parsed.emails    : [],
-                ips:           Array.isArray(parsed.ips)       ? parsed.ips       : [],
-                domains:       Array.isArray(parsed.domains)   ? parsed.domains   : [],
-                usernames:     Array.isArray(parsed.usernames) ? parsed.usernames : [],
-                wants_exif:    !!parsed.wants_exif,
-                wants_spatial: !!parsed.wants_spatial,
-            };
+        }
+        card.appendChild(grid);
+        const footer=document.createElement('div'); footer.className='cctv-footer';
+        footer.innerHTML=`<span>Feeds sourced from public webcam networks. No authentication required.</span>`;
+        card.appendChild(footer);
+        return card;
+    };
+
+    const makeFeedOverlay = (label, camLabel, cam) => {
+        const overlay=document.createElement('div'); overlay.className='cctv-feed-overlay'; overlay.style.pointerEvents='none';
+        overlay.innerHTML=`<div class="cctv-feed-top"><div class="cctv-feed-label">${escHtml(label)}</div><div class="cctv-feed-rec"><div class="rdot"></div>LIVE</div></div><div class="cctv-feed-bottom">${cam.lat?`<div class="cctv-coord-tag">${cam.lat.toFixed(4)}, ${cam.lon.toFixed(4)}</div>`:'<div></div>'}<div class="cctv-cam-id">${escHtml(camLabel)}</div></div>`;
+        return overlay;
+    };
+
+    // Single IP camera probe
+    const probeCameraIP = async (ip) => {
+        const ports=[80,8080,81,8081,443,9000];
+        const paths=['/snapshot.jpg','/jpg/image.jpg','/cgi-bin/snapshot.cgi','/Streaming/channels/1/picture','/axis-cgi/jpg/image.cgi','/webcam.jpg','/image.jpg','/snap.jpg','/shot.jpg'];
+        for (const port of ports) {
+            for (const path of paths) {
+                const target=`http://${ip}:${port}${path}`;
+                const proxy=`https://corsproxy.io/?url=${encodeURIComponent(target)}`;
+                try {
+                    const r=await fetch(proxy,{signal:AbortSignal.timeout(3500)});
+                    if(r.ok&&(r.headers.get('content-type')||'').startsWith('image/')) return {ip,port,path,snapUrl:target,proxySnapUrl:proxy,alive:true};
+                } catch(e){}
+            }
+        }
+        return {ip,port:null,path:null,snapUrl:null,proxySnapUrl:null,alive:false};
+    };
+
+    const buildCamProbeCard = (ip, probeResult, geoData) => {
+        const ts=new Date().toISOString().replace('T',' ').slice(0,19)+' UTC';
+        const card=document.createElement('div'); card.className='cam-probe-card';
+        const header=document.createElement('div'); header.className='cam-probe-header';
+        header.innerHTML=`<div style="width:8px;height:8px;border-radius:50%;background:var(--accent-red);animation:blink-dot 1s infinite;flex-shrink:0;"></div>CAMERA_PROBE :: ${escHtml(ip)}`;
+        card.appendChild(header);
+        const feedsDiv=document.createElement('div'); feedsDiv.className='cam-probe-feeds';
+        const feedDiv=document.createElement('div'); feedDiv.className='cam-probe-feed';
+        if(probeResult.alive&&probeResult.proxySnapUrl){
+            const img=document.createElement('img'); img.src=probeResult.proxySnapUrl;
+            img.addEventListener('error',()=>{feedDiv.innerHTML=`<div class="cctv-nosignal" style="min-height:160px;"><i class="fas fa-video-slash" style="font-size:1.5rem;color:#333"></i><div class="cctv-nosignal-text">SNAPSHOT LOAD FAILED</div></div>`;});
+            feedDiv.appendChild(img);
+        } else {
+            feedDiv.innerHTML=`<div class="cctv-nosignal" style="min-height:160px;"><i class="fas fa-video-slash" style="font-size:1.5rem;color:#333"></i><div class="cctv-nosignal-text">NO CAMERA RESPONSE DETECTED</div></div>`;
+        }
+        feedsDiv.appendChild(feedDiv); card.appendChild(feedsDiv);
+        const meta=document.createElement('div'); meta.className='cam-probe-meta';
+        [['TARGET',ip],['STATUS',probeResult.alive?`<span style="color:#7fba8a">CAMERA DETECTED</span>`:`<span style="color:#ff6b6b">NO OPEN CAMERA PORTS FOUND</span>`],...(probeResult.alive?[['PORT',probeResult.port],['ENDPOINT',probeResult.path]]:[]),...(geoData&&!geoData._error?[['LOCATION',`${geoData.city||'—'}, ${geoData.regionName||'—'}, ${geoData.country||'—'}`],['ISP',geoData.isp||'—']]:[]),['TIMESTAMP',ts]].forEach(([k,v])=>{
+            const row=document.createElement('div'); row.className='cam-probe-row';
+            row.innerHTML=`<span class="cam-probe-k">${k}</span><span class="cam-probe-v">${typeof v==='string'?v:escHtml(String(v))}</span>`;
+            meta.appendChild(row);
+        });
+        card.appendChild(meta); return card;
+    };
+
+    // ── INTENT CLASSIFIER ──
+    const classifyIntent = async (text) => {
+        try {
+            const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+                model:"adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",temperature:0.0,max_tokens:300,
+                messages:[{role:"system",content:`Strict OSINT intent classifier. Reply ONLY raw JSON:
+{"emails":[],"ips":[],"domains":[],"usernames":[],"wants_exif":false,"wants_spatial":false,"wants_cctv":false,"cctv_country":null,"cctv_ip":null}
+RULES:
+- wants_cctv:true when operator asks for webcam/CCTV/live camera feeds/surveillance cameras
+- cctv_country: country name lowercase if wants_cctv and country mentioned, else null
+- cctv_ip: specific IP to probe as camera (mutually exclusive with ips[])
+- ips: IPs to geolocate/trace only (not camera probes)
+- wants_exif: true only for image/photo metadata
+- wants_spatial: true only for real-world place map lookups
+Always return all fields.`},{role:"user",content:text}]})});
+            const data=await r.json();
+            const parsed=JSON.parse(data.choices[0].message.content.trim().replace(/```json|```/g,'').trim());
+            return {emails:Array.isArray(parsed.emails)?parsed.emails:[],ips:Array.isArray(parsed.ips)?parsed.ips:[],domains:Array.isArray(parsed.domains)?parsed.domains:[],usernames:Array.isArray(parsed.usernames)?parsed.usernames:[],wants_exif:!!parsed.wants_exif,wants_spatial:!!parsed.wants_spatial,wants_cctv:!!parsed.wants_cctv,cctv_country:parsed.cctv_country||null,cctv_ip:parsed.cctv_ip||null};
         } catch(e) {
-            console.error('NOX_CLASSIFY_ERR', e);
-            // Fallback: basic regex extraction so nothing is totally lost
-            const emailFallback = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g) || [];
-            const ipFallback    = [...text.matchAll(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g)].map(m=>m[0]);
-            return { emails: emailFallback, ips: ipFallback, domains: [], usernames: [], wants_exif: false, wants_spatial: false };
+            const emailFallback=text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g)||[];
+            const ipFallback=[...text.matchAll(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g)].map(m=>m[0]);
+            return {emails:emailFallback,ips:ipFallback,domains:[],usernames:[],wants_exif:false,wants_spatial:false,wants_cctv:false,cctv_country:null,cctv_ip:null};
         }
     };
 
-    // ─────────────────────────────────────────────
-    //  SEND MESSAGE
-    // ─────────────────────────────────────────────
+    // ── SEND MESSAGE ──
     const sendMessage = async () => {
         const message = userInput.value.trim();
         if (!message) return;
-        const currentCase = cases.find(c => c.id === currentCaseId);
-        if (currentCase.messages.length <= 1) currentCase.title = message.substring(0, 30);
-
-        currentCase.messages.push({ role: 'user', content: message });
+        const cc = cases.find(c => c.id === currentCaseId);
+        if (cc.messages.length <= 1) cc.title = message.substring(0, 30);
+        cc.messages.push({role:'user',content:message});
         if (!isGraphView) appendMessageUI('user', message);
-        userInput.value = '';
-        userInput.style.height = 'auto';
+        userInput.value = ''; userInput.style.height = 'auto';
         if (isGraphView) renderGraph();
 
-        // Typing indicator
         const typingDiv = document.createElement('div');
         typingDiv.className = 'message assistant-msg';
-
         typingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">Analyzing...</div>`;
         if (!isGraphView) { chatContainer.appendChild(typingDiv); scrollToBottom(); }
         if (isCallMode) { callStatus.textContent = "ANALYZING..."; callSpectrum.classList.remove('active'); }
 
-        let injectionHTML = "";
-        let mapData = null;
-        let osintContext = '';
+        let cctvCardEl = null, injectionHTML = '', mapData = null, osintContext = '';
 
-        // Single AI call classifies all intent from natural language
         const intent = await classifyIntent(message);
 
-        // Spatial intent (separate dedicated classifier for map accuracy)
+        // CCTV BRANCH
+        if (intent.wants_cctv) {
+            if (!isGraphView) typingDiv.querySelector('.msg-content').textContent = 'Intercepting camera feeds...';
+            if (intent.cctv_ip) {
+                const [probeResult, geoData] = await Promise.all([probeCameraIP(intent.cctv_ip), lookupIP(intent.cctv_ip)]);
+                cctvCardEl = buildCamProbeCard(intent.cctv_ip, probeResult, geoData);
+                osintContext += ` CAMERA_PROBE: IP ${intent.cctv_ip} → ${probeResult.alive?`camera detected on port ${probeResult.port} path ${probeResult.path}`:'no camera found'}.`;
+                if (probeResult.alive&&geoData&&!geoData._error&&geoData.lat) mapData={query:`Camera at ${intent.cctv_ip}`,primary:{name:`CAM: ${intent.cctv_ip} — ${geoData.city||'?'}, ${geoData.country||'?'}`,lat:geoData.lat,lon:geoData.lon,type:'camera',address:''},alternates:[]};
+            } else {
+                const countryInput=(intent.cctv_country||'').toLowerCase().trim();
+                const countryCode=COUNTRY_CODE_MAP[countryInput]||null;
+                const countryLabel=countryInput?intent.cctv_country:'WORLDWIDE';
+                const cams = await fetchPublicCams(countryCode, 6);
+                cctvCardEl = buildCCTVCard(cams, countryLabel);
+                osintContext += ` CCTV_INTERCEPT: ${cams.length} public camera feeds acquired${countryLabel?` for ${countryLabel}`:' (worldwide)'}.`;
+            }
+        }
+
+        // SPATIAL
         const spatialIntent = intent.wants_spatial ? await detectSpatialIntent(message) : null;
 
-        // Run all enrichments in parallel based on classified intent
-        const email0    = intent.emails[0]    || null;
-        const domain0   = intent.domains[0]   || null;
-        const username0 = intent.usernames[0] || null;
-        const publicIPs = intent.ips.filter(ip => !PRIVATE_IP.test(ip));
+        // STANDARD OSINT
+        const email0=intent.emails[0]||null, domain0=intent.domains[0]||null, username0=intent.usernames[0]||null;
+        const publicIPs = intent.ips.filter(ip=>!PRIVATE_IP.test(ip));
 
         const [gravatarResult, breachResult, whoisResult, dnsResult, sslResult, usernameResults, ...ipResults] = await Promise.all([
-            email0    ? fetchGravatar(email0)                          : Promise.resolve(null),
-            email0    ? checkBreaches(email0)                          : Promise.resolve(null),
-            domain0   ? lookupWHOIS(domain0)                           : Promise.resolve(null),
-            domain0   ? lookupDNS(domain0)                             : Promise.resolve(null),
-            domain0   ? lookupSSL(domain0)                             : Promise.resolve(null),
-            username0 ? searchUsername(username0)                      : Promise.resolve(null),
-            ...publicIPs.map(ip => lookupIP(ip))
+            email0?fetchGravatar(email0):Promise.resolve(null),
+            email0?checkBreaches(email0):Promise.resolve(null),
+            domain0?lookupWHOIS(domain0):Promise.resolve(null),
+            domain0?lookupDNS(domain0):Promise.resolve(null),
+            domain0?lookupSSL(domain0):Promise.resolve(null),
+            username0?searchUsername(username0):Promise.resolve(null),
+            ...publicIPs.map(ip=>lookupIP(ip))
         ]);
 
-        if (gravatarResult) {
-            injectionHTML += `\n\n<div class="gravatar-info"><img src="${gravatarResult.image}" class="gravatar-img"><div class="gravatar-name">IDENTITY_MATCH: ${gravatarResult.name}</div></div>`;
-        }
-        if (breachResult) {
-            injectionHTML += `\n\n${buildBreachCard(breachResult)}`;
-            if (!breachResult.clean && breachResult.breaches.length) {
-                osintContext += ` EMAIL_BREACHES: ${email0} found in ${breachResult.breaches.length} breach(es): ${breachResult.breaches.slice(0,5).map(b=>typeof b==='string'?b:(b.breachID||b.name||'')).join(', ')}.`;
-            }
-        }
-        if (whoisResult || dnsResult || sslResult) {
-            injectionHTML += `\n\n${buildDomainCard(whoisResult, dnsResult, sslResult, domain0)}`;
-            if (whoisResult?.registered) osintContext += ` DOMAIN: ${domain0} registered ${whoisResult.created}, expires ${whoisResult.expires}, registrar: ${whoisResult.registrar}.`;
-        }
-        if (usernameResults) {
-            injectionHTML += `\n\n${buildUsernameCard(username0, usernameResults)}`;
-            const hits = usernameResults.filter(r=>r.found).map(r=>r.platform).join(', ');
-            osintContext += ` USERNAME ${username0}: found on ${hits||'no platforms'}.`;
-        }
-        if (intent.wants_exif && !isGraphView) {
-            const exifMsg = document.createElement('div');
-            exifMsg.className = 'message assistant-msg';
-            exifMsg.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated. Awaiting file input.</div>`;
-            exifMsg.querySelector('.msg-content').appendChild(buildExifUploader());
-            chatContainer.appendChild(exifMsg);
-            scrollToBottom();
-        }
+        if (gravatarResult) injectionHTML+=`\n\n<div class="gravatar-info"><img src="${gravatarResult.image}" class="gravatar-img"><div class="gravatar-name">IDENTITY_MATCH: ${gravatarResult.name}</div></div>`;
+        if (breachResult) { injectionHTML+=`\n\n${buildBreachCard(breachResult)}`; if(!breachResult.clean&&breachResult.breaches.length) osintContext+=` EMAIL_BREACHES: ${email0} found in ${breachResult.breaches.length} breach(es).`; }
+        if (whoisResult||dnsResult||sslResult) { injectionHTML+=`\n\n${buildDomainCard(whoisResult,dnsResult,sslResult,domain0)}`; if(whoisResult?.registered) osintContext+=` DOMAIN: ${domain0} registered ${whoisResult.created}, expires ${whoisResult.expires}.`; }
+        if (usernameResults) { injectionHTML+=`\n\n${buildUsernameCard(username0,usernameResults)}`; osintContext+=` USERNAME ${username0}: found on ${usernameResults.filter(r=>r.found).map(r=>r.platform).join(', ')||'no platforms'}.`; }
+        if (intent.wants_exif&&!isGraphView) { const em=document.createElement('div'); em.className='message assistant-msg'; em.innerHTML=`<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated. Awaiting file input.</div>`; em.querySelector('.msg-content').appendChild(buildExifUploader()); chatContainer.appendChild(em); scrollToBottom(); }
 
-        // Build IP cards + collect map data from first geolocatable IP
-        ipResults.forEach((d, i) => {
+        ipResults.forEach((d,i) => {
             if (!d) return;
-            injectionHTML += `\n\n${buildIPCard(d)}`;
+            injectionHTML+=`\n\n${buildIPCard(d)}`;
             if (d._error) return;
-            if (i === 0) {
-                osintContext += ` IP: ${d.query} → ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'}. ISP: ${d.isp||'?'}. Org: ${d.org||'?'}. Coords: ${d.lat},${d.lon}.${d.proxy?' PROXY/VPN.':''}${d.hosting?' DATACENTER.':''}`;
-                if (!mapData && d.lat && d.lon) {
-                    mapData = {
-                        query: `IP ${d.query}`,
-                        primary: { name: `${d.city||'Unknown'}, ${d.country||'?'} — ${d.isp||'?'}`, lat: d.lat, lon: d.lon, type: 'ip_geolocation', address: `${d.city||''}, ${d.regionName||''}, ${d.country||''}` },
-                        alternates: []
-                    };
-                }
-            }
+            if (i===0) { osintContext+=` IP: ${d.query} → ${d.city||'?'}, ${d.country||'?'}. ISP: ${d.isp||'?'}.${d.proxy?' PROXY/VPN.':''}${d.hosting?' DATACENTER.':''}`; if(!mapData&&d.lat&&d.lon) mapData={query:`IP ${d.query}`,primary:{name:`${d.city||'Unknown'}, ${d.country||'?'} — ${d.isp||'?'}`,lat:d.lat,lon:d.lon,type:'ip_geolocation',address:`${d.city||''}, ${d.regionName||''}, ${d.country||''}`},alternates:[]}; }
         });
 
-        // Spatial intent map (overrides IP map if both present)
         if (spatialIntent) {
-            if (!isGraphView && typingDiv.querySelector('.msg-content')) {
-                typingDiv.querySelector('.msg-content').textContent = 'Running spatial intercept...';
-            }
-            const spatialMap = await runSpatialIntercept(spatialIntent);
-            if (spatialMap) {
-                mapData = spatialMap;
-                osintContext += ` LOCATION: ${spatialMap.primary.name} at ${spatialMap.primary.lat.toFixed(5)},${spatialMap.primary.lon.toFixed(5)}.`;
-            }
+            if (!isGraphView) typingDiv.querySelector('.msg-content').textContent = 'Running spatial intercept...';
+            const sm = await runSpatialIntercept(spatialIntent);
+            if (sm) { mapData=sm; osintContext+=` LOCATION: ${sm.primary.name} at ${sm.primary.lat.toFixed(5)},${sm.primary.lon.toFixed(5)}.`; }
         }
 
         try {
-            // Build clearly separated context blocks per tool so AI doesn't mix them
-            const contextBlocks = [];
-            if (ipResults.some(d => d && !d._error)) {
-                const ipLines = ipResults.filter(d=>d&&!d._error).map(d=>
-                    `IP ${d.query}: ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'} | ISP: ${d.isp||'?'} | Org: ${d.org||'?'} | Coords: ${d.lat},${d.lon}${d.proxy?' | PROXY/VPN':''}${d.hosting?' | DATACENTER':''}`
-                ).join('\n');
-                contextBlocks.push(`[IP_GEOLOCATION]\n${ipLines}`);
-            }
-            if (whoisResult?.registered || dnsResult?.length || sslResult) {
-                const domainLines = [];
-                if (whoisResult?.registered) domainLines.push(`WHOIS: ${domain0} | Registrar: ${whoisResult.registrar} | Created: ${whoisResult.created} | Expires: ${whoisResult.expires} | Status: ${whoisResult.status}`);
-                if (dnsResult?.length) domainLines.push(`DNS: ${dnsResult.map(r=>`${r.type}: ${r.answers.map(a=>a.data).join(', ')}`).join(' | ')}`);
-                if (sslResult) domainLines.push(`SSL: Issuer: ${sslResult.issuer} | Valid: ${sslResult.notBefore} to ${sslResult.notAfter} | SANs: ${sslResult.dnsNames.join(', ')}`);
-                contextBlocks.push(`[DOMAIN_INTEL: ${domain0}]\n${domainLines.join('\n')}`);
-            }
-            if (breachResult && !breachResult.clean && breachResult.breaches.length) {
-                contextBlocks.push(`[EMAIL_BREACHES: ${email0}]\nFound in ${breachResult.breaches.length} breach(es): ${breachResult.breaches.slice(0,8).map(b=>typeof b==='string'?b:(b.breachID||b.name||'')).join(', ')}`);
-            }
-            if (usernameResults) {
-                const hits = usernameResults.filter(r=>r.found).map(r=>r.platform).join(', ');
-                contextBlocks.push(`[USERNAME_SWEEP: ${username0}]\nDetected on: ${hits||'no platforms found'}`);
-            }
-            if (mapData) {
-                contextBlocks.push(`[SPATIAL_INTERCEPT]\nPrimary: ${mapData.primary.name} | Coords: ${mapData.primary.lat.toFixed(5)},${mapData.primary.lon.toFixed(5)}${mapData.alternates.length ? ' | Alternates: '+mapData.alternates.map(a=>a.name).join(', ') : ''}`);
-            }
+            const contextBlocks=[];
+            if (intent.wants_cctv) contextBlocks.push(`[CCTV_INTERCEPT]\n${osintContext.trim()}`);
+            if (ipResults.some(d=>d&&!d._error)) contextBlocks.push(`[IP_GEOLOCATION]\n${ipResults.filter(d=>d&&!d._error).map(d=>`IP ${d.query}: ${d.city||'?'}, ${d.country||'?'} | ISP: ${d.isp||'?'}${d.proxy?' | PROXY/VPN':''}${d.hosting?' | DATACENTER':''}`).join('\n')}`);
+            if (whoisResult?.registered||dnsResult?.length||sslResult) { const dl=[]; if(whoisResult?.registered) dl.push(`WHOIS: ${domain0} | Registrar: ${whoisResult.registrar} | Created: ${whoisResult.created} | Expires: ${whoisResult.expires}`); if(dnsResult?.length) dl.push(`DNS: ${dnsResult.map(r=>`${r.type}: ${r.answers.map(a=>a.data).join(', ')}`).join(' | ')}`); if(sslResult) dl.push(`SSL: Issuer: ${sslResult.issuer} | Valid: ${sslResult.notBefore} to ${sslResult.notAfter}`); contextBlocks.push(`[DOMAIN_INTEL: ${domain0}]\n${dl.join('\n')}`); }
+            if (breachResult&&!breachResult.clean&&breachResult.breaches.length) contextBlocks.push(`[EMAIL_BREACHES: ${email0}]\nFound in ${breachResult.breaches.length} breach(es): ${breachResult.breaches.slice(0,8).map(b=>typeof b==='string'?b:(b.breachID||b.name||'')).join(', ')}`);
+            if (usernameResults) contextBlocks.push(`[USERNAME_SWEEP: ${username0}]\nDetected on: ${usernameResults.filter(r=>r.found).map(r=>r.platform).join(', ')||'no platforms found'}`);
+            if (mapData) contextBlocks.push(`[SPATIAL_INTERCEPT]\nPrimary: ${mapData.primary.name} | Coords: ${mapData.primary.lat.toFixed(5)},${mapData.primary.lon.toFixed(5)}`);
 
-            const systemContent = "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags.\n\nEach [BLOCK] below is a separate OSINT result — treat them independently. Do not conflate IP geolocation with spatial map data, do not attribute domain info to an IP, do not mix tools. Reference each block accurately on its own terms." + (contextBlocks.length ? '\n\n' + contextBlocks.join('\n\n') : '');
+            const systemContent = "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags.\n\nEach [BLOCK] is a separate OSINT result — treat independently.\n\nFor CCTV/camera intercepts, speak as if you just tapped into a live surveillance network." + (contextBlocks.length?'\n\n'+contextBlocks.join('\n\n'):'');
 
-            const apiMessages = [{
-                role: "system",
-                content: systemContent
-            }];
-            currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role: m.role, content: m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'') }));
+            const apiMessages=[{role:"system",content:systemContent}];
+            cc.messages.slice(-6).forEach(m=>apiMessages.push({role:m.role,content:m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'')}));
 
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages: apiMessages, temperature: 0.7 })
-            });
-
+            const response = await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:"adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic",messages:apiMessages,temperature:0.7})});
             if (!isGraphView) typingDiv.remove();
-            const data      = await response.json();
+            const data = await response.json();
             const replyText = data.choices[0].message.content;
-
-            const mapComment = mapData ? `<!--NOXMAP:${JSON.stringify(mapData)}-->` : '';
-            const fullReply  = replyText + injectionHTML + mapComment;
-
-            currentCase.messages.push({ role: 'assistant', content: fullReply });
+            const mapComment = mapData?`<!--NOXMAP:${JSON.stringify(mapData)}-->`:''
+            const fullReply = replyText + injectionHTML + mapComment;
+            cc.messages.push({role:'assistant',content:fullReply});
             saveState();
 
             if (isGraphView) renderGraph();
-            else appendMessageUI('assistant', fullReply);
-
-            if (isCallMode && 'speechSynthesis' in window) {
-                const cleanSpeech = replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi, '$1').replace(/<[^>]*>?/gm, '');
-                const utterance   = new SpeechSynthesisUtterance(cleanSpeech);
-                utterance.pitch   = 0.7;
-                utterance.rate    = 0.95;
-                utterance.onstart = () => { if (isCallMode) { callSpectrum.classList.add('active'); callStatus.textContent = "NOX_UNIT TRANSMITTING"; } };
-                utterance.onend   = () => { if (isCallMode) { callSpectrum.classList.remove('active'); callStatus.textContent = "AWAITING INPUT..."; } };
-                window.speechSynthesis.speak(utterance);
-            } else if (isCallMode) {
-                callStatus.textContent = "AWAITING INPUT...";
+            else {
+                appendMessageUI('assistant', fullReply);
+                // Append CCTV card (DOM element) to the last message
+                if (cctvCardEl) {
+                    const lastContent = chatContainer.querySelector('.message.assistant-msg:last-child .msg-content');
+                    if (lastContent) { lastContent.appendChild(cctvCardEl); scrollToBottom(); }
+                }
             }
+
+            if (isCallMode&&'speechSynthesis' in window) {
+                const clean=replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi,'$1').replace(/<[^>]*>?/gm,'');
+                const utt=new SpeechSynthesisUtterance(clean); utt.pitch=0.7; utt.rate=0.95;
+                utt.onstart=()=>{if(isCallMode){callSpectrum.classList.add('active');callStatus.textContent="NOX_UNIT TRANSMITTING";}};
+                utt.onend=()=>{if(isCallMode){callSpectrum.classList.remove('active');callStatus.textContent="AWAITING INPUT...";}};
+                window.speechSynthesis.speak(utt);
+            } else if (isCallMode) callStatus.textContent="AWAITING INPUT...";
 
         } catch(e) {
-            if (!isGraphView) { typingDiv.remove(); appendMessageUI('assistant', 'SIGNAL LOST: Link unstable.'); }
-            if (isCallMode) callStatus.textContent = "SIGNAL INTERRUPTED";
+            if (!isGraphView) { typingDiv.remove(); appendMessageUI('assistant','SIGNAL LOST: Link unstable.'); }
+            if (isCallMode) callStatus.textContent="SIGNAL INTERRUPTED";
         }
     };
 
-    // ─────────────────────────────────────────────
-    //  GRAPH VIEW
-    // ─────────────────────────────────────────────
+    // ── GRAPH ──
     const renderGraph = () => {
-        const currentCase = cases.find(c => c.id === currentCaseId);
-        if (!currentCase) return;
-        const nodes = new vis.DataSet([{ id:'ROOT', label:`CASE:\n${currentCase.id}`, shape:'database', color:'#8b0000', font:{color:'#ffffff',face:'JetBrains Mono'} }]);
-        const edges = new vis.DataSet([]);
-        const seenEntities = new Set();
-        const delBtn = document.getElementById('node-delete-btn');
-
-        const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-        const ipRegex    = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
-        const phoneRegex = /(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
-        const noxRegex   = /\[EVIDENCE:\s*(.*?)\]/gi;
-
-        currentCase.messages.forEach(msg => {
-            const text = msg.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'');
-            const matches = [
-                ...[...text.matchAll(emailRegex)].map(m => ({ val:m[0], color:'#2c4a5e', shape:'box' })),
-                ...[...text.matchAll(ipRegex)].map(m    => ({ val:m[0], color:'#4a5e2c', shape:'ellipse' })),
-                ...[...text.matchAll(phoneRegex)].map(m => ({ val:m[0], color:'#5e4a2c', shape:'ellipse' })),
-                ...[...text.matchAll(noxRegex)].map(m   => ({ val:m[1], color:'#8b0000', shape:'hexagon' }))
-            ];
-            matches.forEach(match => {
-                const id = match.val.trim();
-                if (!id || seenEntities.has(id)) return;
-                if (currentCase.blacklist && currentCase.blacklist.includes(id)) return;
+        const cc=cases.find(c=>c.id===currentCaseId); if(!cc) return;
+        const nodes=new vis.DataSet([{id:'ROOT',label:`CASE:\n${cc.id}`,shape:'database',color:'#8b0000',font:{color:'#ffffff',face:'JetBrains Mono'}}]);
+        const edges=new vis.DataSet([]);
+        const seenEntities=new Set();
+        const delBtn=document.getElementById('node-delete-btn');
+        const emailRx=/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+        const ipRx=/\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+        const phoneRx=/(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
+        const noxRx=/\[EVIDENCE:\s*(.*?)\]/gi;
+        cc.messages.forEach(msg=>{
+            const text=msg.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'');
+            const matches=[...[...text.matchAll(emailRx)].map(m=>({val:m[0],color:'#2c4a5e',shape:'box'})),...[...text.matchAll(ipRx)].map(m=>({val:m[0],color:'#4a5e2c',shape:'ellipse'})),...[...text.matchAll(phoneRx)].map(m=>({val:m[0],color:'#5e4a2c',shape:'ellipse'})),...[...text.matchAll(noxRx)].map(m=>({val:m[1],color:'#8b0000',shape:'hexagon'}))];
+            matches.forEach(match=>{
+                const id=match.val.trim(); if(!id||seenEntities.has(id)) return;
+                if(cc.blacklist&&cc.blacklist.includes(id)) return;
                 seenEntities.add(id);
-                nodes.add({ id, label:id, color:match.color, shape:match.shape, font:{color:'#e0e0e0',face:'JetBrains Mono'} });
-                edges.add({ from:'ROOT', to:id, color:{color:'#455a64'} });
+                nodes.add({id,label:id,color:match.color,shape:match.shape,font:{color:'#e0e0e0',face:'JetBrains Mono'}});
+                edges.add({from:'ROOT',to:id,color:{color:'#455a64'}});
             });
         });
-
-        const container = document.getElementById('evidence-board');
         if (network) network.destroy();
-        network = new vis.Network(container, {nodes,edges}, {
-            physics: { stabilization:true, barnesHut:{springLength:150} },
-            nodes: { borderWidth:2, shadow:true },
-            edges: { width:1.5, shadow:true }
-        });
-
-        let selectedNodeId = null;
-        const hideBtn = () => { delBtn.style.display='none'; };
-        network.on("click", hideBtn);
-        network.on("dragStart", hideBtn);
-        network.on("hold", params => {
-            if (params.nodes.length > 0) {
-                const nodeId = params.nodes[0];
-                if (nodeId === 'ROOT') return;
-                selectedNodeId = nodeId;
-                const domPos = network.canvasToDOM(network.getPositions([nodeId])[nodeId]);
-                delBtn.style.display  = 'flex';
-                delBtn.style.left = (domPos.x - 15) + 'px';
-                delBtn.style.top  = (domPos.y - 45) + 'px';
-            }
-        });
-        delBtn.onclick = e => {
-            e.stopPropagation();
-            if (selectedNodeId) {
-                if (!currentCase.blacklist) currentCase.blacklist = [];
-                currentCase.blacklist.push(selectedNodeId);
-                saveState(); nodes.remove(selectedNodeId); hideBtn();
-            }
-        };
+        network=new vis.Network(document.getElementById('evidence-board'),{nodes,edges},{physics:{stabilization:true,barnesHut:{springLength:150}},nodes:{borderWidth:2,shadow:true},edges:{width:1.5,shadow:true}});
+        let selectedNodeId=null;
+        const hideBtn=()=>{delBtn.style.display='none';};
+        network.on("click",hideBtn); network.on("dragStart",hideBtn);
+        network.on("hold",params=>{if(params.nodes.length>0){const nodeId=params.nodes[0];if(nodeId==='ROOT')return;selectedNodeId=nodeId;const domPos=network.canvasToDOM(network.getPositions([nodeId])[nodeId]);delBtn.style.display='flex';delBtn.style.left=(domPos.x-15)+'px';delBtn.style.top=(domPos.y-45)+'px';}});
+        delBtn.onclick=e=>{e.stopPropagation();if(selectedNodeId){if(!cc.blacklist)cc.blacklist=[];cc.blacklist.push(selectedNodeId);saveState();nodes.remove(selectedNodeId);hideBtn();}};
     };
 
-    const toggleGraphView = () => {
-        isGraphView = !isGraphView;
-        if (isGraphView) {
-            chatContainer.style.display = 'none';
-            evidenceBoard.style.display = 'block';
-            graphToggleBtn.classList.add('active');
-            renderGraph();
-        } else {
-            chatContainer.style.display = 'flex';
-            evidenceBoard.style.display = 'none';
-            graphToggleBtn.classList.remove('active');
-            scrollToBottom();
-        }
+    const toggleGraphView=()=>{
+        isGraphView=!isGraphView;
+        if(isGraphView){chatContainer.style.display='none';evidenceBoard.style.display='block';graphToggleBtn.classList.add('active');renderGraph();}
+        else{chatContainer.style.display='flex';evidenceBoard.style.display='none';graphToggleBtn.classList.remove('active');scrollToBottom();}
     };
 
-    // ─────────────────────────────────────────────
-    //  EXPORT
-    // ─────────────────────────────────────────────
-    const downloadLog = () => {
-        const currentCase = cases.find(c => c.id === currentCaseId);
-        if (!currentCase) return;
-        let log = `NOX DIGITAL DETECTIVE | INVESTIGATION LOG\n===========================================\nCASE_ID:   ${currentCase.id}\nTITLE:     ${currentCase.title}\nTIMESTAMP: ${new Date(currentCase.timestamp).toLocaleString()}\n===========================================\n\n`;
-        currentCase.messages.forEach(msg => {
-            const label   = msg.role === 'assistant' ? '[NOX_UNIT]' : '[OPERATOR]';
-            const clean   = msg.content.replace(/<[^>]*>?/gm,'').replace(/<!--NOXMAP:[\s\S]*?-->/g,'');
-            log += `${label}\n${clean}\n\n`;
-        });
-        const blob = new Blob([log], {type:'text/plain'});
-        const url  = URL.createObjectURL(blob);
-        const a    = document.createElement('a');
-        a.href = url; a.download = `${currentCase.id}.txt`;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+    // ── EXPORT ──
+    const downloadLog=()=>{
+        const cc=cases.find(c=>c.id===currentCaseId); if(!cc) return;
+        let log=`NOX DIGITAL DETECTIVE | INVESTIGATION LOG\n===========================================\nCASE_ID:   ${cc.id}\nTITLE:     ${cc.title}\nTIMESTAMP: ${new Date(cc.timestamp).toLocaleString()}\n===========================================\n\n`;
+        cc.messages.forEach(msg=>{log+=`${msg.role==='assistant'?'[NOX_UNIT]':'[OPERATOR]'}\n${msg.content.replace(/<[^>]*>?/gm,'').replace(/<!--NOXMAP:[\s\S]*?-->/g,'')}\n\n`;});
+        const blob=new Blob([log],{type:'text/plain'}); const url=URL.createObjectURL(blob);
+        const a=document.createElement('a'); a.href=url; a.download=`${cc.id}.txt`; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
     };
 
-    // ─────────────────────────────────────────────
-    //  SIDEBAR / EVENT LISTENERS
-    // ─────────────────────────────────────────────
-    const toggleSidebar = () => { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); document.body.classList.toggle('sidebar-open'); };
+    // ── SIDEBAR ──
+    const toggleSidebar=()=>{sidebar.classList.toggle('open');sidebarOverlay.classList.toggle('active');document.body.classList.toggle('sidebar-open');};
+    menuBtn.addEventListener('click',toggleSidebar); closeSidebarBtn.addEventListener('click',toggleSidebar); sidebarOverlay.addEventListener('click',toggleSidebar);
+    newCaseBtn.addEventListener('click',createNewCase); sendBtn.addEventListener('click',sendMessage); exportBtn.addEventListener('click',downloadLog); graphToggleBtn.addEventListener('click',toggleGraphView);
+    clearBtn.addEventListener('click',()=>{if(confirm('Purge logs?'))deleteCase(currentCaseId);});
+    userInput.addEventListener('input',function(){this.style.height='auto';this.style.height=(this.scrollHeight)+'px';});
+    userInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
 
-    menuBtn.addEventListener('click',         toggleSidebar);
-    closeSidebarBtn.addEventListener('click', toggleSidebar);
-    sidebarOverlay.addEventListener('click',  toggleSidebar);
-    newCaseBtn.addEventListener('click',      createNewCase);
-    sendBtn.addEventListener('click',         sendMessage);
-    exportBtn.addEventListener('click',       downloadLog);
-    graphToggleBtn.addEventListener('click',  toggleGraphView);
-    clearBtn.addEventListener('click',        () => { if(confirm('Purge logs?')) deleteCase(currentCaseId); });
-    userInput.addEventListener('input',  function() { this.style.height='auto'; this.style.height=(this.scrollHeight)+'px'; });
-    userInput.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-
-    // ─────────────────────────────────────────────
-    //  ARCHIVE
-    // ─────────────────────────────────────────────
-    const renderArchive = () => {
-        caseListEl.innerHTML = '';
-        cases.forEach(c => {
-            if (!c || !c.id) return;
-            const li = document.createElement('li');
-            li.className = `case-item ${c.id === currentCaseId ? 'active' : ''}`;
-            const textSpan = document.createElement('span');
-            textSpan.className = 'case-item-text';
-            textSpan.textContent = c.title;
-            const delBtn = document.createElement('button');
-            delBtn.className = 'case-delete-btn';
-            delBtn.innerHTML = '<i class="fas fa-trash"></i>';
-
+    const renderArchive=()=>{
+        caseListEl.innerHTML='';
+        cases.forEach(c=>{
+            if(!c||!c.id) return;
+            const li=document.createElement('li'); li.className=`case-item ${c.id===currentCaseId?'active':''}`;
+            const textSpan=document.createElement('span'); textSpan.className='case-item-text'; textSpan.textContent=c.title;
+            const delBtn=document.createElement('button'); delBtn.className='case-delete-btn'; delBtn.innerHTML='<i class="fas fa-trash"></i>';
             let pressTimer;
-            const startPress  = () => { pressTimer = setTimeout(() => { document.querySelectorAll('.case-item').forEach(i => i.classList.remove('show-delete')); li.classList.add('show-delete'); }, 600); };
-            const cancelPress = () => clearTimeout(pressTimer);
-            li.addEventListener('touchstart', startPress, {passive:true});
-            li.addEventListener('mousedown',  startPress);
-            li.addEventListener('touchend',   cancelPress);
-            li.addEventListener('mouseup',    cancelPress);
-            li.addEventListener('contextmenu', e => e.preventDefault());
-            li.addEventListener('click', e => {
-                if (e.target.closest('.case-delete-btn')) return;
-                if (li.classList.contains('show-delete')) { li.classList.remove('show-delete'); return; }
-                currentCaseId = c.id;
-                saveState();
-                if (isGraphView) { renderGraph(); caseIdDisplay.textContent = currentCaseId; } else renderChat();
-                if (window.innerWidth < 768) toggleSidebar();
+            const startPress=()=>{pressTimer=setTimeout(()=>{document.querySelectorAll('.case-item').forEach(i=>i.classList.remove('show-delete'));li.classList.add('show-delete');},600);};
+            const cancelPress=()=>clearTimeout(pressTimer);
+            li.addEventListener('touchstart',startPress,{passive:true}); li.addEventListener('mousedown',startPress);
+            li.addEventListener('touchend',cancelPress); li.addEventListener('mouseup',cancelPress);
+            li.addEventListener('contextmenu',e=>e.preventDefault());
+            li.addEventListener('click',e=>{
+                if(e.target.closest('.case-delete-btn'))return;
+                if(li.classList.contains('show-delete')){li.classList.remove('show-delete');return;}
+                currentCaseId=c.id; saveState();
+                if(isGraphView){renderGraph();caseIdDisplay.textContent=currentCaseId;}else renderChat();
+                if(window.innerWidth<768)toggleSidebar();
             });
-            delBtn.addEventListener('click', e => { e.stopPropagation(); deleteCase(c.id); });
-            li.appendChild(textSpan);
-            li.appendChild(delBtn);
-            caseListEl.appendChild(li);
+            delBtn.addEventListener('click',e=>{e.stopPropagation();deleteCase(c.id);});
+            li.appendChild(textSpan); li.appendChild(delBtn); caseListEl.appendChild(li);
         });
     };
 
-    const deleteCase = (id) => {
-        cases = cases.filter(c => c.id !== id);
-        if (cases.length === 0) createNewCase();
-        else if (currentCaseId === id) { currentCaseId = cases[0].id; if (isGraphView) renderGraph(); else renderChat(); }
+    const deleteCase=(id)=>{
+        cases=cases.filter(c=>c.id!==id);
+        if(cases.length===0)createNewCase();
+        else if(currentCaseId===id){currentCaseId=cases[0].id;if(isGraphView)renderGraph();else renderChat();}
         saveState();
     };
 
-    // ─────────────────────────────────────────────
-    //  CALL MODE
-    // ─────────────────────────────────────────────
-    const setupCallMode = () => {
-        const callTriggerBtn = document.createElement('button');
-        callTriggerBtn.className = 'icon-btn';
-        callTriggerBtn.innerHTML = '<i class="fas fa-phone-alt"></i>';
-        callTriggerBtn.title = "Call Mode";
-        document.querySelector('.header-right').prepend(callTriggerBtn);
-
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let recognition = null;
-
-        if (SpeechRecognition) {
-            recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.interimResults = false;
-            recognition.lang = 'en-US';
-
-            callTriggerBtn.addEventListener('click', () => { isCallMode = true; callOverlay.classList.add('active'); callStatus.textContent = "SECURE LINE ESTABLISHED"; });
-            callEndBtn.addEventListener('click', () => { isCallMode = false; callOverlay.classList.remove('active'); recognition.stop(); window.speechSynthesis.cancel(); callSpectrum.classList.remove('active'); callMicBtn.classList.remove('listening'); });
-            callMicBtn.addEventListener('click', () => { if (callMicBtn.classList.contains('listening')) recognition.stop(); else { window.speechSynthesis.cancel(); recognition.start(); } });
-            recognition.onstart  = () => { callMicBtn.classList.add('listening'); callSpectrum.classList.add('active'); callStatus.textContent = "LISTENING..."; };
-            recognition.onresult = e  => { userInput.value = e.results[0][0].transcript; callStatus.textContent = "TRANSMITTING..."; sendMessage(); };
-            recognition.onerror  = e  => { callMicBtn.classList.remove('listening'); callSpectrum.classList.remove('active'); callStatus.textContent = "SIGNAL INTERRUPTED"; };
-            recognition.onend    = () => { callMicBtn.classList.remove('listening'); if (isCallMode && callStatus.textContent !== "TRANSMITTING...") { callStatus.textContent = "AWAITING INPUT..."; callSpectrum.classList.remove('active'); } };
-        } else {
-            callTriggerBtn.style.display = 'none';
-        }
+    // ── CALL MODE ──
+    const setupCallMode=()=>{
+        const btn=document.createElement('button'); btn.className='icon-btn'; btn.innerHTML='<i class="fas fa-phone-alt"></i>'; btn.title="Call Mode";
+        document.querySelector('.header-right').prepend(btn);
+        const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+        if(!SR){btn.style.display='none';return;}
+        const recognition=new SR(); recognition.continuous=false; recognition.interimResults=false; recognition.lang='en-US';
+        btn.addEventListener('click',()=>{isCallMode=true;callOverlay.classList.add('active');callStatus.textContent="SECURE LINE ESTABLISHED";});
+        callEndBtn.addEventListener('click',()=>{isCallMode=false;callOverlay.classList.remove('active');recognition.stop();window.speechSynthesis.cancel();callSpectrum.classList.remove('active');callMicBtn.classList.remove('listening');});
+        callMicBtn.addEventListener('click',()=>{if(callMicBtn.classList.contains('listening'))recognition.stop();else{window.speechSynthesis.cancel();recognition.start();}});
+        recognition.onstart=()=>{callMicBtn.classList.add('listening');callSpectrum.classList.add('active');callStatus.textContent="LISTENING...";};
+        recognition.onresult=e=>{userInput.value=e.results[0][0].transcript;callStatus.textContent="TRANSMITTING...";sendMessage();};
+        recognition.onerror=()=>{callMicBtn.classList.remove('listening');callSpectrum.classList.remove('active');callStatus.textContent="SIGNAL INTERRUPTED";};
+        recognition.onend=()=>{callMicBtn.classList.remove('listening');if(isCallMode&&callStatus.textContent!=="TRANSMITTING..."){callStatus.textContent="AWAITING INPUT...";callSpectrum.classList.remove('active');}};
     };
 
-    // ── IMAGE UPLOAD BUTTON → direct EXIF processing ──
-    document.getElementById('img-upload-input').addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        e.target.value = ''; // reset so same file can be re-selected
-
-        const exifMsg = document.createElement('div');
-        exifMsg.className = 'message assistant-msg';
-        exifMsg.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated — processing ${escHtml(file.name)}</div>`;
-        const uploader = buildExifUploader(file); // pass file directly
-        exifMsg.querySelector('.msg-content').appendChild(uploader);
-        chatContainer.appendChild(exifMsg);
-        scrollToBottom();
+    document.getElementById('img-upload-input').addEventListener('change',async(e)=>{
+        const file=e.target.files[0]; if(!file) return; e.target.value='';
+        const exifMsg=document.createElement('div'); exifMsg.className='message assistant-msg';
+        exifMsg.innerHTML=`<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated — processing ${escHtml(file.name)}</div>`;
+        exifMsg.querySelector('.msg-content').appendChild(buildExifUploader(file));
+        chatContainer.appendChild(exifMsg); scrollToBottom();
     });
 
-    // ── SPLASH: remove from DOM after full animation (9s hold + 1.5s fade = 10.5s) ──
-    const splash = document.getElementById('splash');
-    setTimeout(() => {
-        splash.style.transition = 'opacity 1.5s ease';
-        splash.style.opacity = '0';
-        splash.style.pointerEvents = 'none';
-        setTimeout(() => splash.remove(), 600);
-    }, 3500);
+    setTimeout(()=>{
+        const splash=document.getElementById('splash'); if(!splash) return;
+        splash.style.transition='opacity 1.5s ease'; splash.style.opacity='0'; splash.style.pointerEvents='none';
+        setTimeout(()=>splash.remove(),1500);
+    },3000);
 
     setupCallMode();
     init();
     </script>
 </body>
-    </html>
+</html>
