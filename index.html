@@ -97,40 +97,49 @@
         }
         .new-case-btn:hover { background-color: var(--accent-color); }
 
-        /* ── THEME TOGGLE (single button) ── */
+        /* ── THEME TOGGLE (standard toggle) ── */
         .sidebar-theme-section {
             padding: 12px 20px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         .sidebar-theme-toggle {
-            background: none;
-            border: 1px solid var(--accent-color);
-            color: var(--text-primary);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            width: 50px;
+            height: 28px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            transition: all 0.2s;
+            padding: 2px;
+            transition: all 0.3s ease;
+            position: relative;
             flex-shrink: 0;
-            padding: 0;
+        }
+        .sidebar-theme-toggle::after {
+            content: '';
+            width: 22px;
+            height: 22px;
+            background: var(--text-primary);
+            border-radius: 50%;
+            position: absolute;
+            left: 2px;
+            transition: left 0.3s ease;
         }
         .sidebar-theme-toggle:hover {
-            background-color: var(--accent-color);
             border-color: var(--text-primary);
+        }
+        [data-theme="phantom"] .sidebar-theme-toggle::after {
+            left: 26px;
         }
         .sidebar-theme-tooltip {
             font-family: var(--font-mono);
             font-size: 0.7rem;
             color: var(--text-secondary);
             letter-spacing: 1px;
-            flex-grow: 1;
         }
 
         .archive-section { flex-grow: 1; overflow-y: auto; padding: 0 10px; padding-top: 14px; }
@@ -466,12 +475,10 @@
         </div>
         <button class="new-case-btn" id="new-case-btn"><i class="fas fa-plus"></i> New Case</button>
 
-        <!-- THEME SWITCHER (single toggle button) -->
+        <!-- THEME SWITCHER (standard toggle) -->
         <div class="sidebar-theme-section">
-            <button class="sidebar-theme-toggle" id="theme-toggle-btn" title="Toggle Theme">
-                <i class="fas fa-circle"></i>
-            </button>
-            <span class="sidebar-theme-tooltip" id="theme-label">BLOOD RED</span>
+            <button class="sidebar-theme-toggle" id="theme-toggle-btn" title="Toggle Theme"></button>
+            <span class="sidebar-theme-tooltip" id="theme-label">DARK MODE</span>
         </div>
 
         <div class="archive-section">
