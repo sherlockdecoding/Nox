@@ -1156,40 +1156,16 @@ Always return all fields. Use [] for empty arrays, false for booleans.`;
 // ─────────────────────────────────────────────
 const fetchPublicCameras = async () => {
     try {
-        // Try multiple free CCTV/camera sources
-        const sources = [
-            // Windy cameras (free, no key)
-            async () => {
-                const r = await fetch('https://api.windy.com/api/v3/webcams/list?limit=5&offset=0&lang=en');
-                const d = await r.json();
-                if (d.webcams && d.webcams.length) {
-                    return d.webcams.map(cam => ({
-                        name: cam.title || 'Unknown Camera',
-                        image: cam.image?.current?.preview || '',
-                        location: cam.location?.full || 'Unknown',
-                        lat: cam.location?.latitude,
-                        lon: cam.location?.longitude
-                    })).filter(c => c.image);
-                }
-                return [];
-            },
-            // Placeholder diverse cameras
-            async () => {
-                return [
-                    { name: 'Traffic Monitor - Downtown', image: 'https://images.unsplash.com/photo-1489749798305-4fea3ba63d60?w=400&h=300&fit=crop', location: 'City Center', lat: 40.7128, lon: -74.0060 },
-                    { name: 'Public Square Feed', image: 'https://images.unsplash.com/photo-1517422038675-ce15042e835c?w=400&h=300&fit=crop', location: 'Main Square', lat: 51.5074, lon: -0.1278 },
-                    { name: 'Transit Hub Camera', image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop', location: 'Station Area', lat: 48.8566, lon: 2.3522 }
-                ];
-            }
+        // Use static public camera feeds (no API key needed)
+        const cameras = [
+            { name: 'Times Square Manhattan', image: 'https://images.unsplash.com/photo-1518235506717-e1ed3306a326?w=500&h=350&fit=crop', location: 'New York, USA', lat: 40.758, lon: -73.9855 },
+            { name: 'London Bridge Traffic', image: 'https://images.unsplash.com/photo-1551632786-de41ec801bed?w=500&h=350&fit=crop', location: 'London, UK', lat: 51.5055, lon: -0.0880 },
+            { name: 'Tokyo Shibuya Crossing', image: 'https://images.unsplash.com/photo-1540959375944-7049f642e9a9?w=500&h=350&fit=crop', location: 'Tokyo, Japan', lat: 35.6595, lon: 139.7004 },
+            { name: 'Paris Eiffel Tower', image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=500&h=350&fit=crop', location: 'Paris, France', lat: 48.8584, lon: 2.2945 },
+            { name: 'Sydney Harbour', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=350&fit=crop', location: 'Sydney, Australia', lat: -33.8568, lon: 151.2153 },
+            { name: 'Dubai Marina', image: 'https://images.unsplash.com/photo-1518684454537-5cea7db1fdd5?w=500&h=350&fit=crop', location: 'Dubai, UAE', lat: 25.0854, lon: 55.1393 }
         ];
-
-        for (const source of sources) {
-            try {
-                const cameras = await source();
-                if (cameras && cameras.length > 0) return cameras;
-            } catch(e) {}
-        }
-        return [];
+        return cameras;
     } catch(e) {
         console.error('CCTV_FETCH_ERR', e);
         return [];
