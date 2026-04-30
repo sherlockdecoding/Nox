@@ -28,34 +28,6 @@
             --sidebar-width: 280px;
         }
 
-        [data-theme="ocean"] {
-            --bg-primary: #090e1a;
-            --bg-secondary: #0d1526;
-            --bg-tertiary: #111d35;
-            --text-primary: #cce4f7;
-            --text-secondary: #6b93b5;
-            --accent-color: #1a4a7a;
-            --accent-red: #0077cc;
-            --accent-glow: rgba(0,119,204,0.4);
-            --accent-glow-soft: rgba(0,119,204,0.1);
-            --border-color: #1a2d4a;
-            --cursor-color: #0077cc;
-        }
-
-        [data-theme="acid"] {
-            --bg-primary: #080a05;
-            --bg-secondary: #0c0f07;
-            --bg-tertiary: #121608;
-            --text-primary: #c8f084;
-            --text-secondary: #7aaa40;
-            --accent-color: #2a4a10;
-            --accent-red: #5ecb00;
-            --accent-glow: rgba(94,203,0,0.4);
-            --accent-glow-soft: rgba(94,203,0,0.1);
-            --border-color: #1a2a08;
-            --cursor-color: #5ecb00;
-        }
-
         [data-theme="phantom"] {
             --bg-primary: #f0ede8;
             --bg-secondary: #e8e4dd;
@@ -125,32 +97,40 @@
         }
         .new-case-btn:hover { background-color: var(--accent-color); }
 
-        /* ── THEME SWITCHER (in sidebar) ── */
+        /* ── THEME TOGGLE (single button) ── */
         .sidebar-theme-section {
-            padding: 0 20px 16px 20px;
+            padding: 12px 20px;
             border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .sidebar-theme-title {
-            font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 2px;
-            color: var(--text-secondary); margin-bottom: 8px; display: block;
+        .sidebar-theme-toggle {
+            background: none;
+            border: 1px solid var(--accent-color);
+            color: var(--text-primary);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            padding: 0;
         }
-        .sidebar-theme-swatches {
-            display: flex; gap: 8px; align-items: center;
+        .sidebar-theme-toggle:hover {
+            background-color: var(--accent-color);
+            border-color: var(--text-primary);
         }
-        .sidebar-swatch-btn {
-            width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent;
-            cursor: pointer; transition: all 0.2s; flex-shrink: 0;
-            outline: none; position: relative;
-        }
-        .sidebar-swatch-btn:hover { transform: scale(1.15); }
-        .sidebar-swatch-btn.active { border-color: var(--text-primary); box-shadow: 0 0 8px var(--accent-glow); }
-        .sidebar-swatch-btn[data-theme="default"] { background: radial-gradient(circle at 40% 40%, #8b0000, #1a0000); }
-        .sidebar-swatch-btn[data-theme="ocean"]   { background: radial-gradient(circle at 40% 40%, #0077cc, #001833); }
-        .sidebar-swatch-btn[data-theme="acid"]    { background: radial-gradient(circle at 40% 40%, #5ecb00, #0a1a00); }
-        .sidebar-swatch-btn[data-theme="phantom"] { background: radial-gradient(circle at 40% 40%, #c8b8a8, #4a1a0a); }
-        .sidebar-swatch-tooltip {
-            font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-secondary);
-            letter-spacing: 1px; margin-left: 4px;
+        .sidebar-theme-tooltip {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            flex-grow: 1;
         }
 
         .archive-section { flex-grow: 1; overflow-y: auto; padding: 0 10px; padding-top: 14px; }
@@ -486,16 +466,12 @@
         </div>
         <button class="new-case-btn" id="new-case-btn"><i class="fas fa-plus"></i> New Case</button>
 
-        <!-- THEME SWITCHER (in sidebar) -->
+        <!-- THEME SWITCHER (single toggle button) -->
         <div class="sidebar-theme-section">
-            <span class="sidebar-theme-title">THEME</span>
-            <div class="sidebar-theme-swatches">
-                <button class="sidebar-swatch-btn active" data-theme="default" title="Blood Red"></button>
-                <button class="sidebar-swatch-btn" data-theme="ocean"   title="Deep Ocean"></button>
-                <button class="sidebar-swatch-btn" data-theme="acid"    title="Acid Green"></button>
-                <button class="sidebar-swatch-btn" data-theme="phantom" title="Phantom White"></button>
-                <span class="sidebar-swatch-tooltip" id="theme-label">BLOOD RED</span>
-            </div>
+            <button class="sidebar-theme-toggle" id="theme-toggle-btn" title="Toggle Theme">
+                <i class="fas fa-circle"></i>
+            </button>
+            <span class="sidebar-theme-tooltip" id="theme-label">BLOOD RED</span>
         </div>
 
         <div class="archive-section">
@@ -596,8 +572,8 @@ const callSpectrum    = document.getElementById('call-spectrum');
 const callMicBtn      = document.getElementById('call-btn-mic');
 const callEndBtn      = document.getElementById('call-btn-end');
 const callStatus      = document.getElementById('call-status');
-
-const THEME_LABELS = { default:'BLOOD RED', ocean:'DEEP OCEAN', acid:'ACID GREEN', phantom:'PHANTOM WHITE' };
+const themeToggleBtn  = document.getElementById('theme-toggle-btn');
+const themeLabel      = document.getElementById('theme-label');
 
 let cases         = [];
 let currentCaseId = null;
@@ -608,21 +584,18 @@ let mapInstances  = {};
 let currentTheme  = 'default';
 
 // ─────────────────────────────────────────────
-//  THEME SWITCHER (sidebar swatches)
+//  THEME SWITCHER (single toggle button)
 // ─────────────────────────────────────────────
 const applyTheme = (theme) => {
     currentTheme = theme;
     document.documentElement.setAttribute('data-theme', theme === 'default' ? '' : theme);
     localStorage.setItem('nox_theme', theme);
-    document.querySelectorAll('.sidebar-swatch-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.theme === theme);
-    });
-    const labelEl = document.getElementById('theme-label');
-    if (labelEl) labelEl.textContent = THEME_LABELS[theme] || theme.toUpperCase();
+    themeLabel.textContent = theme === 'default' ? 'DARK MODE' : 'LIGHT MODE';
 };
 
-document.querySelectorAll('.sidebar-swatch-btn').forEach(btn => {
-    btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
+themeToggleBtn.addEventListener('click', () => {
+    const nextTheme = currentTheme === 'default' ? 'phantom' : 'default';
+    applyTheme(nextTheme);
 });
 
 // ─────────────────────────────────────────────
