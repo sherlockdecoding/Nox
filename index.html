@@ -118,14 +118,42 @@
         .close-sidebar-btn { background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; }
 
         .new-case-btn {
-            margin: 20px; padding: 12px; background-color: transparent;
+            margin: 20px 20px 10px 20px; padding: 12px; background-color: transparent;
             border: 1px solid var(--accent-color); color: var(--text-primary);
             font-family: var(--font-sans); border-radius: 4px; cursor: pointer;
             transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .new-case-btn:hover { background-color: var(--accent-color); }
 
-        .archive-section { flex-grow: 1; overflow-y: auto; padding: 0 10px; }
+        /* ── THEME SWITCHER (in sidebar) ── */
+        .sidebar-theme-section {
+            padding: 0 20px 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .sidebar-theme-title {
+            font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 2px;
+            color: var(--text-secondary); margin-bottom: 8px; display: block;
+        }
+        .sidebar-theme-swatches {
+            display: flex; gap: 8px; align-items: center;
+        }
+        .sidebar-swatch-btn {
+            width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent;
+            cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+            outline: none; position: relative;
+        }
+        .sidebar-swatch-btn:hover { transform: scale(1.15); }
+        .sidebar-swatch-btn.active { border-color: var(--text-primary); box-shadow: 0 0 8px var(--accent-glow); }
+        .sidebar-swatch-btn[data-theme="default"] { background: radial-gradient(circle at 40% 40%, #8b0000, #1a0000); }
+        .sidebar-swatch-btn[data-theme="ocean"]   { background: radial-gradient(circle at 40% 40%, #0077cc, #001833); }
+        .sidebar-swatch-btn[data-theme="acid"]    { background: radial-gradient(circle at 40% 40%, #5ecb00, #0a1a00); }
+        .sidebar-swatch-btn[data-theme="phantom"] { background: radial-gradient(circle at 40% 40%, #c8b8a8, #4a1a0a); }
+        .sidebar-swatch-tooltip {
+            font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-secondary);
+            letter-spacing: 1px; margin-left: 4px;
+        }
+
+        .archive-section { flex-grow: 1; overflow-y: auto; padding: 0 10px; padding-top: 14px; }
         .archive-title {
             font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-red);
             padding: 0 10px; margin-bottom: 10px; letter-spacing: 1px;
@@ -168,43 +196,6 @@
 
         .case-info { font-family: var(--font-mono); font-size: 0.85rem; text-align: center; }
 
-        /* ── THEME SWITCHER PANEL ── */
-        .theme-panel {
-            position: absolute; top: calc(var(--header-height) + 8px); right: 20px;
-            background: var(--bg-secondary); border: 1px solid var(--border-color);
-            border-radius: 6px; padding: 12px; z-index: 50;
-            display: none; flex-direction: column; gap: 8px; min-width: 200px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-            animation: panel-in 0.18s ease;
-        }
-        .theme-panel.open { display: flex; }
-        @keyframes panel-in {
-            from { opacity: 0; transform: translateY(-6px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        .theme-panel-title {
-            font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 2px;
-            color: var(--text-secondary); padding-bottom: 6px; border-bottom: 1px solid var(--border-color);
-            margin-bottom: 2px;
-        }
-        .theme-btn {
-            display: flex; align-items: center; gap: 10px; padding: 8px 10px;
-            border-radius: 4px; cursor: pointer; border: 1px solid transparent;
-            background: transparent; color: var(--text-primary); font-family: var(--font-mono);
-            font-size: 0.72rem; letter-spacing: 1px; transition: all 0.15s; width: 100%;
-            text-align: left;
-        }
-        .theme-btn:hover { background: var(--bg-tertiary); border-color: var(--accent-color); }
-        .theme-btn.active { border-color: var(--accent-red); }
-        .theme-swatch {
-            width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-        .swatch-blood   { background: radial-gradient(circle, #8b0000, #3a0000); }
-        .swatch-ocean   { background: radial-gradient(circle, #0077cc, #002a4a); }
-        .swatch-acid    { background: radial-gradient(circle, #5ecb00, #1a3a00); }
-        .swatch-phantom { background: radial-gradient(circle, #4a1a0a, #c8b8a8); }
-
         /* ── CHAT ── */
         .chat-container {
             flex: 1; padding: 20px; overflow-y: auto; display: flex;
@@ -236,41 +227,25 @@
         }
 
         /* ── TYPING ANIMATION ── */
-        .msg-content.typing-active {
-            position: relative;
-        }
         .typing-cursor {
-            display: inline-block;
-            width: 2px;
-            height: 1.1em;
-            background: var(--cursor-color);
-            margin-left: 2px;
-            vertical-align: text-bottom;
+            display: inline-block; width: 2px; height: 1.1em;
+            background: var(--cursor-color); margin-left: 2px; vertical-align: text-bottom;
             animation: blink-cursor 0.75s step-end infinite;
             box-shadow: 0 0 6px var(--accent-glow);
         }
-        @keyframes blink-cursor {
-            0%, 100% { opacity: 1; }
-            50%       { opacity: 0; }
-        }
+        @keyframes blink-cursor { 0%,100%{opacity:1;} 50%{opacity:0;} }
 
-        /* Typing "thinking" indicator */
         .thinking-dots {
             display: inline-flex; gap: 5px; align-items: center; height: 1.2em; vertical-align: middle;
         }
         .thinking-dots span {
-            width: 6px; height: 6px; border-radius: 50%;
-            background: var(--accent-red);
-            animation: dot-bounce 1.2s ease-in-out infinite;
-            box-shadow: 0 0 6px var(--accent-glow);
+            width: 6px; height: 6px; border-radius: 50%; background: var(--accent-red);
+            animation: dot-bounce 1.2s ease-in-out infinite; box-shadow: 0 0 6px var(--accent-glow);
         }
         .thinking-dots span:nth-child(1) { animation-delay: 0s; }
         .thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
         .thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes dot-bounce {
-            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-            40%            { transform: scale(1);   opacity: 1; }
-        }
+        @keyframes dot-bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4;} 40%{transform:scale(1);opacity:1;} }
 
         /* Gravatar UI */
         .gravatar-info {
@@ -393,10 +368,7 @@
             background: var(--bg-primary); display: flex; align-items: center; justify-content: center;
             overflow: hidden; animation: splash-exit 0.6s ease 3.5s forwards;
         }
-        @keyframes splash-exit {
-            0%   { opacity: 1; pointer-events: auto; }
-            100% { opacity: 0; pointer-events: none; }
-        }
+        @keyframes splash-exit { 0%{opacity:1;pointer-events:auto;} 100%{opacity:0;pointer-events:none;} }
         .splash-scanline {
             position: absolute; left: 0; right: 0; height: 2px;
             background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
@@ -513,6 +485,19 @@
             <button class="close-sidebar-btn" id="close-sidebar"><i class="fas fa-times"></i></button>
         </div>
         <button class="new-case-btn" id="new-case-btn"><i class="fas fa-plus"></i> New Case</button>
+
+        <!-- THEME SWITCHER (in sidebar) -->
+        <div class="sidebar-theme-section">
+            <span class="sidebar-theme-title">THEME</span>
+            <div class="sidebar-theme-swatches">
+                <button class="sidebar-swatch-btn active" data-theme="default" title="Blood Red"></button>
+                <button class="sidebar-swatch-btn" data-theme="ocean"   title="Deep Ocean"></button>
+                <button class="sidebar-swatch-btn" data-theme="acid"    title="Acid Green"></button>
+                <button class="sidebar-swatch-btn" data-theme="phantom" title="Phantom White"></button>
+                <span class="sidebar-swatch-tooltip" id="theme-label">BLOOD RED</span>
+            </div>
+        </div>
+
         <div class="archive-section">
             <div class="archive-title">CASE ARCHIVE</div>
             <ul class="case-list" id="case-list"></ul>
@@ -530,29 +515,11 @@
                 <span class="case-id" id="case-id-display">NX-START-LOG</span>
             </div>
             <div class="header-right">
-                <button class="icon-btn" id="theme-toggle-btn" title="Switch Theme"><i class="fas fa-palette"></i></button>
                 <button class="icon-btn" id="graph-toggle-btn" title="Toggle Evidence Board"><i class="fas fa-project-diagram"></i></button>
                 <button class="icon-btn" id="export-btn" title="Export Log"><i class="fas fa-download"></i></button>
                 <button class="icon-btn danger" id="clear-btn" title="Delete Current Log"><i class="fas fa-trash"></i></button>
             </div>
         </header>
-
-        <!-- THEME PANEL -->
-        <div class="theme-panel" id="theme-panel">
-            <div class="theme-panel-title">SELECT THEME</div>
-            <button class="theme-btn active" data-theme="default">
-                <div class="theme-swatch swatch-blood"></div> BLOOD RED
-            </button>
-            <button class="theme-btn" data-theme="ocean">
-                <div class="theme-swatch swatch-ocean"></div> DEEP OCEAN
-            </button>
-            <button class="theme-btn" data-theme="acid">
-                <div class="theme-swatch swatch-acid"></div> ACID GREEN
-            </button>
-            <button class="theme-btn" data-theme="phantom">
-                <div class="theme-swatch swatch-phantom"></div> PHANTOM WHITE
-            </button>
-        </div>
 
         <div class="chat-container" id="chat-container"></div>
         <div id="evidence-board"></div>
@@ -624,13 +591,13 @@ const newCaseBtn      = document.getElementById('new-case-btn');
 const clearBtn        = document.getElementById('clear-btn');
 const exportBtn       = document.getElementById('export-btn');
 const graphToggleBtn  = document.getElementById('graph-toggle-btn');
-const themeToggleBtn  = document.getElementById('theme-toggle-btn');
-const themePanel      = document.getElementById('theme-panel');
 const callOverlay     = document.getElementById('call-overlay');
 const callSpectrum    = document.getElementById('call-spectrum');
 const callMicBtn      = document.getElementById('call-btn-mic');
 const callEndBtn      = document.getElementById('call-btn-end');
 const callStatus      = document.getElementById('call-status');
+
+const THEME_LABELS = { default:'BLOOD RED', ocean:'DEEP OCEAN', acid:'ACID GREEN', phantom:'PHANTOM WHITE' };
 
 let cases         = [];
 let currentCaseId = null;
@@ -641,33 +608,21 @@ let mapInstances  = {};
 let currentTheme  = 'default';
 
 // ─────────────────────────────────────────────
-//  THEME SWITCHER
+//  THEME SWITCHER (sidebar swatches)
 // ─────────────────────────────────────────────
 const applyTheme = (theme) => {
     currentTheme = theme;
     document.documentElement.setAttribute('data-theme', theme === 'default' ? '' : theme);
     localStorage.setItem('nox_theme', theme);
-    document.querySelectorAll('.theme-btn').forEach(btn => {
+    document.querySelectorAll('.sidebar-swatch-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.theme === theme);
     });
+    const labelEl = document.getElementById('theme-label');
+    if (labelEl) labelEl.textContent = THEME_LABELS[theme] || theme.toUpperCase();
 };
 
-themeToggleBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    themePanel.classList.toggle('open');
-});
-
-document.querySelectorAll('.theme-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        applyTheme(btn.dataset.theme);
-        themePanel.classList.remove('open');
-    });
-});
-
-document.addEventListener('click', (e) => {
-    if (!themePanel.contains(e.target) && e.target !== themeToggleBtn) {
-        themePanel.classList.remove('open');
-    }
+document.querySelectorAll('.sidebar-swatch-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
 });
 
 // ─────────────────────────────────────────────
@@ -723,10 +678,6 @@ const appendMessageUI = (role, content, animate = true) => {
     const mapMatch = content.match(/<!--NOXMAP:([\s\S]*?)-->/);
     let prose = content.replace(/<!--NOXMAP:[\s\S]*?-->/g, '').trim();
 
-    // Extract rich HTML from prose (ip-card, osint-card etc.) for live rendering
-    const tempDiv = document.createElement('div');
-
-    // If this is an animate=false (history render) or user msg, just dump it all
     if (!animate || role === 'user') {
         msgDiv.innerHTML = `<div class="msg-header">${label}</div><div class="msg-content">${prose}</div>`;
         chatContainer.appendChild(msgDiv);
@@ -747,25 +698,20 @@ const appendMessageUI = (role, content, animate = true) => {
 
     const contentEl = msgDiv.querySelector('.msg-content');
 
-    // Split prose into plain-text part and trailing HTML widgets
-    // The LLM text ends before any <div class="... those are injected widgets
+    // Split plain text from trailing HTML widgets
     const htmlSplitIdx = prose.search(/<div\s+class="(gravatar-info|ip-card|osint-card|breach-list|username-grid)/);
-    const plainText  = htmlSplitIdx === -1 ? prose : prose.slice(0, htmlSplitIdx);
-    const richHTML   = htmlSplitIdx === -1 ? ''     : prose.slice(htmlSplitIdx);
+    const plainText    = htmlSplitIdx === -1 ? prose : prose.slice(0, htmlSplitIdx);
+    const richHTML     = htmlSplitIdx === -1 ? ''    : prose.slice(htmlSplitIdx);
 
-    // Typing effect on plain text
     let charIdx = 0;
     const textNode = document.createTextNode('');
     contentEl.appendChild(textNode);
-
-    // Blinking cursor element
     const cursor = document.createElement('span');
     cursor.className = 'typing-cursor';
     contentEl.appendChild(cursor);
 
-    // Characters per frame — faster for longer text to avoid eternity
     const charsPerFrame = Math.max(1, Math.ceil(plainText.length / 280));
-    const speed = 18; // ms per frame
+    const speed = 18;
 
     const typeInterval = setInterval(() => {
         if (charIdx < plainText.length) {
@@ -776,15 +722,11 @@ const appendMessageUI = (role, content, animate = true) => {
             clearInterval(typeInterval);
             cursor.remove();
             contentEl.classList.remove('typing-active');
-
-            // Inject rich widget HTML after typing completes
             if (richHTML) {
                 const tmp = document.createElement('div');
                 tmp.innerHTML = richHTML;
                 while (tmp.firstChild) contentEl.appendChild(tmp.firstChild);
             }
-
-            // Inject map
             if (mapMatch) {
                 try {
                     const mapData = JSON.parse(mapMatch[1]);
@@ -1227,7 +1169,7 @@ Always return all fields. Use [] for empty arrays, false for booleans.`;
 };
 
 // ─────────────────────────────────────────────
-//  SEND MESSAGE
+//  SEND MESSAGE  ← PERSONALITY RESTORED HERE
 // ─────────────────────────────────────────────
 const sendMessage = async () => {
     const message = userInput.value.trim();
@@ -1259,11 +1201,11 @@ const sendMessage = async () => {
     const publicIPs = intent.ips.filter(ip => !PRIVATE_IP.test(ip));
 
     const [gravatarResult, breachResult, whoisResult, dnsResult, sslResult, usernameResults, ...ipResults] = await Promise.all([
-        email0    ? fetchGravatar(email0)   : Promise.resolve(null),
-        email0    ? checkBreaches(email0)   : Promise.resolve(null),
-        domain0   ? lookupWHOIS(domain0)    : Promise.resolve(null),
-        domain0   ? lookupDNS(domain0)      : Promise.resolve(null),
-        domain0   ? lookupSSL(domain0)      : Promise.resolve(null),
+        email0    ? fetchGravatar(email0)    : Promise.resolve(null),
+        email0    ? checkBreaches(email0)    : Promise.resolve(null),
+        domain0   ? lookupWHOIS(domain0)     : Promise.resolve(null),
+        domain0   ? lookupDNS(domain0)       : Promise.resolve(null),
+        domain0   ? lookupSSL(domain0)       : Promise.resolve(null),
         username0 ? searchUsername(username0): Promise.resolve(null),
         ...publicIPs.map(ip => lookupIP(ip))
     ]);
@@ -1295,17 +1237,42 @@ const sendMessage = async () => {
     }
 
     try {
+        // Build clearly separated context blocks per tool — same as V1
         const contextBlocks = [];
-        if (ipResults.some(d=>d&&!d._error)) { contextBlocks.push(`[IP_GEOLOCATION]\n${ipResults.filter(d=>d&&!d._error).map(d=>`IP ${d.query}: ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'} | ISP: ${d.isp||'?'} | Org: ${d.org||'?'} | Coords: ${d.lat},${d.lon}${d.proxy?' | PROXY/VPN':''}${d.hosting?' | DATACENTER':''}`).join('\n')}`); }
-        if (whoisResult?.registered||dnsResult?.length||sslResult) { const dl=[]; if(whoisResult?.registered)dl.push(`WHOIS: ${domain0} | Registrar: ${whoisResult.registrar} | Created: ${whoisResult.created} | Expires: ${whoisResult.expires}`); if(dnsResult?.length)dl.push(`DNS: ${dnsResult.map(r=>`${r.type}: ${r.answers.map(a=>a.data).join(', ')}`).join(' | ')}`); if(sslResult)dl.push(`SSL: Issuer: ${sslResult.issuer} | Valid: ${sslResult.notBefore} to ${sslResult.notAfter}`); contextBlocks.push(`[DOMAIN_INTEL: ${domain0}]\n${dl.join('\n')}`); }
-        if (breachResult&&!breachResult.clean&&breachResult.breaches.length) { contextBlocks.push(`[EMAIL_BREACHES: ${email0}]\nFound in ${breachResult.breaches.length} breach(es): ${breachResult.breaches.slice(0,8).map(b=>typeof b==='string'?b:(b.breachID||b.name||'')).join(', ')}`); }
-        if (usernameResults) { contextBlocks.push(`[USERNAME_SWEEP: ${username0}]\nDetected on: ${usernameResults.filter(r=>r.found).map(r=>r.platform).join(', ')||'no platforms found'}`); }
-        if (mapData) { contextBlocks.push(`[SPATIAL_INTERCEPT]\nPrimary: ${mapData.primary.name} | Coords: ${mapData.primary.lat.toFixed(5)},${mapData.primary.lon.toFixed(5)}`); }
+        if (ipResults.some(d=>d&&!d._error)) {
+            const ipLines = ipResults.filter(d=>d&&!d._error).map(d=>
+                `IP ${d.query}: ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'} | ISP: ${d.isp||'?'} | Org: ${d.org||'?'} | Coords: ${d.lat},${d.lon}${d.proxy?' | PROXY/VPN':''}${d.hosting?' | DATACENTER':''}`
+            ).join('\n');
+            contextBlocks.push(`[IP_GEOLOCATION]\n${ipLines}`);
+        }
+        if (whoisResult?.registered||dnsResult?.length||sslResult) {
+            const dl=[];
+            if (whoisResult?.registered) dl.push(`WHOIS: ${domain0} | Registrar: ${whoisResult.registrar} | Created: ${whoisResult.created} | Expires: ${whoisResult.expires} | Status: ${whoisResult.status}`);
+            if (dnsResult?.length) dl.push(`DNS: ${dnsResult.map(r=>`${r.type}: ${r.answers.map(a=>a.data).join(', ')}`).join(' | ')}`);
+            if (sslResult) dl.push(`SSL: Issuer: ${sslResult.issuer} | Valid: ${sslResult.notBefore} to ${sslResult.notAfter} | SANs: ${sslResult.dnsNames.join(', ')}`);
+            contextBlocks.push(`[DOMAIN_INTEL: ${domain0}]\n${dl.join('\n')}`);
+        }
+        if (breachResult&&!breachResult.clean&&breachResult.breaches.length) {
+            contextBlocks.push(`[EMAIL_BREACHES: ${email0}]\nFound in ${breachResult.breaches.length} breach(es): ${breachResult.breaches.slice(0,8).map(b=>typeof b==='string'?b:(b.breachID||b.name||'')).join(', ')}`);
+        }
+        if (usernameResults) {
+            const hits = usernameResults.filter(r=>r.found).map(r=>r.platform).join(', ');
+            contextBlocks.push(`[USERNAME_SWEEP: ${username0}]\nDetected on: ${hits||'no platforms found'}`);
+        }
+        if (mapData) {
+            contextBlocks.push(`[SPATIAL_INTERCEPT]\nPrimary: ${mapData.primary.name} | Coords: ${mapData.primary.lat.toFixed(5)},${mapData.primary.lon.toFixed(5)}${mapData.alternates.length?' | Alternates: '+mapData.alternates.map(a=>a.name).join(', '):''}`);
+        }
 
-        const systemContent = "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags.\n\nEach [BLOCK] below is a separate OSINT result — treat them independently." + (contextBlocks.length ? '\n\n' + contextBlocks.join('\n\n') : '');
+        // ── ORIGINAL V1 SYSTEM PROMPT — personality fully restored ──
+        const systemContent = "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags.\n\nEach [BLOCK] below is a separate OSINT result — treat them independently. Do not conflate IP geolocation with spatial map data, do not attribute domain info to an IP, do not mix tools. Reference each block accurately on its own terms."
+            + (contextBlocks.length ? '\n\n' + contextBlocks.join('\n\n') : '');
 
         const apiMessages = [{ role:"system", content:systemContent }];
-        currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role:m.role, content:m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'').replace(/<[^>]*>?/gm,'') }));
+        // ── Preserve HTML in message history (same as V1) so evidence tags survive ──
+        currentCase.messages.slice(-6).forEach(m => apiMessages.push({
+            role: m.role,
+            content: m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g, '')
+        }));
 
         const response = await fetch(API_URL, {
             method:'POST', headers:{'Content-Type':'application/json'},
@@ -1313,8 +1280,8 @@ const sendMessage = async () => {
         });
 
         thinkingDiv.remove();
-        const data      = await response.json();
-        const replyText = data.choices[0].message.content;
+        const data       = await response.json();
+        const replyText  = data.choices[0].message.content;
         const mapComment = mapData ? `<!--NOXMAP:${JSON.stringify(mapData)}-->` : '';
         const fullReply  = replyText + injectionHTML + mapComment;
 
