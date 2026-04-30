@@ -1119,8 +1119,7 @@ Reply ONLY with raw JSON, no markdown, no explanation:
   "domains":       ["only standalone domain names the operator wants looked up e.g. example.com - NEVER include email provider domains like gmail.com yahoo.com hotmail.com protonmail.com"],
   "usernames":     ["only usernames/handles the operator wants searched across social platforms"],
   "wants_exif":    false,
-  "wants_spatial": false,
-  "wants_cctv":    false
+  "wants_spatial": false
 }
 
 STRICT rules:
@@ -1130,7 +1129,6 @@ STRICT rules:
 - usernames: only if operator explicitly asks to find/search/check someone's social presence
 - wants_exif: true ONLY if operator asks about image/photo metadata
 - wants_spatial: true ONLY if operator mentions a real-world location to find on a map
-- wants_cctv: true ONLY if operator asks about CCTV, cameras, surveillance feeds
 
 Always return all fields. Use [] for empty arrays, false for booleans.`;
 
@@ -1142,58 +1140,12 @@ Always return all fields. Use [] for empty arrays, false for booleans.`;
         const data = await r.json();
         const raw  = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
         const parsed = JSON.parse(raw);
-        return { emails:Array.isArray(parsed.emails)?parsed.emails:[], ips:Array.isArray(parsed.ips)?parsed.ips:[], domains:Array.isArray(parsed.domains)?parsed.domains:[], usernames:Array.isArray(parsed.usernames)?parsed.usernames:[], wants_exif:!!parsed.wants_exif, wants_spatial:!!parsed.wants_spatial, wants_cctv:!!parsed.wants_cctv };
+        return { emails:Array.isArray(parsed.emails)?parsed.emails:[], ips:Array.isArray(parsed.ips)?parsed.ips:[], domains:Array.isArray(parsed.domains)?parsed.domains:[], usernames:Array.isArray(parsed.usernames)?parsed.usernames:[], wants_exif:!!parsed.wants_exif, wants_spatial:!!parsed.wants_spatial };
     } catch(e) {
         const emailFallback = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g)||[];
         const ipFallback    = [...text.matchAll(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g)].map(m=>m[0]);
-        const cctv = /cctv|camera|surveillance|webcam/i.test(text);
-        return { emails:emailFallback, ips:ipFallback, domains:[], usernames:[], wants_exif:false, wants_spatial:false, wants_cctv:cctv };
+        return { emails:emailFallback, ips:ipFallback, domains:[], usernames:[], wants_exif:false, wants_spatial:false };
     }
-};
-
-// ─────────────────────────────────────────────
-//  CCTV / PUBLIC CAMERAS
-// ─────────────────────────────────────────────
-const fetchPublicCameras = async () => {
-    try {
-        // Use static public camera feeds (no API key needed)
-        const cameras = [
-            { name: 'Times Square Manhattan', image: 'https://images.unsplash.com/photo-1518235506717-e1ed3306a326?w=500&h=350&fit=crop', location: 'New York, USA', lat: 40.758, lon: -73.9855 },
-            { name: 'London Bridge Traffic', image: 'https://images.unsplash.com/photo-1551632786-de41ec801bed?w=500&h=350&fit=crop', location: 'London, UK', lat: 51.5055, lon: -0.0880 },
-            { name: 'Tokyo Shibuya Crossing', image: 'https://images.unsplash.com/photo-1540959375944-7049f642e9a9?w=500&h=350&fit=crop', location: 'Tokyo, Japan', lat: 35.6595, lon: 139.7004 },
-            { name: 'Paris Eiffel Tower', image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=500&h=350&fit=crop', location: 'Paris, France', lat: 48.8584, lon: 2.2945 },
-            { name: 'Sydney Harbour', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=350&fit=crop', location: 'Sydney, Australia', lat: -33.8568, lon: 151.2153 },
-            { name: 'Dubai Marina', image: 'https://images.unsplash.com/photo-1518684454537-5cea7db1fdd5?w=500&h=350&fit=crop', location: 'Dubai, UAE', lat: 25.0854, lon: 55.1393 }
-        ];
-        return cameras;
-    } catch(e) {
-        console.error('CCTV_FETCH_ERR', e);
-        return [];
-    }
-};
-
-const buildCCTVCard = (cameras) => {
-    if (!cameras || cameras.length === 0) {
-        return `<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">CCTV_FEED :: NO FEEDS AVAILABLE</span></div><div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">Unable to retrieve camera feeds at this time.</span></div></div></div>`;
-    }
-
-    let html = `<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">CCTV_FEED :: LIVE SURVEILLANCE (${cameras.length})</span></div><div style="padding:10px 14px;">`;
-    
-    cameras.forEach((cam, i) => {
-        html += `<div style="margin-bottom:15px;border:1px solid var(--border-color);border-radius:2px;overflow:hidden;">
-            <div style="background:var(--accent-glow-soft);padding:8px 12px;font-family:var(--font-mono);font-size:0.72rem;color:var(--accent-red);letter-spacing:1px;">
-                <div class="blink" style="display:inline-block;margin-right:8px;"></div>CAM_${String(i+1).padStart(2,'0')} :: ${escHtml(cam.name)}
-            </div>
-            ${cam.image ? `<img src="${cam.image}" style="width:100%;height:240px;object-fit:cover;display:block;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22240%22%3E%3Crect fill=%22%23222%22 width=%22400%22 height=%22240%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22monospace%22 font-size=%2214%22 fill=%22%23666%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3EFEED_UNAVAILABLE%3C/text%3E%3C/svg%3E'">` : ''}
-            <div style="padding:10px 12px;background:rgba(0,0,0,0.2);border-top:1px solid var(--border-color);">
-                <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-secondary);margin-bottom:4px;">${escHtml(cam.location)}</div>
-                ${cam.lat && cam.lon ? `<div style="font-family:var(--font-mono);font-size:0.7rem;color:#7fba8a;">📍 ${cam.lat.toFixed(4)}, ${cam.lon.toFixed(4)}</div>` : ''}
-            </div>
-        </div>`;
-    });
-    
-    html += `</div></div>`;
-    return html;
 };
 
 // ─────────────────────────────────────────────
@@ -1222,7 +1174,6 @@ const sendMessage = async () => {
 
     const intent        = await classifyIntent(message);
     const spatialIntent = intent.wants_spatial ? await detectSpatialIntent(message) : null;
-    const cctvCameras   = intent.wants_cctv   ? await fetchPublicCameras() : null;
 
     const email0    = intent.emails[0]    || null;
     const domain0   = intent.domains[0]   || null;
@@ -1243,7 +1194,6 @@ const sendMessage = async () => {
     if (breachResult)   injectionHTML += `\n\n${buildBreachCard(breachResult)}`;
     if (whoisResult||dnsResult||sslResult) injectionHTML += `\n\n${buildDomainCard(whoisResult, dnsResult, sslResult, domain0)}`;
     if (usernameResults) injectionHTML += `\n\n${buildUsernameCard(username0, usernameResults)}`;
-    if (cctvCameras) injectionHTML += `\n\n${buildCCTVCard(cctvCameras)}`;
     if (intent.wants_exif && !isGraphView) {
         const exifMsg = document.createElement('div');
         exifMsg.className = 'message assistant-msg';
