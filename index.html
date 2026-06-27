@@ -55,7 +55,7 @@
         .app-container { display: flex; width: 100%; height: 100%; position: relative; overflow: hidden; }
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 10; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .sidebar-overlay.active { display: block; opacity: 1; }
-        .sidebar { position: fixed; left: -100%; top: 0; width: var(--sidebar-width); height: 100%; background-color: var(--bg-secondary); border-right: 1px solid var(--border-color); z-index: 20; display: flex; flex-direction: column; transition: left 0.3s ease, background-color 0.4s ease, border-color 0.4s ease; }
+        .sidebar { position: fixed; left: -100%; top: 0; width: var(--sidebar-width); height: 100%; background-color: var(--bg-secondary); border-right: 1px solid var(--border-color); z-index: 20; display: flex; flex-direction: column; overflow: hidden; transition: left 0.3s ease, background-color 0.4s ease, border-color 0.4s ease; }
         .sidebar.open { left: 0; }
         .sidebar-header { height: var(--header-height); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); }
         .close-sidebar-btn { background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; }
@@ -182,6 +182,30 @@
         #img-upload-input { display: none; }
         .disclaimer { text-align: center; font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-secondary); opacity: 0.4; padding-top: 6px; letter-spacing: 0.5px; user-select: none; -webkit-user-select: none; }
 
+        /* ── SIDEBAR COPYRIGHT ── */
+        .sidebar-copyright {
+            padding: 14px 20px 20px 20px;
+            border-top: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        .sidebar-copyright p {
+            font-family: var(--font-mono);
+            font-size: 0.58rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.8px;
+            line-height: 1.9;
+            opacity: 0.38;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: color 0.4s ease;
+        }
+        .sidebar-copyright .copy-brand {
+            font-size: 0.66rem;
+            letter-spacing: 3px;
+            color: var(--accent-red);
+            opacity: 0.55;
+        }
+
         /* ── SPLASH ── */
         .splash { position: fixed; inset: 0; z-index: 99999; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; overflow: hidden; animation: splash-exit 0.6s ease 3.5s forwards; }
         @keyframes splash-exit { 0%{opacity:1;pointer-events:auto;} 100%{opacity:0;pointer-events:none;} }
@@ -245,11 +269,9 @@
         }
         #lab-overlay iframe {
             flex: 1; border: none; width: 100%;
-            /* leave room for the back bar at bottom */
             height: calc(100% - 44px);
             min-height: 0;
         }
-        /* back bar sits at the very bottom, never overlaps iframe content */
         #lab-back-bar {
             flex-shrink: 0;
             height: 44px;
@@ -306,6 +328,13 @@
         <div class="archive-section">
             <div class="archive-title">CASE ARCHIVE</div>
             <ul class="case-list" id="case-list"></ul>
+        </div>
+
+        <!-- COPYRIGHT -->
+        <div class="sidebar-copyright">
+            <p class="copy-brand">NOX</p>
+            <p>DIGITAL DETECTIVE SYSTEM</p>
+            <p>&copy; 2026 ALL RIGHTS RESERVED</p>
         </div>
     </aside>
 
@@ -644,7 +673,6 @@ const labCloseBtn = document.getElementById('lab-close-btn');
 let labBlobUrl = null;
 
 const openLab = () => {
-    // Build blob URL from the template content (once)
     if (!labBlobUrl) {
         const tpl    = document.getElementById('lab-html-tpl');
         const html   = tpl.innerHTML;
@@ -659,7 +687,6 @@ const openLab = () => {
 
 const closeLab = () => {
     labOverlay.classList.remove('active');
-    // Stop Three.js animation loop inside iframe to save resources
     labFrame.src = 'about:blank';
 };
 
