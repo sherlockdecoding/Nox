@@ -59,13 +59,15 @@
         .sidebar.open { left: 0; }
         .sidebar-header { height: var(--header-height); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); }
         .close-sidebar-btn { background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; }
-        .new-case-btn { margin: 20px 20px 5px 20px; padding: 12px; background-color: transparent; border: 1px solid var(--accent-color); color: var(--text-primary); font-family: var(--font-sans); border-radius: 4px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .new-case-btn { margin: 20px 20px 10px 20px; padding: 12px; background-color: transparent; border: 1px solid var(--accent-color); color: var(--text-primary); font-family: var(--font-sans); border-radius: 4px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .new-case-btn:hover { background-color: var(--accent-color); }
 
-        /* ── MENU LAUNCH BUTTONS ── */
-        .lab-launch-btn, .agent-launch-btn {
-            margin: 5px 20px 5px 20px; padding: 11px 12px;
+        /* ── FORENSIC LAB ENTRY ── */
+        .lab-launch-btn {
+            margin: 6px 20px 14px 20px; padding: 11px 12px;
             background: transparent;
+            border: 1px solid rgba(0,212,255,0.3);
+            color: rgba(0,212,255,0.75);
             font-family: var(--font-mono);
             font-size: 0.72rem;
             letter-spacing: 2px;
@@ -77,41 +79,19 @@
             gap: 10px;
             text-transform: uppercase;
         }
-        .lab-launch-btn {
-            border: 1px solid rgba(0,212,255,0.3);
-            color: rgba(0,212,255,0.75);
-        }
         .lab-launch-btn:hover {
             border-color: rgba(0,212,255,0.8);
             color: #00d4ff;
             background: rgba(0,212,255,0.07);
             box-shadow: 0 0 12px rgba(0,212,255,0.2);
         }
-        .agent-launch-btn {
-            border: 1px solid rgba(139,0,0,0.4);
-            color: var(--text-secondary);
-            margin-bottom: 14px;
-        }
-        .agent-launch-btn:hover {
-            border-color: #ff4444;
-            color: #ff6b6b;
-            background: rgba(139,0,0,0.07);
-            box-shadow: 0 0 12px rgba(139,0,0,0.2);
-        }
-        .lab-launch-btn .lab-dot, .agent-launch-btn .agent-dot {
-            width: 7px; height: 7px; border-radius: 50%;
-            flex-shrink: 0;
-        }
         .lab-launch-btn .lab-dot {
+            width: 7px; height: 7px; border-radius: 50%;
             background: rgba(0,212,255,0.6);
             animation: lab-pulse 2s ease-in-out infinite;
-        }
-        .agent-launch-btn .agent-dot {
-            background: rgba(255,68,68,0.6);
-            animation: agent-pulse-dot 2s ease-in-out infinite;
+            flex-shrink: 0;
         }
         @keyframes lab-pulse { 0%,100%{opacity:0.5;transform:scale(1);} 50%{opacity:1;transform:scale(1.3);} }
-        @keyframes agent-pulse-dot { 0%,100%{opacity:0.5;transform:scale(1);background:#8b0000;} 50%{opacity:1;transform:scale(1.3);background:#ff4444;} }
 
         .sidebar-theme-section { padding: 12px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; }
         .sidebar-theme-toggle { width: 50px; height: 28px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 14px; cursor: pointer; display: flex; align-items: center; padding: 2px; transition: all 0.3s ease; position: relative; flex-shrink: 0; }
@@ -171,7 +151,6 @@
         .ip-tag { font-size: 0.65rem; padding: 2px 6px; border-radius: 2px; letter-spacing: 1px; }
         .ip-tag.proxy { background: rgba(139,0,0,0.4); color: #ff6b6b; border: 1px solid #8b0000; }
         .ip-tag.hosting { background: rgba(69,90,100,0.4); color: #aac; border: 1px solid #455a64; }
-        .ip-grid { padding: 10px 14px; display: flex; flex-direction: column; gap: 5px; }
         .ip-grid { padding: 10px 14px; display: flex; flex-direction: column; gap: 5px; }
         .ip-row { display: flex; gap: 12px; font-size: 0.72rem; }
         .ip-k { color: var(--accent-red); min-width: 72px; flex-shrink: 0; }
@@ -301,6 +280,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 0;
         }
         #lab-close-btn {
             background: transparent;
@@ -321,134 +301,6 @@
             color: #00d4ff;
             box-shadow: 0 0 12px rgba(0,212,255,0.2);
         }
-
-        /* ══════════════════════════════════════════
-             NOX AGENT MODE UI (NOIR MODERN MINIMALIST)
-             ══════════════════════════════════════════ */
-        #agent-overlay {
-            position: fixed; inset: 0; z-index: 6000;
-            background: #0a0a0a;
-            display: none;
-            flex-direction: column;
-            font-family: var(--font-sans);
-            color: #d8d8d8;
-        }
-        #agent-overlay.active { display: flex; }
-        
-        .agent-hdr {
-            height: var(--header-height);
-            border-bottom: 1px solid #1f1f1f;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #0d0d0d;
-        }
-        .agent-title-block { display: flex; align-items: center; gap: 12px; }
-        .agent-title-logo { font-family: var(--font-serif); font-weight: 700; letter-spacing: 3px; font-size: 1.1rem; color: #fff; }
-        .agent-badge { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 1.5px; background: #221010; color: #ff5555; padding: 2px 8px; border: 1px solid #441a1a; border-radius: 2px; text-transform: uppercase; }
-        
-        .agent-close-btn {
-            background: transparent; border: 1px solid #333; color: #999;
-            font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 1.5px;
-            padding: 6px 16px; border-radius: 3px; cursor: pointer; transition: all 0.2s;
-            text-transform: uppercase;
-        }
-        .agent-close-btn:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.05); }
-
-        .agent-workspace {
-            flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #0a0a0a;
-        }
-        @media(min-width: 900px) {
-            .agent-workspace { flex-direction: row; }
-        }
-
-        /* Control Panel Side */
-        .agent-ctrl-panel {
-            width: 100%; border-bottom: 1px solid #1f1f1f; padding: 20px;
-            background: #0d0d0d; display: flex; flex-direction: column; gap: 15px;
-        }
-        @media(min-width: 900px) {
-            .agent-ctrl-panel { width: 340px; border-bottom: none; border-right: 1px solid #1f1f1f; height: 100%; overflow-y: auto; }
-        }
-        .panel-section-title { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 2px; color: #666; text-transform: uppercase; margin-bottom: 5px; }
-        .agent-textarea {
-            width: 100%; height: 90px; background: #121212; border: 1px solid #262626; border-radius: 4px;
-            padding: 12px; color: #fff; font-family: var(--font-sans); font-size: 0.88rem; resize: none; outline: none;
-            transition: border-color 0.2s;
-        }
-        .agent-textarea:focus { border-color: #555; }
-        
-        .agent-roster { display: flex; flex-direction: column; gap: 8px; }
-        .roster-card {
-            background: #121212; border: 1px solid #1f1f1f; border-radius: 4px; padding: 10px 12px;
-            display: flex; align-items: center; gap: 12px; opacity: 0.6; transition: all 0.25s;
-        }
-        .roster-card.active { opacity: 1; border-color: #3d3d3d; background: #141414; }
-        .roster-card.working { border-color: #8b0000; box-shadow: 0 0 8px rgba(139,0,0,0.15); }
-        .roster-avatar { width: 30px; height: 30px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; }
-        .avatar-spatial  { background: #1a233a; color: #7aa5ff; border: 1px solid #2c3e6b; }
-        .avatar-username { background: #1c2d24; color: #66bb6a; border: 1px solid #274432; }
-        .avatar-recon    { background: #2e1f3c; color: #b388ff; border: 1px solid #4a3260; }
-        .avatar-lead     { background: #262626; color: #ffffff; border: 1px solid #444444; }
-        
-        .roster-meta { flex: 1; min-width: 0; }
-        .roster-name { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; color: #eee; letter-spacing: 0.5px; }
-        .roster-status { font-family: var(--font-mono); font-size: 0.58rem; color: #777; margin-top: 2px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .roster-card.working .roster-status { color: #ff5555; }
-
-        .agent-deploy-btn {
-            background: #fff; color: #000; font-family: var(--font-mono); font-size: 0.75rem;
-            font-weight: 600; letter-spacing: 2px; padding: 12px; border: none; border-radius: 4px;
-            cursor: pointer; transition: all 0.2s; text-transform: uppercase; display: flex;
-            align-items: center; justify-content: center; gap: 8px; margin-top: auto;
-        }
-        .agent-deploy-btn:hover { background: #dcdcdc; }
-        .agent-deploy-btn:disabled { background: #222; color: #555; cursor: not-allowed; }
-
-        /* Monitor Feed Side */
-        .agent-feed-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .feed-header-bar {
-            height: 36px; background: #0b0b0b; border-bottom: 1px solid #1a1a1a; padding: 0 20px;
-            display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
-        }
-        .feed-title { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 1.5px; color: #555; text-transform: uppercase; }
-        
-        .agent-log-stream {
-            flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px;
-            -webkit-overflow-scrolling: touch; background: #070707;
-        }
-        
-        /* Collaborative Chat Nodes */
-        .agent-bubble { max-width: 88%; animation: agentNodeFade 0.25s ease forwards; display: flex; flex-direction: column; }
-        @keyframes agentNodeFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .bubble-hdr { font-family: var(--font-mono); font-size: 0.65rem; font-weight: 500; margin-bottom: 4px; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
-        .bubble-body { padding: 12px 16px; border-radius: 4px; font-size: 0.88rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
-        
-        /* Agent UI Profiles */
-        .bubble-spatial { align-self: flex-start; }
-        .bubble-spatial .bubble-hdr { color: #7aa5ff; }
-        .bubble-spatial .bubble-body { background: #11141c; border-left: 2px solid #3b5eab; color: #cbd5e1; }
-        
-        .bubble-username { align-self: flex-start; }
-        .bubble-username .bubble-hdr { color: #66bb6a; }
-        .bubble-username .bubble-body { background: #111814; border-left: 2px solid #2e693e; color: #cbd5e1; }
-        
-        .bubble-recon { align-self: flex-start; }
-        .bubble-recon .bubble-hdr { color: #b388ff; }
-        .bubble-recon .bubble-body { background: #16121c; border-left: 2px solid #6c46ab; color: #cbd5e1; }
-
-        .bubble-lead { align-self: flex-start; width: 100%; max-width: 100%; }
-        .bubble-lead .bubble-hdr { color: #ffffff; font-weight: 600; font-size: 0.7rem; border-bottom: 1px dashed #222; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; }
-        .bubble-lead .bubble-body { background: #141414; border: 1px solid #262626; color: #fff; font-family: var(--font-serif); font-size: 0.98rem; padding: 18px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-        
-        .bubble-system { align-self: center; text-align: center; max-width: 100%; margin: 4px 0; }
-        .bubble-system .bubble-body { background: transparent; padding: 2px 10px; color: #555; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; }
-
-        .bubble-body p { margin-bottom: 8px; }
-        .bubble-body p:last-child { margin-bottom: 0; }
-        .bubble-body strong { color: #fff; }
     </style>
 </head>
 <body>
@@ -466,13 +318,6 @@
             <div class="lab-dot"></div>
             <i class="fas fa-flask" style="font-size:0.85rem;"></i>
             FORENSIC LAB
-        </button>
-
-        <!-- NOX AGENT MODE LAUNCH -->
-        <button class="agent-launch-btn" id="agent-launch-btn">
-            <div class="agent-dot"></div>
-            <i class="fas fa-network-wired" style="font-size:0.85rem;"></i>
-            AGENT WORKSPACE
         </button>
 
         <!-- THEME SWITCHER -->
@@ -553,83 +398,13 @@
     </div>
 </div>
 
-<!-- FORENSIC LAB OVERLAY -->
+<!-- ══════════════════════════════════════════
+     FORENSIC LAB OVERLAY
+     ══════════════════════════════════════════ -->
 <div id="lab-overlay">
     <iframe id="lab-frame" title="NOX Forensic Lab" sandbox="allow-scripts allow-same-origin allow-downloads allow-popups"></iframe>
     <div id="lab-back-bar">
         <button id="lab-close-btn"><i class="fas fa-arrow-left"></i>&nbsp; BACK TO NOX</button>
-    </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     NOX AGENT MODE WORKSPACE OVERLAY
-     ══════════════════════════════════════════ -->
-<div id="agent-overlay">
-    <header class="agent-hdr">
-        <div class="agent-title-block">
-            <span class="agent-title-logo">NOX</span>
-            <span class="agent-badge">Multi-Agent Link</span>
-        </div>
-        <button class="agent-close-btn" id="agent-close-btn"><i class="fas fa-arrow-left"></i> Back to Nox</button>
-    </header>
-    
-    <div class="agent-workspace">
-        <!-- Control Panel Left -->
-        <div class="agent-ctrl-panel">
-            <div>
-                <div class="panel-section-title">Objective Parameters</div>
-                <textarea class="agent-textarea" id="agent-task-input" placeholder="Type multi-vector target profile (e.g., 'Target username is rogue_cipher, reported last seen around central plaza fountain Berlin. Scrape all endpoints.')"></textarea>
-            </div>
-            
-            <div>
-                <div class="panel-section-title">Neural Agent Roster</div>
-                <div class="agent-roster">
-                    <div class="roster-card active" id="rc-lead">
-                        <div class="roster-avatar avatar-lead"><i class="fas fa-user-shield"></i></div>
-                        <div class="roster-meta">
-                            <div class="roster-name">Nox_Lead</div>
-                            <div class="roster-status" id="rs-lead">Standby</div>
-                        </div>
-                    </div>
-                    <div class="roster-card active" id="rc-spatial">
-                        <div class="roster-avatar avatar-spatial"><i class="fas fa-map-marked-alt"></i></div>
-                        <div class="roster-meta">
-                            <div class="roster-name">Spatial_Agent</div>
-                            <div class="roster-status" id="rs-spatial">Standby</div>
-                        </div>
-                    </div>
-                    <div class="roster-card active" id="rc-username">
-                        <div class="roster-avatar avatar-username"><i class="fas fa-fingerprint"></i></div>
-                        <div class="roster-meta">
-                            <div class="roster-name">Username_Ping</div>
-                            <div class="roster-status" id="rs-username">Standby</div>
-                        </div>
-                    </div>
-                    <div class="roster-card active" id="rc-recon">
-                        <div class="roster-avatar avatar-recon"><i class="fas fa-database"></i></div>
-                        <div class="roster-meta">
-                            <div class="roster-name">Breach_Recon</div>
-                            <div class="roster-status" id="rs-recon">Standby</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="agent-deploy-btn" id="agent-deploy-btn"><i class="fas fa-rocket"></i> Deploy Agents</button>
-        </div>
-        
-        <!-- Stream Feed Right -->
-        <div class="agent-feed-container">
-            <div class="feed-header-bar">
-                <div class="feed-title">Collaborative Intercept Feed</div>
-                <div class="thinking-dots" id="agent-global-thinking" style="display: none;"><span></span><span></span><span></span></div>
-            </div>
-            <div class="agent-log-stream" id="agent-log-stream">
-                <div class="agent-bubble bubble-system">
-                    <div class="bubble-body">System initialized. Awaiting multi-vector input array parameters.</div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -917,147 +692,6 @@ const closeLab = () => {
 
 labLaunchBtn.addEventListener('click', openLab);
 labCloseBtn.addEventListener('click', closeLab);
-
-// ─────────────────────────────────────────────
-//  NOX AGENT WORKSPACE MODE INTEGRATION
-// ─────────────────────────────────────────────
-const agentOverlay = document.getElementById('agent-overlay');
-const agentLaunchBtn = document.getElementById('agent-launch-btn');
-const agentCloseBtn = document.getElementById('agent-close-btn');
-const agentDeployBtn = document.getElementById('agent-deploy-btn');
-const agentTaskInput = document.getElementById('agent-task-input');
-const agentLogStream = document.getElementById('agent-log-stream');
-const agentGlobalThinking = document.getElementById('agent-global-thinking');
-
-const openAgentMode = () => {
-    agentOverlay.classList.add('active');
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-overlay').classList.remove('active');
-};
-
-const closeAgentMode = () => {
-    agentOverlay.classList.remove('active');
-};
-
-agentLaunchBtn.addEventListener('click', openAgentMode);
-agentCloseBtn.addEventListener('click', closeAgentMode);
-
-const updateAgentStatus = (id, status, working = false) => {
-    const card = document.getElementById(`rc-${id}`);
-    const label = document.getElementById(`rs-${id}`);
-    if(card && label) {
-        label.textContent = status;
-        if(working) card.classList.add('working');
-        else card.classList.remove('working');
-    }
-};
-
-const appendAgentBubble = (agentId, name, text) => {
-    const bubble = document.createElement('div');
-    bubble.className = `agent-bubble bubble-${agentId}`;
-    bubble.innerHTML = `<div class="bubble-hdr">${name.toUpperCase()}</div><div class="bubble-body">${text}</div>`;
-    agentLogStream.appendChild(bubble);
-    agentLogStream.scrollTop = agentLogStream.scrollHeight;
-};
-
-// ─────────────────────────────────────────────
-//  MULTI-AGENT EXECUTION PIPELINE
-// ─────────────────────────────────────────────
-agentDeployBtn.addEventListener('click', async () => {
-    const query = agentTaskInput.value.trim();
-    if (!query) return;
-
-    agentDeployBtn.disabled = true;
-    agentTaskInput.disabled = true;
-    agentGlobalThinking.style.display = 'inline-flex';
-    agentLogStream.innerHTML = '';
-
-    appendAgentBubble('system', 'system', 'Array parameters verified. Multi-Agent routing sequence initialized.');
-
-    // Step 1: Spatial Intercept Processing
-    updateAgentStatus('spatial', 'Scanning Coordinates...', true);
-    let spatialIntel = "No spatial descriptors matched within query context.";
-    try {
-        const spatialPrompt = `Analyze the objective: "${query}". Identify any location metrics or descriptions. Extract geographic profiles. Be concise, max 3 sentences.`;
-        const r = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages: [{ role: "user", content: spatialPrompt }], temperature: 0.3 })
-        });
-        const res = await r.json();
-        spatialIntel = res.choices[0].message.content;
-    } catch (e) { spatialIntel = "Spatial indexing system encounter timeout."; }
-    
-    updateAgentStatus('spatial', 'Scan Complete');
-    appendAgentBubble('spatial', 'Spatial_Agent', spatialIntel);
-
-    // Step 2: Username Sweep Processing
-    updateAgentStatus('username', 'Scraping handles...', true);
-    let usernameIntel = "No explicit platform handles checked.";
-    try {
-        const usernamePrompt = `Analyze the objective: "${query}". Detect handles or system titles. Run endpoint lookup matrices. Be concise, max 3 sentences.`;
-        const r = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages: [{ role: "user", content: usernamePrompt }], temperature: 0.3 })
-        });
-        const res = await r.json();
-        usernameIntel = res.choices[0].message.content;
-    } catch (e) { usernameIntel = "Username sweep matrix experienced latency anomalies."; }
-
-    updateAgentStatus('username', 'Sweep Complete');
-    appendAgentBubble('username', 'Username_Ping', usernameIntel);
-
-    // Step 3: Recon Scape Data Checks
-    updateAgentStatus('recon', 'Checking Breach Layers...', true);
-    let reconIntel = "No direct operational vulnerabilities found.";
-    try {
-        const reconPrompt = `Analyze the objective: "${query}". Cross-match target identifiers for network security breaches or open leaks. Be concise, max 3 sentences.`;
-        const r = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages: [{ role: "user", content: reconPrompt }], temperature: 0.3 })
-        });
-        const res = await r.json();
-        reconIntel = res.choices[0].message.content;
-    } catch (e) { reconIntel = "Vulnerability databases currently cycling."; }
-
-    updateAgentStatus('recon', 'Scrape Complete');
-    appendAgentBubble('recon', 'Breach_Recon', reconIntel);
-
-    // Step 4: Consensus Chat & Synthesis Generation via Nox_Lead
-    updateAgentStatus('lead', 'Synthesizing Consensus...', true);
-    appendAgentBubble('system', 'collaboration', 'Cross-linking independent agent telemetry blocks into collaborative matrix...');
-
-    let masterSynthesis = "Consensus synthesis processing fault.";
-    try {
-        const masterPrompt = `You are Nox_Lead, the primary tactical compiler. Review the global objective and telemetry insights gathered by your agents:
-        
-        OBJECTIVE: ${query}
-        SPATIAL_AGENT METRICS: ${spatialIntel}
-        USERNAME_PING MATRIX: ${usernameIntel}
-        BREACH_RECON VULNERABILITIES: ${reconIntel}
-        
-        Synthesize their telemetry into a single definitive noir intelligence briefing. Eliminate noise. Deliver the absolute optimal operational final resolution.`;
-
-        const r = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: "adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages: [{ role: "user", content: masterPrompt }], temperature: 0.5 })
-        });
-        const res = await r.json();
-        masterSynthesis = res.choices[0].message.content;
-    } catch (e) { masterSynthesis = "Consensus link broken due to network handshake failure."; }
-
-    updateAgentStatus('lead', 'Briefing Prepared');
-    appendAgentBubble('lead', 'Nox_Lead :: Final Intelligence Resolution', masterSynthesis);
-
-    // Reset Workspace State
-    agentDeployBtn.disabled = false;
-    agentTaskInput.disabled = false;
-    agentGlobalThinking.style.display = 'none';
-    appendAgentBubble('system', 'system', 'Operational link down. Session safely archived.');
-});
 
 // ─────────────────────────────────────────────
 //  CONFIG
@@ -1360,95 +994,84 @@ const sendMessage = async () => {
         const fullReply = replyText + injectionHTML + mapComment;
         currentCase.messages.push({ role:'assistant', content:fullReply });
         saveState();
-        if (isGraphView) renderGraph(); else appendMessageUI('assistant', fullReply);
-    } catch(e) { thinkingDiv.remove(); appendMessageUI('assistant', "System network dropped connection layer. Operational abort."); }
+        if (isGraphView) renderGraph(); else appendMessageUI('assistant', fullReply, true);
+        if (isCallMode && 'speechSynthesis' in window) {
+            const cleanSpeech = replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi,'$1').replace(/<[^>]*>?/gm,'');
+            const utterance = new SpeechSynthesisUtterance(cleanSpeech);
+            utterance.pitch = 0.7; utterance.rate = 0.95;
+            utterance.onstart = () => { if(isCallMode){callSpectrum.classList.add('active');callStatus.textContent="NOX_UNIT TRANSMITTING";} };
+            utterance.onend   = () => { if(isCallMode){callSpectrum.classList.remove('active');callStatus.textContent="AWAITING INPUT...";} };
+            window.speechSynthesis.speak(utterance);
+        } else if (isCallMode) { callStatus.textContent = "AWAITING INPUT..."; }
+    } catch(e) {
+        thinkingDiv.remove();
+        if (!isGraphView) appendMessageUI('assistant', 'SIGNAL LOST: Link unstable.');
+        if (isCallMode) callStatus.textContent = "SIGNAL INTERRUPTED";
+    }
 };
 
 // ─────────────────────────────────────────────
-//  EVIDENCE GRAPH GENERATOR (VIS-NETWORK)
+//  GRAPH VIEW
 // ─────────────────────────────────────────────
 const renderGraph = () => {
-    evidenceBoard.innerHTML = '';
-    const currentCase = cases.find(c => c.id === currentCaseId);
-    if (!currentCase) return;
-    const nodesMap = {}; const edgesMap = {};
-    nodesMap['system_root'] = { id:'system_root', label:currentCase.id, shape:'dot', size:15, color:{ background:'#1a1a1a', border:currentTheme==='default'?'#8b0000':'#4a1a0a' }, font:{ color:currentTheme==='default'?'#e0e0e0':'#1a1612', face:'JetBrains Mono' } };
-    currentCase.messages.forEach(m => {
-        const matches = [...m.content.matchAll(/\[EVIDENCE:\s*([^\]]+)\]/g)];
-        matches.forEach(match => {
-            const val = match[1].trim(); const id = val.toLowerCase();
-            if (!nodesMap[id]) { nodesMap[id] = { id, label:val.toUpperCase(), shape:'box', margin:10, color:{ background:currentTheme==='default'?'#1a1a1a':'#e8e4dd', border:currentTheme==='default'?'#455a64':'#8c7b6a' }, font:{ color:currentTheme==='default'?'#a0a0a0':'#6b6560', face:'JetBrains Mono', size:11 }, shapeProperties:{ borderDashes:false } }; }
-            const edgeId = `system_root->${id}`;
-            if (!edgesMap[edgeId]) { edgesMap[edgeId] = { id:edgeId, from:'system_root', to:id, color:{ color:currentTheme==='default'?'#2c2c2c':'#c80b4', highlight:currentTheme==='default'?'#8b0000':'#4a1a0a' }, width:1, arrows:{ to:{ enabled:false } } }; }
-        });
-    });
-    const nodes = new vis.DataSet(Object.values(nodesMap)); const edges = new vis.DataSet(Object.values(edgesMap));
-    network = new vis.Network(evidenceBoard, { nodes, edges }, { physics:{ barnesHut:{ gravitationalConstant:-3000, centralGravity:0.3, springLength:95, springConstant:0.04, damping:0.09 }, minVelocity:0.75 } });
-    const delBtn = document.getElementById('node-delete-btn');
-    network.on("selectNode", (params) => {
-        if(params.nodes[0] === 'system_root') { delBtn.style.display = 'none'; return; }
-        const pos = network.getPositions([params.nodes[0]])[params.nodes[0]];
-        const domPos = network.canvasToDOMWindow(pos);
-        delBtn.style.styleLeft = (domPos.x - 15) + 'px'; delBtn.style.styleTop = (domPos.y - 15) + 'px';
-        delBtn.style.display = 'flex'; delBtn.onclick = () => { nodes.remove({ id: params.nodes[0] }); delBtn.style.display = 'none'; };
-    });
-    network.on("deselectNode", () => delBtn.style.display = 'none');
+    const currentCase = cases.find(c=>c.id===currentCaseId); if(!currentCase)return;
+    const nodes=new vis.DataSet([{id:'ROOT',label:`CASE:\n${currentCase.id}`,shape:'database',color:'#8b0000',font:{color:'#ffffff',face:'JetBrains Mono'}}]);
+    const edges=new vis.DataSet([]);const seenEntities=new Set();const delBtn=document.getElementById('node-delete-btn');
+    const emailRegex=/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+    const ipRegex=/\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
+    const phoneRegex=/(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
+    const noxRegex=/\[EVIDENCE:\s*(.*?)\]/gi;
+    currentCase.messages.forEach(msg=>{const text=msg.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'');const matches=[...[...text.matchAll(emailRegex)].map(m=>({val:m[0],color:'#2c4a5e',shape:'box'})),...[...text.matchAll(ipRegex)].map(m=>({val:m[0],color:'#4a5e2c',shape:'ellipse'})),...[...text.matchAll(phoneRegex)].map(m=>({val:m[0],color:'#5e4a2c',shape:'ellipse'})),...[...text.matchAll(noxRegex)].map(m=>({val:m[1],color:'#8b0000',shape:'hexagon'}))];matches.forEach(match=>{const id=match.val.trim();if(!id||seenEntities.has(id))return;if(currentCase.blacklist&&currentCase.blacklist.includes(id))return;seenEntities.add(id);nodes.add({id,label:id,color:match.color,shape:match.shape,font:{color:'#e0e0e0',face:'JetBrains Mono'}});edges.add({from:'ROOT',to:id,color:{color:'#455a64'}});});});
+    const container=document.getElementById('evidence-board');
+    if(network)network.destroy();
+    network=new vis.Network(container,{nodes,edges},{physics:{stabilization:true,barnesHut:{springLength:150}},nodes:{borderWidth:2,shadow:true},edges:{width:1.5,shadow:true}});
+    let selectedNodeId=null;
+    const hideBtn=()=>{delBtn.style.display='none';};
+    network.on("click",hideBtn);network.on("dragStart",hideBtn);
+    network.on("hold",params=>{if(params.nodes.length>0){const nodeId=params.nodes[0];if(nodeId==='ROOT')return;selectedNodeId=nodeId;const domPos=network.canvasToDOM(network.getPositions([nodeId])[nodeId]);delBtn.style.display='flex';delBtn.style.left=(domPos.x-15)+'px';delBtn.style.top=(domPos.y-45)+'px';}});
+    delBtn.onclick=e=>{e.stopPropagation();if(selectedNodeId){if(!currentCase.blacklist)currentCase.blacklist=[];currentCase.blacklist.push(selectedNodeId);saveState();nodes.remove(selectedNodeId);hideBtn();}};
 };
+const toggleGraphView=()=>{isGraphView=!isGraphView;if(isGraphView){chatContainer.style.display='none';evidenceBoard.style.display='block';graphToggleBtn.classList.add('active');renderGraph();}else{chatContainer.style.display='flex';evidenceBoard.style.display='none';graphToggleBtn.classList.remove('active');scrollToBottom();}};
 
 // ─────────────────────────────────────────────
-//  UI EVENT HANDLERS & BINDINGS
+//  EXPORT
 // ─────────────────────────────────────────────
-menuBtn.addEventListener('click', () => { sidebar.classList.add('open'); sidebarOverlay.classList.add('active'); });
-closeSidebarBtn.addEventListener('click', () => { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); });
-sidebarOverlay.addEventListener('click', () => { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); });
-newCaseBtn.addEventListener('click', createNewCase);
-sendBtn.addEventListener('click', sendMessage);
-userInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && window.innerWidth > 768) { e.preventDefault(); sendMessage(); } });
-userInput.addEventListener('input', () => { userInput.style.height = 'auto'; userInput.style.height = userInput.scrollHeight + 'px'; });
+const downloadLog=()=>{const currentCase=cases.find(c=>c.id===currentCaseId);if(!currentCase)return;let log=`NOX DIGITAL DETECTIVE | INVESTIGATION LOG\n===========================================\nCASE_ID:   ${currentCase.id}\nTITLE:     ${currentCase.title}\nTIMESTAMP: ${new Date(currentCase.timestamp).toLocaleString()}\n===========================================\n\n`;currentCase.messages.forEach(msg=>{const label=msg.role==='assistant'?'[NOX_UNIT]':'[OPERATOR]';const clean=msg.content.replace(/<[^>]*>?/gm,'').replace(/<!--NOXMAP:[\s\S]*?-->/g,'');log+=`${label}\n${clean}\n\n`;});const blob=new Blob([log],{type:'text/plain'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${currentCase.id}.txt`;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);};
 
-graphToggleBtn.addEventListener('click', () => {
-    isGraphView = !isGraphView;
-    if (isGraphView) { chatContainer.style.display = 'none'; evidenceBoard.style.display = 'block'; graphToggleBtn.classList.add('active'); renderGraph(); }
-    else { evidenceBoard.style.display = 'none'; chatContainer.style.display = 'flex'; graphToggleBtn.classList.remove('active'); document.getElementById('node-delete-btn').style.display='none'; renderChat(); }
-});
+// ─────────────────────────────────────────────
+//  SIDEBAR / EVENTS
+// ─────────────────────────────────────────────
+const toggleSidebar=()=>{sidebar.classList.toggle('open');sidebarOverlay.classList.toggle('active');document.body.classList.toggle('sidebar-open');};
+menuBtn.addEventListener('click',toggleSidebar);
+closeSidebarBtn.addEventListener('click',toggleSidebar);
+sidebarOverlay.addEventListener('click',toggleSidebar);
+newCaseBtn.addEventListener('click',createNewCase);
+sendBtn.addEventListener('click',sendMessage);
+exportBtn.addEventListener('click',downloadLog);
+graphToggleBtn.addEventListener('click',toggleGraphView);
+clearBtn.addEventListener('click',()=>{if(confirm('Purge logs?'))deleteCase(currentCaseId);});
+userInput.addEventListener('input',function(){this.style.height='auto';this.style.height=(this.scrollHeight)+'px';});
+userInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
 
-clearBtn.addEventListener('click', () => {
-    if (!confirm("Confirm complete data purge of current operational record?")) return;
-    cases = cases.filter(c => c.id !== currentCaseId); if (!cases.length) createNewCase(); else { currentCaseId = cases[0].id; saveState(); renderChat(); }
-});
+// ─────────────────────────────────────────────
+//  ARCHIVE
+// ─────────────────────────────────────────────
+const renderArchive=()=>{caseListEl.innerHTML='';cases.forEach(c=>{if(!c||!c.id)return;const li=document.createElement('li');li.className=`case-item ${c.id===currentCaseId?'active':''}`;const textSpan=document.createElement('span');textSpan.className='case-item-text';textSpan.textContent=c.title;const delBtn=document.createElement('button');delBtn.className='case-delete-btn';delBtn.innerHTML='<i class="fas fa-trash"></i>';let pressTimer;const startPress=()=>{pressTimer=setTimeout(()=>{document.querySelectorAll('.case-item').forEach(i=>i.classList.remove('show-delete'));li.classList.add('show-delete');},600);};const cancelPress=()=>clearTimeout(pressTimer);li.addEventListener('touchstart',startPress,{passive:true});li.addEventListener('mousedown',startPress);li.addEventListener('touchend',cancelPress);li.addEventListener('mouseup',cancelPress);li.addEventListener('contextmenu',e=>e.preventDefault());li.addEventListener('click',e=>{if(e.target.closest('.case-delete-btn'))return;if(li.classList.contains('show-delete')){li.classList.remove('show-delete');return;}currentCaseId=c.id;saveState();if(isGraphView){renderGraph();caseIdDisplay.textContent=currentCaseId;}else renderChat();if(window.innerWidth<768)toggleSidebar();});delBtn.addEventListener('click',e=>{e.stopPropagation();deleteCase(c.id);});li.appendChild(textSpan);li.appendChild(delBtn);caseListEl.appendChild(li);});};
+const deleteCase=(id)=>{cases=cases.filter(c=>c.id!==id);if(cases.length===0)createNewCase();else if(currentCaseId===id){currentCaseId=cases[0].id;if(isGraphView)renderGraph();else renderChat();}saveState();};
 
-exportBtn.addEventListener('click', () => {
-    const activeCase = cases.find(c => c.id === currentCaseId); if (!activeCase) return;
-    let dump = `NOX INTEL DUMP // OPERATIONAL RECORD: ${activeCase.id}\n========================================\n`;
-    activeCase.messages.forEach(m => dump += `\n[${m.role.toUpperCase()}]:\n${m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'')}\n`);
-    const blob = new Blob([dump], { type: 'text/plain' }); const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = `${activeCase.id}_INTEL.txt`; a.click(); URL.revokeObjectURL(url);
-});
+// ─────────────────────────────────────────────
+//  CALL MODE
+// ─────────────────────────────────────────────
+const setupCallMode=()=>{const callTriggerBtn=document.createElement('button');callTriggerBtn.className='icon-btn';callTriggerBtn.innerHTML='<i class="fas fa-phone-alt"></i>';callTriggerBtn.title="Call Mode";document.querySelector('.header-right').prepend(callTriggerBtn);const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;let recognition=null;if(SpeechRecognition){recognition=new SpeechRecognition();recognition.continuous=false;recognition.interimResults=false;recognition.lang='en-US';callTriggerBtn.addEventListener('click',()=>{isCallMode=true;callOverlay.classList.add('active');callStatus.textContent="SECURE LINE ESTABLISHED";});callEndBtn.addEventListener('click',()=>{isCallMode=false;callOverlay.classList.remove('active');recognition.stop();window.speechSynthesis.cancel();callSpectrum.classList.remove('active');callMicBtn.classList.remove('listening');});callMicBtn.addEventListener('click',()=>{if(callMicBtn.classList.contains('listening'))recognition.stop();else{window.speechSynthesis.cancel();recognition.start();}});recognition.onstart=()=>{callMicBtn.classList.add('listening');callSpectrum.classList.add('active');callStatus.textContent="LISTENING...";};recognition.onresult=e=>{userInput.value=e.results[0][0].transcript;callStatus.textContent="TRANSMITTING...";sendMessage();};recognition.onerror=()=>{callMicBtn.classList.remove('listening');callSpectrum.classList.remove('active');callStatus.textContent="SIGNAL INTERRUPTED";};recognition.onend=()=>{callMicBtn.classList.remove('listening');if(isCallMode&&callStatus.textContent!=="TRANSMITTING..."){callStatus.textContent="AWAITING INPUT...";callSpectrum.classList.remove('active');}};}else{callTriggerBtn.style.display='none';}};
 
-const renderArchive = () => {
-    caseListEl.innerHTML = '';
-    cases.forEach(c => {
-        const li = document.createElement('li'); li.className = `case-item ${c.id === currentCaseId ? 'active' : ''}`; li.dataset.id = c.id;
-        li.innerHTML = `<span class="case-item-text">${escHtml(c.title || c.id)}</span><button class="case-delete-btn"><i class="fas fa-times"></i></button>`;
-        li.addEventListener('click', (e) => {
-            if (e.target.closest('.case-delete-btn')) {
-                e.stopPropagation(); cases = cases.filter(x => x.id !== c.id); if (!cases.length) createNewCase(); else { if (currentCaseId === c.id) currentCaseId = cases[0].id; saveState(); renderChat(); } return;
-            }
-            currentCaseId = c.id; saveState(); if (isGraphView) renderGraph(); else renderChat(); if (sidebar.classList.contains('open')) toggleSidebar();
-        });
-        // Mobile swiping for quick deletion
-        let startX = 0;
-        li.addEventListener('touchstart', (e) => startX = e.touches[0].clientX, {passive: true});
-        li.addEventListener('touchend', (e) => { let diff = startX - e.changedTouches[0].clientX; if (diff > 50) li.classList.add('show-delete'); else if (diff < -50) li.classList.remove('show-delete'); }, {passive: true});
-        caseListEl.appendChild(li);
-    });
-};
+document.getElementById('img-upload-input').addEventListener('change',async(e)=>{const file=e.target.files[0];if(!file)return;e.target.value='';const exifMsg=document.createElement('div');exifMsg.className='message assistant-msg';exifMsg.innerHTML=`<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated — processing ${escHtml(file.name)}</div>`;exifMsg.querySelector('.msg-content').appendChild(buildExifUploader(file));chatContainer.appendChild(exifMsg);scrollToBottom();});
 
-const toggleSidebar = () => { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); };
-document.getElementById('img-upload-input').addEventListener('change', (e) => { if(e.target.files[0]) { if(isGraphView) graphToggleBtn.click(); chatContainer.appendChild(buildExifUploader(e.target.files[0])); scrollToBottom(); } });
+// SPLASH
+const splash=document.getElementById('splash');
+setTimeout(()=>{splash.style.transition='opacity 1.5s ease';splash.style.opacity='0';splash.style.pointerEvents='none';setTimeout(()=>splash.remove(),1500);},3500);
 
-setTimeout(() => { const sp = document.getElementById('splash'); if(sp) sp.remove(); }, 4100);
-window.onload = init;
+setupCallMode();
+init();
 </script>
 </body>
-</html>
+    </html>
