@@ -93,6 +93,36 @@
         }
         @keyframes lab-pulse { 0%,100%{opacity:0.5;transform:scale(1);} 50%{opacity:1;transform:scale(1.3);} }
 
+        /* ── NOX AGENT ENTRY ── */
+        .agent-launch-btn {
+            margin: 0 20px 14px 20px; padding: 11px 12px;
+            background: transparent;
+            border: 1px solid rgba(201,162,39,0.35);
+            color: rgba(201,162,39,0.85);
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+        }
+        .agent-launch-btn:hover {
+            border-color: rgba(201,162,39,0.8);
+            color: #c9a227;
+            background: rgba(201,162,39,0.08);
+            box-shadow: 0 0 12px rgba(201,162,39,0.18);
+        }
+        .agent-launch-btn .agent-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: rgba(201,162,39,0.7);
+            animation: lab-pulse 2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
         .sidebar-theme-section { padding: 12px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; }
         .sidebar-theme-toggle { width: 50px; height: 28px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 14px; cursor: pointer; display: flex; align-items: center; padding: 2px; transition: all 0.3s ease; position: relative; flex-shrink: 0; }
         .sidebar-theme-toggle::after { content: ''; width: 22px; height: 22px; background: var(--text-primary); border-radius: 50%; position: absolute; left: 2px; transition: left 0.3s ease; }
@@ -301,6 +331,49 @@
             color: #00d4ff;
             box-shadow: 0 0 12px rgba(0,212,255,0.2);
         }
+
+        /* ── NOX AGENT OVERLAY ── */
+        #agent-overlay {
+            position: fixed; inset: 0; z-index: 5000;
+            background: #0b0b0c;
+            display: none;
+            flex-direction: column;
+            animation: lab-open 0.35s cubic-bezier(0.16,1,0.3,1);
+        }
+        #agent-overlay.active { display: flex; }
+        #agent-overlay iframe {
+            flex: 1; border: none; width: 100%;
+            height: calc(100% - 44px);
+            min-height: 0;
+        }
+        #agent-back-bar {
+            flex-shrink: 0;
+            height: 44px;
+            background: rgba(11, 11, 12, 0.97);
+            border-top: 1px solid rgba(201,162,39,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #agent-close-btn {
+            background: transparent;
+            border: 1px solid rgba(201,162,39,0.4);
+            color: rgba(201,162,39,0.85);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 2.5px;
+            padding: 7px 22px;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+        #agent-close-btn:hover {
+            background: rgba(201,162,39,0.1);
+            border-color: rgba(201,162,39,0.8);
+            color: #c9a227;
+            box-shadow: 0 0 12px rgba(201,162,39,0.2);
+        }
     </style>
 </head>
 <body>
@@ -318,6 +391,13 @@
             <div class="lab-dot"></div>
             <i class="fas fa-flask" style="font-size:0.85rem;"></i>
             FORENSIC LAB
+        </button>
+
+        <!-- NOX AGENT LAUNCH -->
+        <button class="agent-launch-btn" id="agent-launch-btn">
+            <div class="agent-dot"></div>
+            <i class="fas fa-user-secret" style="font-size:0.85rem;"></i>
+            NOX AGENT
         </button>
 
         <!-- THEME SWITCHER -->
@@ -405,6 +485,16 @@
     <iframe id="lab-frame" title="NOX Forensic Lab" sandbox="allow-scripts allow-same-origin allow-downloads allow-popups"></iframe>
     <div id="lab-back-bar">
         <button id="lab-close-btn"><i class="fas fa-arrow-left"></i>&nbsp; BACK TO NOX</button>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     NOX AGENT OVERLAY
+     ══════════════════════════════════════════ -->
+<div id="agent-overlay">
+    <iframe id="agent-frame" title="NOX Agent" sandbox="allow-scripts allow-same-origin allow-downloads allow-popups"></iframe>
+    <div id="agent-back-bar">
+        <button id="agent-close-btn"><i class="fas fa-arrow-left"></i>&nbsp; BACK TO NOX</button>
     </div>
 </div>
 
@@ -657,6 +747,352 @@ animate();
 </html>
 </template>
 
+<!-- NOX Agent source stored as a template element (avoids XSS, keeps single file) -->
+<template id="agent-html-tpl">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NOX | AGENT</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+:root{--bg:#0b0b0c;--panel:#141414;--panel2:#191917;--line:#2a2722;--gold:#c9a227;--gold-dim:rgba(201,162,39,0.35);--text:#e2ddd2;--dim:#827c6e;
+  --c-locator:#c9a227;--c-tracer:#6e93a8;--c-signal:#b06b4e;--c-analyst:#9486b0;--c-coord:#eee7d8;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;display:flex;flex-direction:column}
+.top{flex-shrink:0;height:56px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:linear-gradient(180deg,var(--panel),var(--bg))}
+.brand{font-family:'Merriweather',serif;letter-spacing:3px;font-size:1rem;color:var(--gold)}
+.brand small{display:block;font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:2px;color:var(--dim);margin-top:2px}
+.new-op-btn{display:none;background:transparent;border:1px solid var(--gold-dim);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:1.5px;padding:7px 14px;border-radius:2px;cursor:pointer;text-transform:uppercase;transition:all .2s}
+.new-op-btn:hover{background:rgba(201,162,39,0.1);border-color:var(--gold)}
+.new-op-btn.show{display:block}
+.body-wrap{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:30px 16px 60px}
+
+#briefing-screen{width:100%;max-width:560px;margin-top:6vh}
+.brief-label{font-size:.65rem;letter-spacing:3px;color:var(--gold);margin-bottom:10px;text-transform:uppercase}
+.brief-card{border:1px solid var(--line);background:var(--panel);padding:22px;border-radius:3px}
+#brief-input{width:100%;min-height:120px;background:var(--panel2);border:1px solid var(--line);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.8rem;padding:12px;resize:vertical;outline:none;line-height:1.6}
+#brief-input:focus{border-color:var(--gold-dim)}
+.brief-hint{font-size:.65rem;color:var(--dim);margin-top:10px;line-height:1.5}
+#deploy-btn{margin-top:16px;width:100%;padding:13px;background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:3px;cursor:pointer;text-transform:uppercase;transition:all .2s}
+#deploy-btn:hover{background:rgba(201,162,39,0.12);box-shadow:0 0 16px rgba(201,162,39,0.15)}
+#deploy-btn:disabled{opacity:.4;cursor:default}
+
+#ops-screen{display:none;width:100%;max-width:760px}
+.roster{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+.agent-card{flex:1;min-width:130px;border:1px solid var(--line);background:var(--panel);padding:10px 12px;border-radius:3px;border-top:2px solid var(--ac,var(--line))}
+.agent-card .a-name{font-size:.68rem;letter-spacing:1.5px;color:var(--ac,var(--text));display:flex;align-items:center;gap:6px}
+.agent-card .a-status{font-size:.58rem;color:var(--dim);margin-top:5px;letter-spacing:1px;text-transform:uppercase}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--dim);display:inline-block;flex-shrink:0}
+.dot.active{background:var(--ac,var(--gold));animation:pulse 1.4s ease-in-out infinite}
+.dot.done{background:#7bb88a}
+.dot.error{background:#c0564f}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+#comms-log{display:flex;flex-direction:column;gap:14px;width:100%}
+.log-system{align-self:center;font-size:.62rem;letter-spacing:2px;color:var(--dim);text-transform:uppercase;padding:4px 0}
+
+.log-card{border-left:2px solid var(--ac,var(--gold));background:var(--panel);padding:12px 16px;border-radius:2px}
+.log-card .lc-head{font-size:.65rem;letter-spacing:2px;color:var(--ac,var(--gold));margin-bottom:6px;display:flex;align-items:center;gap:8px;text-transform:uppercase}
+.log-card .lc-body{font-size:.82rem;line-height:1.6;font-family:'Merriweather',serif;color:var(--text)}
+
+.chat-bubble{max-width:88%;border:1px solid var(--line);border-left:3px solid var(--ac,var(--gold));background:var(--panel2);padding:10px 14px;border-radius:2px}
+.chat-bubble .cb-name{font-size:.62rem;letter-spacing:1.5px;color:var(--ac,var(--gold));margin-bottom:4px;text-transform:uppercase}
+.chat-bubble .cb-text{font-size:.8rem;line-height:1.55;font-family:'Merriweather',serif}
+
+.dossier{border:1px solid var(--gold);background:linear-gradient(180deg,var(--panel),var(--panel2));padding:22px 24px;border-radius:3px;box-shadow:0 0 30px rgba(201,162,39,0.08)}
+.dossier h3{font-family:'Merriweather',serif;color:var(--c-coord);letter-spacing:2px;font-size:.85rem;margin-bottom:12px;text-transform:uppercase}
+.dossier .lc-body{font-size:.88rem}
+
+.thinking{display:inline-flex;gap:4px}
+.thinking span{width:5px;height:5px;border-radius:50%;background:var(--ac,var(--gold));animation:pulse 1s ease-in-out infinite}
+.thinking span:nth-child(2){animation-delay:.15s}.thinking span:nth-child(3){animation-delay:.3s}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="brand">NOX AGENT<small>MULTI-UNIT FIELD OPERATIONS</small></div>
+  <button class="new-op-btn" id="new-op-btn"><i class="fas fa-rotate-left"></i> NEW OPERATION</button>
+</div>
+<div class="body-wrap">
+  <div id="briefing-screen">
+    <div class="brief-label">CASE BRIEFING</div>
+    <div class="brief-card">
+      <textarea id="brief-input" placeholder="e.g. I know a girl, her username is ghostrider99 on most platforms. She was last seen near Prospect Park, Brooklyn. Her email might be ghostrider99@gmail.com. Need full background and last known location."></textarea>
+      <div class="brief-hint">Describe the subject and what you know — usernames, locations, emails, domains. NOX will dispatch field units automatically and they'll work the case together.</div>
+      <button id="deploy-btn"><i class="fas fa-paper-plane"></i>&nbsp; DEPLOY AGENTS</button>
+    </div>
+  </div>
+  <div id="ops-screen">
+    <div class="roster" id="roster"></div>
+    <div id="comms-log"></div>
+  </div>
+</div>
+<script>
+const API_URL="https://hermes.ai.unturf.com/v1/chat/completions";
+const MODEL="adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic";
+
+const AGENTS={
+  locator:{name:'LOCATOR',icon:'fa-location-crosshairs',color:'var(--c-locator)'},
+  tracer:{name:'TRACER',icon:'fa-fingerprint',color:'var(--c-tracer)'},
+  signal:{name:'SIGNAL',icon:'fa-tower-broadcast',color:'var(--c-signal)'},
+  analyst:{name:'ANALYST',icon:'fa-brain',color:'var(--c-analyst)'},
+  coordinator:{name:'COORDINATOR',icon:'fa-star',color:'var(--c-coord)'}
+};
+
+const rosterEl=document.getElementById('roster');
+const logEl=document.getElementById('comms-log');
+const bodyWrap=document.querySelector('.body-wrap');
+const briefScreen=document.getElementById('briefing-screen');
+const opsScreen=document.getElementById('ops-screen');
+const briefInput=document.getElementById('brief-input');
+const deployBtn=document.getElementById('deploy-btn');
+const newOpBtn=document.getElementById('new-op-btn');
+
+const scrollLog=()=>{bodyWrap.scrollTop=bodyWrap.scrollHeight;};
+const escapeHtml=(s)=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const formatText=(t)=>escapeHtml(t).replace(/\*\*(.*?)\*\*/g,'<strong style="color:var(--gold)">$1</strong>').replace(/\n/g,'<br>');
+
+const setStatus=(id,text,state)=>{
+  const dot=document.getElementById('dot-'+id);
+  const st=document.getElementById('st-'+id);
+  if(!dot)return;
+  dot.className='dot'+(state?' '+state:'');
+  if(st)st.textContent=text;
+};
+
+const buildRoster=(activeIds)=>{
+  rosterEl.innerHTML='';
+  Object.keys(AGENTS).forEach(id=>{
+    if(id==='coordinator')return;
+    const a=AGENTS[id];
+    const active=activeIds.includes(id);
+    const card=document.createElement('div');
+    card.className='agent-card';
+    card.style.setProperty('--ac',a.color);
+    card.innerHTML=`<div class="a-name"><span class="dot" id="dot-${id}"></span> ${a.name}</div><div class="a-status" id="st-${id}">${active?'STANDBY':'NOT DEPLOYED'}</div>`;
+    rosterEl.appendChild(card);
+  });
+};
+
+const appendSystem=(text)=>{
+  const d=document.createElement('div');d.className='log-system';d.textContent=text;logEl.appendChild(d);scrollLog();
+};
+const appendCard=(agentId,placeholder)=>{
+  const a=AGENTS[agentId];
+  const d=document.createElement('div');d.className='log-card';d.style.setProperty('--ac',a.color);
+  d.innerHTML=`<div class="lc-head"><i class="fas ${a.icon}"></i> ${a.name} — RECON REPORT</div><div class="lc-body">${placeholder?'<span class="thinking"><span></span><span></span><span></span></span>':''}</div>`;
+  logEl.appendChild(d);scrollLog();return d.querySelector('.lc-body');
+};
+const appendChat=(agentId)=>{
+  const a=AGENTS[agentId];
+  const d=document.createElement('div');d.className='chat-bubble';d.style.setProperty('--ac',a.color);
+  d.innerHTML=`<div class="cb-name"><i class="fas ${a.icon}"></i> ${a.name}</div><div class="cb-text"><span class="thinking"><span></span><span></span><span></span></span></div>`;
+  logEl.appendChild(d);scrollLog();return d.querySelector('.cb-text');
+};
+const appendDossier=()=>{
+  const d=document.createElement('div');d.className='dossier';
+  d.innerHTML=`<h3><i class="fas fa-star"></i> FINAL DOSSIER — COORDINATOR</h3><div class="lc-body"><span class="thinking"><span></span><span></span><span></span></span></div>`;
+  logEl.appendChild(d);scrollLog();return d.querySelector('.lc-body');
+};
+
+const callLLM=async(systemPrompt,userPrompt,temperature=0.65,maxTokens=240)=>{
+  const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:MODEL,messages:[{role:'system',content:systemPrompt},{role:'user',content:userPrompt}],temperature,max_tokens:maxTokens})});
+  const d=await r.json();
+  return d.choices[0].message.content.trim();
+};
+
+// ── DISPATCH ──
+const runDispatch=async(brief)=>{
+  const sys=`You are NOX-DISPATCH, a task-routing AI for a multi-agent OSINT field team. Given an operator's case briefing, extract structured intel targets. Reply ONLY with raw JSON, no markdown:
+{"subject":"short case subject","location_query":null,"username":null,"email":null,"domain":null,"key_facts":[]}
+Rules: location_query is a real-world place name or address mentioned, or null. username is an explicit handle/alias mentioned, or null. email/domain only if literally present, else null. key_facts is an array of 2-4 short bullet facts extracted from the briefing.`;
+  try{
+    const raw=await callLLM(sys,brief,0.0,300);
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const p=JSON.parse(clean);
+    return {subject:p.subject||'Unidentified Case',location_query:p.location_query||null,username:p.username||null,email:p.email||null,domain:p.domain||null,key_facts:Array.isArray(p.key_facts)?p.key_facts:[]};
+  }catch(e){
+    return {subject:'Unidentified Case',location_query:null,username:null,email:null,domain:null,key_facts:[]};
+  }
+};
+
+// ── TOOL FETCHES ──
+const geocodeLocation=async(q)=>{
+  try{
+    const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1&addressdetails=1`);
+    const d=await r.json();
+    if(!d||!d.length)return null;
+    const top=d[0];
+    return {display_name:top.display_name,lat:parseFloat(top.lat),lon:parseFloat(top.lon),type:top.type||top.class||'place'};
+  }catch(e){return null;}
+};
+
+const USERNAME_PLATFORMS=[
+  {name:'GitHub',url:u=>`https://github.com/${u}`},
+  {name:'Instagram',url:u=>`https://instagram.com/${u}`},
+  {name:'X / Twitter',url:u=>`https://x.com/${u}`},
+  {name:'Reddit',url:u=>`https://reddit.com/user/${u}`},
+  {name:'TikTok',url:u=>`https://tiktok.com/@${u}`},
+  {name:'Telegram',url:u=>`https://t.me/${u}`},
+  {name:'Pinterest',url:u=>`https://pinterest.com/${u}`},
+  {name:'Steam',url:u=>`https://steamcommunity.com/id/${u}`}
+];
+const sweepUsername=async(u)=>{
+  return Promise.all(USERNAME_PLATFORMS.map(async p=>{
+    const url=p.url(u);
+    try{await fetch(url,{method:'HEAD',mode:'no-cors'});return{platform:p.name,url,reachable:true};}
+    catch(e){return{platform:p.name,url,reachable:false};}
+  }));
+};
+
+const checkBreach=async(email)=>{
+  try{
+    const r=await fetch(`https://api.xposedornot.com/v1/check-email/${encodeURIComponent(email)}`);
+    if(r.status===404)return{email,breaches:[],clean:true};
+    const d=await r.json();
+    if(!d.breaches)return null;
+    const breaches=d.breaches.flat?d.breaches.flat():d.breaches;
+    return{email,breaches:Array.isArray(breaches)?breaches:[],clean:false};
+  }catch(e){return null;}
+};
+const lookupDomain=async(domain)=>{
+  try{
+    const [dnsR,rdapR]=await Promise.all([
+      fetch(`https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=A`).then(r=>r.json()).catch(()=>null),
+      fetch(`https://rdap.org/domain/${domain}`).then(r=>r.ok?r.json():null).catch(()=>null)
+    ]);
+    const ips=dnsR?.Answer?.map(a=>a.data)||[];
+    let registrar=null,created=null;
+    if(rdapR){
+      registrar=rdapR.entities?.find(e=>e.roles?.includes('registrar'))?.vcardArray?.[1]?.find(v=>v[0]==='fn')?.[3]||null;
+      created=rdapR.events?.find(e=>e.eventAction==='registration')?.eventDate?.slice(0,10)||null;
+    }
+    return {domain,ips,registrar,created};
+  }catch(e){return null;}
+};
+
+// ── RECON PER AGENT ──
+const runLocator=async(dispatch)=>{
+  const geo=await geocodeLocation(dispatch.location_query);
+  const sys=`You are LOCATOR, NOX's spatial intelligence field unit. Cold, precise, noir tone, 2-4 sentences. You're given a raw geocoding hit for a location of interest in an investigation. Note what it tells the team — terrain, visibility, access, anything tactically relevant. If no data was found, say so plainly and suggest a narrower query.`;
+  const userMsg=geo?`Location query: "${dispatch.location_query}"\nGeocode result: ${geo.display_name} | type: ${geo.type} | coords: ${geo.lat.toFixed(5)},${geo.lon.toFixed(5)}`:`Location query: "${dispatch.location_query}"\nNo geocode match found.`;
+  const text=await callLLM(sys,userMsg);
+  return text;
+};
+const runTracer=async(dispatch)=>{
+  const sweep=await sweepUsername(dispatch.username);
+  const sys=`You are TRACER, NOX's username sweep field unit. Cold, precise, noir tone, 2-4 sentences. You're given a list of platforms queried for a handle. Summarize coverage and flag this is a reachability sweep, not confirmed identity — recommend manual verification of the strongest leads.`;
+  const userMsg=`Username: "${dispatch.username}"\nPlatforms queried: ${sweep.map(s=>s.platform).join(', ')}`;
+  const text=await callLLM(sys,userMsg);
+  return text;
+};
+const runSignal=async(dispatch)=>{
+  const parts=[];
+  if(dispatch.email){const breach=await checkBreach(dispatch.email);parts.push(breach?(breach.clean?`Email ${dispatch.email}: no known breaches.`:`Email ${dispatch.email}: found in ${breach.breaches.length} breach(es): ${breach.breaches.slice(0,6).map(b=>typeof b==='string'?b:(b.breachID||b.name||'')).join(', ')}`):`Email ${dispatch.email}: lookup failed.`);}
+  if(dispatch.domain){const dom=await lookupDomain(dispatch.domain);parts.push(dom?`Domain ${dispatch.domain}: IPs ${dom.ips.join(', ')||'none'} | Registrar: ${dom.registrar||'unknown'} | Created: ${dom.created||'unknown'}`:`Domain ${dispatch.domain}: lookup failed.`);}
+  const sys=`You are SIGNAL, NOX's contact & domain intelligence field unit. Cold, precise, noir tone, 2-4 sentences. Summarize the raw breach/domain data given and flag risk level.`;
+  const text=await callLLM(sys,parts.join('\n'));
+  return text;
+};
+const runAnalyst=async(brief,dispatch)=>{
+  const sys=`You are ANALYST, NOX's behavioral reasoning field unit. No direct tool access. Cold, analytical, noir tone, 2-4 sentences. Review the operator's briefing and flag inconsistencies, missing leads, or risk factors. End with one pointed question for the team.`;
+  const text=await callLLM(sys,`Briefing: ${brief}\nKey facts extracted: ${dispatch.key_facts.join('; ')||'none'}`);
+  return text;
+};
+
+// ── DISCUSSION ──
+const runDiscussionTurn=async(agentId,transcript)=>{
+  const a=AGENTS[agentId];
+  const personaMap={locator:'spatial intelligence',tracer:'username sweep',signal:'contact & domain intel',analyst:'behavioral reasoning'};
+  const sys=`You are ${a.name}, NOX's ${personaMap[agentId]} field unit, in a roundtable discussion with the rest of the team. Cold, terse, noir tone, 1-3 sentences. React to what's been said, cross-reference your own findings against others', and address at least one other unit by name if relevant. Do not repeat your full report.`;
+  const text=await callLLM(sys,`Transcript so far:\n${transcript}`,0.7,150);
+  return text;
+};
+
+// ── COORDINATOR ──
+const runCoordinator=async(brief,transcript)=>{
+  const sys=`You are COORDINATOR, NOX's lead synthesis unit. Cold, authoritative, noir tone. Given the operator's briefing and the full field team transcript, produce a final case dossier with these sections, each on its own line, bold via **Section**: **Subject Summary**, **Confirmed Leads**, **Unresolved Threads**, **Risk Assessment**, **Recommended Next Steps**. Be concise — 1-2 sentences per section. Plain text, no markdown headers, use ** for section bolding only.`;
+  const text=await callLLM(sys,`Briefing: ${brief}\n\nField transcript:\n${transcript}`,0.5,420);
+  return text;
+};
+
+// ── MAIN PIPELINE ──
+let busy=false;
+const deploy=async()=>{
+  const brief=briefInput.value.trim();
+  if(!brief||busy)return;
+  busy=true;deployBtn.disabled=true;
+  briefScreen.style.display='none';opsScreen.style.display='block';logEl.innerHTML='';
+  appendSystem('BRIEFING RECEIVED — DISPATCHING');
+
+  const dispatch=await runDispatch(brief);
+  const activeIds=['analyst'];
+  if(dispatch.location_query)activeIds.unshift('locator');
+  if(dispatch.username)activeIds.push('tracer');
+  if(dispatch.email||dispatch.domain)activeIds.push('signal');
+  buildRoster(activeIds);
+  newOpBtn.classList.add('show');
+
+  appendSystem(`CASE: ${dispatch.subject.toUpperCase()}`);
+  activeIds.forEach(id=>setStatus(id,'ACTIVE','active'));
+
+  const transcriptParts=[`OPERATOR BRIEFING: ${brief}`];
+  await Promise.allSettled(activeIds.map(async id=>{
+    const body=appendCard(id,true);
+    try{
+      let text;
+      if(id==='locator')text=await runLocator(dispatch);
+      else if(id==='tracer')text=await runTracer(dispatch);
+      else if(id==='signal')text=await runSignal(dispatch);
+      else text=await runAnalyst(brief,dispatch);
+      body.innerHTML=formatText(text);
+      transcriptParts.push(`${AGENTS[id].name}: ${text}`);
+      setStatus(id,'REPORTED','done');
+    }catch(e){
+      body.innerHTML='<span style="color:#c0564f">Comm link failed — unit offline.</span>';
+      setStatus(id,'OFFLINE','error');
+    }
+  }));
+
+  appendSystem('ROUNDTABLE DISCUSSION');
+  for(const id of activeIds){
+    const body=appendChat(id);
+    try{
+      const msg=await runDiscussionTurn(id,transcriptParts.join('\n'));
+      body.innerHTML=formatText(msg);
+      transcriptParts.push(`${AGENTS[id].name} (discussion): ${msg}`);
+    }catch(e){
+      body.innerHTML='<span style="color:#c0564f">No response.</span>';
+    }
+  }
+
+  appendSystem('COMPILING FINAL DOSSIER');
+  const dBody=appendDossier();
+  try{
+    const final=await runCoordinator(brief,transcriptParts.join('\n'));
+    dBody.innerHTML=formatText(final);
+  }catch(e){
+    dBody.innerHTML='<span style="color:#c0564f">Coordinator unreachable. Review field reports above manually.</span>';
+  }
+  appendSystem('OPERATION COMPLETE');
+  busy=false;deployBtn.disabled=false;
+};
+
+deployBtn.addEventListener('click',deploy);
+briefInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey))deploy();});
+newOpBtn.addEventListener('click',()=>{
+  opsScreen.style.display='none';briefScreen.style.display='block';newOpBtn.classList.remove('show');
+  briefInput.value='';logEl.innerHTML='';rosterEl.innerHTML='';
+});
+</script>
+</body>
+</html>
+</template>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
@@ -692,6 +1128,37 @@ const closeLab = () => {
 
 labLaunchBtn.addEventListener('click', openLab);
 labCloseBtn.addEventListener('click', closeLab);
+
+// ─────────────────────────────────────────────
+//  NOX AGENT INTEGRATION
+// ─────────────────────────────────────────────
+const agentOverlay   = document.getElementById('agent-overlay');
+const agentFrame     = document.getElementById('agent-frame');
+const agentLaunchBtn = document.getElementById('agent-launch-btn');
+const agentCloseBtn  = document.getElementById('agent-close-btn');
+
+let agentBlobUrl = null;
+
+const openAgent = () => {
+    if (!agentBlobUrl) {
+        const tpl  = document.getElementById('agent-html-tpl');
+        const html = tpl.innerHTML;
+        const blob = new Blob([html], { type: 'text/html' });
+        agentBlobUrl = URL.createObjectURL(blob);
+    }
+    agentFrame.src = agentBlobUrl;
+    agentOverlay.classList.add('active');
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('active');
+};
+
+const closeAgent = () => {
+    agentOverlay.classList.remove('active');
+    agentFrame.src = 'about:blank';
+};
+
+agentLaunchBtn.addEventListener('click', openAgent);
+agentCloseBtn.addEventListener('click', closeAgent);
 
 // ─────────────────────────────────────────────
 //  CONFIG
@@ -893,185 +1360,4 @@ const checkBreaches=async(email)=>{try{const r=await fetch(`https://api.xposedor
 const buildBreachCard=(result)=>{if(!result)return'';let html=`<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">BREACH_SCAN :: ${escHtml(result.email)}</span></div>`;if(result.clean||!result.breaches.length){html+=`<div class="osint-grid"><div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v" style="color:#7fba8a">NO BREACHES DETECTED</span></div></div>`;}else{html+=`<div class="osint-grid"><div class="osint-row"><span class="osint-k">FOUND IN</span><span class="osint-v" style="color:#ff6b6b">${result.breaches.length} BREACH${result.breaches.length>1?'ES':''}</span></div></div><div class="breach-list">`;result.breaches.slice(0,15).forEach(b=>{const name=typeof b==='string'?b:(b.breachID||b.name||JSON.stringify(b));html+=`<div class="breach-item"><div class="breach-name">${escHtml(name)}</div></div>`;});html+=`</div>`;}html+=`</div>`;return html;};
 const USERNAME_PLATFORMS=[{name:'GitHub',url:u=>`https://github.com/${u}`},{name:'Reddit',url:u=>`https://www.reddit.com/user/${u}/about.json`},{name:'HackerNews',url:u=>`https://hacker-news.firebaseio.com/v0/user/${u}.json`},{name:'Instagram',url:u=>`https://www.instagram.com/${u}/`},{name:'TikTok',url:u=>`https://www.tiktok.com/@${u}`},{name:'Twitter/X',url:u=>`https://twitter.com/${u}`},{name:'LinkedIn',url:u=>`https://www.linkedin.com/in/${u}`},{name:'Pinterest',url:u=>`https://www.pinterest.com/${u}/`},{name:'Twitch',url:u=>`https://www.twitch.tv/${u}`},{name:'YouTube',url:u=>`https://www.youtube.com/@${u}`},{name:'SoundCloud',url:u=>`https://soundcloud.com/${u}`},{name:'Keybase',url:u=>`https://keybase.io/${u}`},{name:'Gitlab',url:u=>`https://gitlab.com/${u}`},{name:'Medium',url:u=>`https://medium.com/@${u}`},{name:'Dev.to',url:u=>`https://dev.to/${u}`},{name:'Steam',url:u=>`https://steamcommunity.com/id/${u}`},{name:'Spotify',url:u=>`https://open.spotify.com/user/${u}`},{name:'Patreon',url:u=>`https://www.patreon.com/${u}`},{name:'Fiverr',url:u=>`https://www.fiverr.com/${u}`},{name:'Gravatar',url:u=>`https://en.gravatar.com/${u}.json`}];
 const searchUsername=async(username)=>{return Promise.all(USERNAME_PLATFORMS.map(async p=>{const url=p.url(username);try{await fetch(url,{method:'HEAD',mode:'no-cors'});return{platform:p.name,url,found:true};}catch(e){return{platform:p.name,url,found:false};}}));};
-const buildUsernameCard=(username,results)=>{const found=results.filter(r=>r.found);const notFound=results.filter(r=>!r.found);let html=`<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">USERNAME_SWEEP :: ${escHtml(username)}</span></div><div class="osint-grid"><div class="osint-row"><span class="osint-k">HITS</span><span class="osint-v" style="color:#7fba8a">${found.length} / ${results.length} platforms</span></div></div><div class="username-grid">`;found.forEach(r=>{html+=`<a href="${r.url}" target="_blank" class="username-chip found"><div class="dot"></div>${escHtml(r.platform)}</a>`;});notFound.forEach(r=>{html+=`<span class="username-chip notfound"><div class="dot"></div>${escHtml(r.platform)}</span>`;});html+=`</div></div>`;return html;};
-const buildExifUploader=(preloadedFile=null)=>{const wrapper=document.createElement('div');wrapper.className='osint-card';wrapper.style.marginTop='15px';const header=document.createElement('div');header.className='osint-card-header';header.innerHTML=`<div class="blink"></div><span class="osint-card-title">EXIF_EXTRACTOR :: DROP IMAGE TO ANALYSE</span>`;wrapper.appendChild(header);const dropArea=document.createElement('div');dropArea.className='exif-upload-area';dropArea.innerHTML=`<i class="fas fa-camera" style="font-size:1.5rem;margin-bottom:8px;display:block"></i>Click or drag an image here`;const fileInput=document.createElement('input');fileInput.type='file';fileInput.accept='image/*';dropArea.appendChild(fileInput);const resultsDiv=document.createElement('div');resultsDiv.className='osint-grid';resultsDiv.style.display='none';const processFile=async(file)=>{dropArea.innerHTML=`<i class="fas fa-spinner fa-spin"></i> Extracting metadata...`;try{const exif=await exifr.parse(file,true);resultsDiv.style.display='flex';resultsDiv.innerHTML='';if(!exif||!Object.keys(exif).length){resultsDiv.innerHTML=`<div class="osint-row"><span class="osint-k">STATUS</span><span class="osint-v">No EXIF metadata found.</span></div>`;dropArea.innerHTML=`<i class="fas fa-check"></i> ${escHtml(file.name)}`;return;}const fields=[['MAKE',exif.Make],['MODEL',exif.Model],['SOFTWARE',exif.Software],['DATE_TAKEN',exif.DateTimeOriginal||exif.DateTime],['GPS_LAT',exif.latitude],['GPS_LON',exif.longitude],['GPS_ALT',exif.GPSAltitude?`${exif.GPSAltitude.toFixed(1)}m`:null],['WIDTH',exif.ImageWidth||exif.ExifImageWidth],['HEIGHT',exif.ImageHeight||exif.ExifImageHeight],['F_STOP',exif.FNumber?`f/${exif.FNumber}`:null],['EXPOSURE',exif.ExposureTime?`1/${Math.round(1/exif.ExposureTime)}s`:null],['ISO',exif.ISO],['FOCAL_LEN',exif.FocalLength?`${exif.FocalLength}mm`:null]];fields.filter(([,v])=>v!=null).forEach(([k,v])=>{resultsDiv.innerHTML+=`<div class="osint-row"><span class="osint-k">${k}</span><span class="osint-v">${escHtml(String(v))}</span></div>`;});if(exif.latitude&&exif.longitude){const mapData={query:`Photo location: ${file.name}`,primary:{name:`Photo GPS: ${exif.latitude.toFixed(5)}, ${exif.longitude.toFixed(5)}`,lat:exif.latitude,lon:exif.longitude,type:'exif_gps',address:''},alternates:[]};wrapper.appendChild(buildMapBlock(mapData));userInput.value=`EXIF GPS data extracted from ${file.name}: coordinates ${exif.latitude.toFixed(6)}, ${exif.longitude.toFixed(6)}. Camera: ${exif.Make||'?'} ${exif.Model||'?'}. Date: ${exif.DateTimeOriginal||'unknown'}. Analyse this location.`;sendMessage();}dropArea.innerHTML=`<i class="fas fa-check" style="color:#7fba8a"></i> ${escHtml(file.name)}`;}catch(e){resultsDiv.style.display='flex';resultsDiv.innerHTML=`<div class="osint-row"><span class="osint-k">ERROR</span><span class="osint-v">${e.message}</span></div>`;dropArea.innerHTML=`<i class="fas fa-exclamation-triangle" style="color:#ff6b6b"></i> Failed`;}};dropArea.addEventListener('click',()=>fileInput.click());fileInput.addEventListener('change',e=>{if(e.target.files[0])processFile(e.target.files[0]);});dropArea.addEventListener('dragover',e=>{e.preventDefault();dropArea.style.borderColor='var(--accent-red)';});dropArea.addEventListener('dragleave',()=>{dropArea.style.borderColor='';});dropArea.addEventListener('drop',e=>{e.preventDefault();dropArea.style.borderColor='';if(e.dataTransfer.files[0])processFile(e.dataTransfer.files[0]);});wrapper.appendChild(dropArea);wrapper.appendChild(resultsDiv);if(preloadedFile)processFile(preloadedFile);return wrapper;};
-
-// ─────────────────────────────────────────────
-//  UNIFIED INTENT CLASSIFIER
-// ─────────────────────────────────────────────
-const classifyIntent = async (text) => {
-    const systemPrompt = `You are a strict OSINT intent classifier. Extract ONLY what the operator is explicitly asking to investigate.
-Reply ONLY with raw JSON, no markdown, no explanation:
-{"emails":[],"ips":[],"domains":[],"usernames":[],"wants_exif":false,"wants_spatial":false}
-STRICT rules: emails must be real email addresses literally typed. ips must be real IPv4. domains standalone only, never from email addresses, never gmail/yahoo/hotmail/protonmail. usernames only if operator explicitly asks to find social presence. wants_exif only if operator asks about image/photo metadata. wants_spatial only if operator mentions real-world location to find on map.`;
-    try {
-        const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages:[{role:"system",content:systemPrompt},{role:"user",content:text}], temperature:0.0, max_tokens:300 }) });
-        const data = await r.json();
-        const raw = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
-        const parsed = JSON.parse(raw);
-        return { emails:Array.isArray(parsed.emails)?parsed.emails:[], ips:Array.isArray(parsed.ips)?parsed.ips:[], domains:Array.isArray(parsed.domains)?parsed.domains:[], usernames:Array.isArray(parsed.usernames)?parsed.usernames:[], wants_exif:!!parsed.wants_exif, wants_spatial:!!parsed.wants_spatial };
-    } catch(e) {
-        const emailFallback = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g)||[];
-        const ipFallback    = [...text.matchAll(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g)].map(m=>m[0]);
-        return { emails:emailFallback, ips:ipFallback, domains:[], usernames:[], wants_exif:false, wants_spatial:false };
-    }
-};
-
-// ─────────────────────────────────────────────
-//  SEND MESSAGE
-// ─────────────────────────────────────────────
-const sendMessage = async () => {
-    const message = userInput.value.trim(); if (!message) return;
-    const currentCase = cases.find(c => c.id === currentCaseId);
-    if (currentCase.messages.length <= 1) currentCase.title = message.substring(0, 30);
-    currentCase.messages.push({ role:'user', content:message });
-    if (!isGraphView) appendMessageUI('user', message);
-    userInput.value = ''; userInput.style.height = 'auto';
-    if (isGraphView) renderGraph();
-    const thinkingDiv = document.createElement('div');
-    thinkingDiv.className = 'message assistant-msg';
-    thinkingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content"><div class="thinking-dots"><span></span><span></span><span></span></div></div>`;
-    if (!isGraphView) { chatContainer.appendChild(thinkingDiv); scrollToBottom(); }
-    if (isCallMode) { callStatus.textContent = "ANALYZING..."; callSpectrum.classList.remove('active'); }
-    let injectionHTML = "";
-    let mapData = null;
-    const intent = await classifyIntent(message);
-    const spatialIntent = intent.wants_spatial ? await detectSpatialIntent(message) : null;
-    const email0    = intent.emails[0]    || null;
-    const domain0   = intent.domains[0]   || null;
-    const username0 = intent.usernames[0] || null;
-    const publicIPs = intent.ips.filter(ip => !PRIVATE_IP.test(ip));
-    const [gravatarResult, breachResult, whoisResult, dnsResult, sslResult, usernameResults, ...ipResults] = await Promise.all([
-        email0    ? fetchGravatar(email0)    : Promise.resolve(null),
-        email0    ? checkBreaches(email0)    : Promise.resolve(null),
-        domain0   ? lookupWHOIS(domain0)     : Promise.resolve(null),
-        domain0   ? lookupDNS(domain0)       : Promise.resolve(null),
-        domain0   ? lookupSSL(domain0)       : Promise.resolve(null),
-        username0 ? searchUsername(username0): Promise.resolve(null),
-        ...publicIPs.map(ip => lookupIP(ip))
-    ]);
-    if (gravatarResult) injectionHTML += `\n\n<div class="gravatar-info"><img src="${gravatarResult.image}" class="gravatar-img"><div class="gravatar-name">IDENTITY_MATCH: ${gravatarResult.name}</div></div>`;
-    if (breachResult)   injectionHTML += `\n\n${buildBreachCard(breachResult)}`;
-    if (whoisResult||dnsResult||sslResult) injectionHTML += `\n\n${buildDomainCard(whoisResult, dnsResult, sslResult, domain0)}`;
-    if (usernameResults) injectionHTML += `\n\n${buildUsernameCard(username0, usernameResults)}`;
-    if (intent.wants_exif && !isGraphView) {
-        const exifMsg = document.createElement('div'); exifMsg.className = 'message assistant-msg';
-        exifMsg.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated. Awaiting file input.</div>`;
-        exifMsg.querySelector('.msg-content').appendChild(buildExifUploader());
-        chatContainer.appendChild(exifMsg); scrollToBottom();
-    }
-    ipResults.forEach((d, i) => {
-        if (!d) return;
-        injectionHTML += `\n\n${buildIPCard(d)}`;
-        if (d._error) return;
-        if (i===0 && !mapData && d.lat && d.lon) mapData = { query:`IP ${d.query}`, primary:{ name:`${d.city||'Unknown'}, ${d.country||'?'} — ${d.isp||'?'}`, lat:d.lat, lon:d.lon, type:'ip_geolocation', address:`${d.city||''}, ${d.regionName||''}, ${d.country||''}` }, alternates:[] };
-    });
-    if (spatialIntent) { const sm = await runSpatialIntercept(spatialIntent); if (sm) mapData = sm; }
-    try {
-        const contextBlocks = [];
-        if (ipResults.some(d=>d&&!d._error)) {
-            const ipLines = ipResults.filter(d=>d&&!d._error).map(d=>`IP ${d.query}: ${d.city||'?'}, ${d.regionName||'?'}, ${d.country||'?'} | ISP: ${d.isp||'?'} | Org: ${d.org||'?'} | Coords: ${d.lat},${d.lon}${d.proxy?' | PROXY/VPN':''}${d.hosting?' | DATACENTER':''}`).join('\n');
-            contextBlocks.push(`[IP_GEOLOCATION]\n${ipLines}`);
-        }
-        if (whoisResult?.registered||dnsResult?.length||sslResult) {
-            const dl=[];
-            if(whoisResult?.registered)dl.push(`WHOIS: ${domain0} | Registrar: ${whoisResult.registrar} | Created: ${whoisResult.created} | Expires: ${whoisResult.expires} | Status: ${whoisResult.status}`);
-            if(dnsResult?.length)dl.push(`DNS: ${dnsResult.map(r=>`${r.type}: ${r.answers.map(a=>a.data).join(', ')}`).join(' | ')}`);
-            if(sslResult)dl.push(`SSL: Issuer: ${sslResult.issuer} | Valid: ${sslResult.notBefore} to ${sslResult.notAfter} | SANs: ${sslResult.dnsNames.join(', ')}`);
-            contextBlocks.push(`[DOMAIN_INTEL: ${domain0}]\n${dl.join('\n')}`);
-        }
-        if (breachResult&&!breachResult.clean&&breachResult.breaches.length) contextBlocks.push(`[EMAIL_BREACHES: ${email0}]\nFound in ${breachResult.breaches.length} breach(es): ${breachResult.breaches.slice(0,8).map(b=>typeof b==='string'?b:(b.breachID||b.name||'')).join(', ')}`);
-        if (usernameResults) { const hits=usernameResults.filter(r=>r.found).map(r=>r.platform).join(', '); contextBlocks.push(`[USERNAME_SWEEP: ${username0}]\nDetected on: ${hits||'no platforms found'}`); }
-        if (mapData) contextBlocks.push(`[SPATIAL_INTERCEPT]\nPrimary: ${mapData.primary.name} | Coords: ${mapData.primary.lat.toFixed(5)},${mapData.primary.lon.toFixed(5)}${mapData.alternates.length?' | Alternates: '+mapData.alternates.map(a=>a.name).join(', '):''}`);
-        const systemContent = "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags.\n\nEach [BLOCK] below is a separate OSINT result — treat them independently. Do not conflate IP geolocation with spatial map data, do not attribute domain info to an IP, do not mix tools. Reference each block accurately on its own terms." + (contextBlocks.length ? '\n\n' + contextBlocks.join('\n\n') : '');
-        const apiMessages = [{ role:"system", content:systemContent }];
-        currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role:m.role, content:m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'') }));
-        const response = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages:apiMessages, temperature:0.7 }) });
-        thinkingDiv.remove();
-        const data = await response.json();
-        const replyText = data.choices[0].message.content;
-        const mapComment = mapData ? `<!--NOXMAP:${JSON.stringify(mapData)}-->` : '';
-        const fullReply = replyText + injectionHTML + mapComment;
-        currentCase.messages.push({ role:'assistant', content:fullReply });
-        saveState();
-        if (isGraphView) renderGraph(); else appendMessageUI('assistant', fullReply, true);
-        if (isCallMode && 'speechSynthesis' in window) {
-            const cleanSpeech = replyText.replace(/\[EVIDENCE:\s*(.*?)\]/gi,'$1').replace(/<[^>]*>?/gm,'');
-            const utterance = new SpeechSynthesisUtterance(cleanSpeech);
-            utterance.pitch = 0.7; utterance.rate = 0.95;
-            utterance.onstart = () => { if(isCallMode){callSpectrum.classList.add('active');callStatus.textContent="NOX_UNIT TRANSMITTING";} };
-            utterance.onend   = () => { if(isCallMode){callSpectrum.classList.remove('active');callStatus.textContent="AWAITING INPUT...";} };
-            window.speechSynthesis.speak(utterance);
-        } else if (isCallMode) { callStatus.textContent = "AWAITING INPUT..."; }
-    } catch(e) {
-        thinkingDiv.remove();
-        if (!isGraphView) appendMessageUI('assistant', 'SIGNAL LOST: Link unstable.');
-        if (isCallMode) callStatus.textContent = "SIGNAL INTERRUPTED";
-    }
-};
-
-// ─────────────────────────────────────────────
-//  GRAPH VIEW
-// ─────────────────────────────────────────────
-const renderGraph = () => {
-    const currentCase = cases.find(c=>c.id===currentCaseId); if(!currentCase)return;
-    const nodes=new vis.DataSet([{id:'ROOT',label:`CASE:\n${currentCase.id}`,shape:'database',color:'#8b0000',font:{color:'#ffffff',face:'JetBrains Mono'}}]);
-    const edges=new vis.DataSet([]);const seenEntities=new Set();const delBtn=document.getElementById('node-delete-btn');
-    const emailRegex=/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-    const ipRegex=/\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
-    const phoneRegex=/(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
-    const noxRegex=/\[EVIDENCE:\s*(.*?)\]/gi;
-    currentCase.messages.forEach(msg=>{const text=msg.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'');const matches=[...[...text.matchAll(emailRegex)].map(m=>({val:m[0],color:'#2c4a5e',shape:'box'})),...[...text.matchAll(ipRegex)].map(m=>({val:m[0],color:'#4a5e2c',shape:'ellipse'})),...[...text.matchAll(phoneRegex)].map(m=>({val:m[0],color:'#5e4a2c',shape:'ellipse'})),...[...text.matchAll(noxRegex)].map(m=>({val:m[1],color:'#8b0000',shape:'hexagon'}))];matches.forEach(match=>{const id=match.val.trim();if(!id||seenEntities.has(id))return;if(currentCase.blacklist&&currentCase.blacklist.includes(id))return;seenEntities.add(id);nodes.add({id,label:id,color:match.color,shape:match.shape,font:{color:'#e0e0e0',face:'JetBrains Mono'}});edges.add({from:'ROOT',to:id,color:{color:'#455a64'}});});});
-    const container=document.getElementById('evidence-board');
-    if(network)network.destroy();
-    network=new vis.Network(container,{nodes,edges},{physics:{stabilization:true,barnesHut:{springLength:150}},nodes:{borderWidth:2,shadow:true},edges:{width:1.5,shadow:true}});
-    let selectedNodeId=null;
-    const hideBtn=()=>{delBtn.style.display='none';};
-    network.on("click",hideBtn);network.on("dragStart",hideBtn);
-    network.on("hold",params=>{if(params.nodes.length>0){const nodeId=params.nodes[0];if(nodeId==='ROOT')return;selectedNodeId=nodeId;const domPos=network.canvasToDOM(network.getPositions([nodeId])[nodeId]);delBtn.style.display='flex';delBtn.style.left=(domPos.x-15)+'px';delBtn.style.top=(domPos.y-45)+'px';}});
-    delBtn.onclick=e=>{e.stopPropagation();if(selectedNodeId){if(!currentCase.blacklist)currentCase.blacklist=[];currentCase.blacklist.push(selectedNodeId);saveState();nodes.remove(selectedNodeId);hideBtn();}};
-};
-const toggleGraphView=()=>{isGraphView=!isGraphView;if(isGraphView){chatContainer.style.display='none';evidenceBoard.style.display='block';graphToggleBtn.classList.add('active');renderGraph();}else{chatContainer.style.display='flex';evidenceBoard.style.display='none';graphToggleBtn.classList.remove('active');scrollToBottom();}};
-
-// ─────────────────────────────────────────────
-//  EXPORT
-// ─────────────────────────────────────────────
-const downloadLog=()=>{const currentCase=cases.find(c=>c.id===currentCaseId);if(!currentCase)return;let log=`NOX DIGITAL DETECTIVE | INVESTIGATION LOG\n===========================================\nCASE_ID:   ${currentCase.id}\nTITLE:     ${currentCase.title}\nTIMESTAMP: ${new Date(currentCase.timestamp).toLocaleString()}\n===========================================\n\n`;currentCase.messages.forEach(msg=>{const label=msg.role==='assistant'?'[NOX_UNIT]':'[OPERATOR]';const clean=msg.content.replace(/<[^>]*>?/gm,'').replace(/<!--NOXMAP:[\s\S]*?-->/g,'');log+=`${label}\n${clean}\n\n`;});const blob=new Blob([log],{type:'text/plain'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${currentCase.id}.txt`;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);};
-
-// ─────────────────────────────────────────────
-//  SIDEBAR / EVENTS
-// ─────────────────────────────────────────────
-const toggleSidebar=()=>{sidebar.classList.toggle('open');sidebarOverlay.classList.toggle('active');document.body.classList.toggle('sidebar-open');};
-menuBtn.addEventListener('click',toggleSidebar);
-closeSidebarBtn.addEventListener('click',toggleSidebar);
-sidebarOverlay.addEventListener('click',toggleSidebar);
-newCaseBtn.addEventListener('click',createNewCase);
-sendBtn.addEventListener('click',sendMessage);
-exportBtn.addEventListener('click',downloadLog);
-graphToggleBtn.addEventListener('click',toggleGraphView);
-clearBtn.addEventListener('click',()=>{if(confirm('Purge logs?'))deleteCase(currentCaseId);});
-userInput.addEventListener('input',function(){this.style.height='auto';this.style.height=(this.scrollHeight)+'px';});
-userInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
-
-// ─────────────────────────────────────────────
-//  ARCHIVE
-// ─────────────────────────────────────────────
-const renderArchive=()=>{caseListEl.innerHTML='';cases.forEach(c=>{if(!c||!c.id)return;const li=document.createElement('li');li.className=`case-item ${c.id===currentCaseId?'active':''}`;const textSpan=document.createElement('span');textSpan.className='case-item-text';textSpan.textContent=c.title;const delBtn=document.createElement('button');delBtn.className='case-delete-btn';delBtn.innerHTML='<i class="fas fa-trash"></i>';let pressTimer;const startPress=()=>{pressTimer=setTimeout(()=>{document.querySelectorAll('.case-item').forEach(i=>i.classList.remove('show-delete'));li.classList.add('show-delete');},600);};const cancelPress=()=>clearTimeout(pressTimer);li.addEventListener('touchstart',startPress,{passive:true});li.addEventListener('mousedown',startPress);li.addEventListener('touchend',cancelPress);li.addEventListener('mouseup',cancelPress);li.addEventListener('contextmenu',e=>e.preventDefault());li.addEventListener('click',e=>{if(e.target.closest('.case-delete-btn'))return;if(li.classList.contains('show-delete')){li.classList.remove('show-delete');return;}currentCaseId=c.id;saveState();if(isGraphView){renderGraph();caseIdDisplay.textContent=currentCaseId;}else renderChat();if(window.innerWidth<768)toggleSidebar();});delBtn.addEventListener('click',e=>{e.stopPropagation();deleteCase(c.id);});li.appendChild(textSpan);li.appendChild(delBtn);caseListEl.appendChild(li);});};
-const deleteCase=(id)=>{cases=cases.filter(c=>c.id!==id);if(cases.length===0)createNewCase();else if(currentCaseId===id){currentCaseId=cases[0].id;if(isGraphView)renderGraph();else renderChat();}saveState();};
-
-// ─────────────────────────────────────────────
-//  CALL MODE
-// ─────────────────────────────────────────────
-const setupCallMode=()=>{const callTriggerBtn=document.createElement('button');callTriggerBtn.className='icon-btn';callTriggerBtn.innerHTML='<i class="fas fa-phone-alt"></i>';callTriggerBtn.title="Call Mode";document.querySelector('.header-right').prepend(callTriggerBtn);const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;let recognition=null;if(SpeechRecognition){recognition=new SpeechRecognition();recognition.continuous=false;recognition.interimResults=false;recognition.lang='en-US';callTriggerBtn.addEventListener('click',()=>{isCallMode=true;callOverlay.classList.add('active');callStatus.textContent="SECURE LINE ESTABLISHED";});callEndBtn.addEventListener('click',()=>{isCallMode=false;callOverlay.classList.remove('active');recognition.stop();window.speechSynthesis.cancel();callSpectrum.classList.remove('active');callMicBtn.classList.remove('listening');});callMicBtn.addEventListener('click',()=>{if(callMicBtn.classList.contains('listening'))recognition.stop();else{window.speechSynthesis.cancel();recognition.start();}});recognition.onstart=()=>{callMicBtn.classList.add('listening');callSpectrum.classList.add('active');callStatus.textContent="LISTENING...";};recognition.onresult=e=>{userInput.value=e.results[0][0].transcript;callStatus.textContent="TRANSMITTING...";sendMessage();};recognition.onerror=()=>{callMicBtn.classList.remove('listening');callSpectrum.classList.remove('active');callStatus.textContent="SIGNAL INTERRUPTED";};recognition.onend=()=>{callMicBtn.classList.remove('listening');if(isCallMode&&callStatus.textContent!=="TRANSMITTING..."){callStatus.textContent="AWAITING INPUT...";callSpectrum.classList.remove('active');}};}else{callTriggerBtn.style.display='none';}};
-
-document.getElementById('img-upload-input').addEventListener('change',async(e)=>{const file=e.target.files[0];if(!file)return;e.target.value='';const exifMsg=document.createElement('div');exifMsg.className='message assistant-msg';exifMsg.innerHTML=`<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated — processing ${escHtml(file.name)}</div>`;exifMsg.querySelector('.msg-content').appendChild(buildExifUploader(file));chatContainer.appendChild(exifMsg);scrollToBottom();});
-
-// SPLASH
-const splash=document.getElementById('splash');
-setTimeout(()=>{splash.style.transition='opacity 1.5s ease';splash.style.opacity='0';splash.style.pointerEvents='none';setTimeout(()=>splash.remove(),1500);},3500);
-
-setupCallMode();
-init();
-</script>
-</body>
-                    </html>
+const buildUsernameCard=(username,results)=>{const found=results.filter(r=>r.found);const notFound=results.filter(r=>!r.found);let html=`<div class="osint-card"><div class="osint-card-header"><div class="blink"></div><span class="osint-card-title">USERNAME_SWEEP :: ${escHtml(username)}</span></div><div class="osint-grid"><div class="osint-row"><span class="osint-k">HITS</span><span class="osint-v" style="color:#7fba8a">${found.length} / ${results.length} platforms</span></div></div><div class="username-grid">`;found.forEach(r=>{html+=`<a href="${r.url}" target="_blank" class="username-chip found"><div class="dot"></div>${escHtml(r.platform)}</a>`;});notF
