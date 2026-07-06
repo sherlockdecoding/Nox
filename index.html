@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <script src="https://js.puter.com/v2/"></script>
     <style>
         :root {
             --bg-primary: #121212;
@@ -112,50 +111,6 @@
         .main-content { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; transition: margin-left 0.3s ease; width: 100%; min-width: 0; }
         .main-header { height: var(--header-height); padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); background-color: var(--bg-primary); flex-shrink: 0; transition: background-color 0.4s ease, border-color 0.4s ease; }
         .header-left, .header-right { display: flex; align-items: center; gap: 15px; }
-
-        /* ── MODEL SWITCHER ── */
-        .model-switcher { position: relative; }
-        .model-switch-btn {
-            display: flex; align-items: center; gap: 7px;
-            background: transparent; border: 1px solid var(--border-color);
-            color: var(--text-secondary); font-family: var(--font-mono);
-            font-size: 0.62rem; letter-spacing: 1.5px; text-transform: uppercase;
-            padding: 5px 9px; border-radius: 20px; cursor: pointer; transition: all 0.2s ease;
-        }
-        .model-switch-btn:hover { border-color: var(--accent-color); color: var(--text-primary); }
-        .model-switch-btn i { font-size: 0.6rem; transition: transform 0.2s ease; }
-        .model-switch-btn.menu-open i { transform: rotate(180deg); }
-        .model-switch-menu {
-            position: absolute; top: calc(100% + 8px); left: 0; min-width: 220px;
-            background: var(--bg-secondary); border: 1px solid var(--border-color);
-            border-radius: 6px; padding: 6px; z-index: 40; display: none; flex-direction: column; gap: 4px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .model-switch-menu.open { display: flex; }
-        .model-option {
-            display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
-            background: transparent; border: none; border-radius: 4px; padding: 8px 10px;
-            cursor: pointer; text-align: left; transition: background 0.15s ease;
-        }
-        .model-option:hover { background: var(--bg-tertiary); }
-        .model-option.active { background: var(--accent-glow-soft); }
-        .model-option-name { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 1.5px; color: var(--text-primary); }
-        .model-option.active .model-option-name { color: var(--accent-red); }
-        .model-option-desc { font-family: var(--font-sans); font-size: 0.68rem; color: var(--text-secondary); }
-        @media (max-width: 480px) { .model-switch-btn .model-switch-full { display: none; } .case-info { font-size: 0.7rem; } }
-
-        /* ── VISION IMAGE ATTACH (NOX-PRO) ── */
-        .vision-upload-label { cursor: pointer; display: none; align-items: center; justify-content: center; color: #b085d9; }
-        .vision-upload-label.enabled { display: flex; }
-        #vision-img-input { display: none; }
-        .vision-preview-strip { display: none; align-items: center; gap: 8px; padding: 0 0 8px 0; }
-        .vision-preview-strip.active { display: flex; }
-        .vision-preview-thumb { position: relative; width: 46px; height: 46px; border-radius: 4px; overflow: hidden; border: 1px solid #b085d9; }
-        .vision-preview-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .vision-preview-remove { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; background: var(--accent-red); color: #fff; border: none; font-size: 0.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .vision-preview-label { font-family: var(--font-mono); font-size: 0.65rem; color: #b085d9; letter-spacing: 1px; }
-        .chat-attached-img-wrap { margin-top: 10px; }
-        .chat-attached-img { max-width: 220px; max-height: 220px; border-radius: 4px; border: 1px solid var(--border-color); display: block; }
         .icon-btn { background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; transition: color 0.2s; }
         .icon-btn:hover { color: var(--text-primary); }
         .icon-btn.active { color: var(--accent-red); }
@@ -388,22 +343,6 @@
             <div class="header-left">
                 <button class="icon-btn" id="menu-btn"><i class="fas fa-bars"></i></button>
                 <span class="nox-brand">NOX</span>
-                <div class="model-switcher" id="model-switcher">
-                    <button class="model-switch-btn" id="model-switch-btn" title="Switch model">
-                        <span class="model-switch-full" id="model-switch-label">NOX-QUICK</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </button>
-                    <div class="model-switch-menu" id="model-switch-menu">
-                        <button class="model-option active" data-model="quick">
-                            <span class="model-option-name">NOX-QUICK</span>
-                            <span class="model-option-desc">Rapid response unit</span>
-                        </button>
-                        <button class="model-option" data-model="pro">
-                            <span class="model-option-name">NOX-PRO</span>
-                            <span class="model-option-desc">Deep analysis unit · vision-capable</span>
-                        </button>
-                    </div>
-                </div>
             </div>
             <div class="case-info">
                 <span class="case-label">CASE_ID:</span>
@@ -419,21 +358,10 @@
         <div id="evidence-board"></div>
         <button id="node-delete-btn"><i class="fas fa-trash"></i></button>
         <div class="input-area">
-            <div class="vision-preview-strip" id="vision-preview-strip">
-                <div class="vision-preview-thumb">
-                    <img id="vision-preview-img" src="" alt="attached">
-                    <button class="vision-preview-remove" id="vision-preview-remove"><i class="fas fa-times"></i></button>
-                </div>
-                <span class="vision-preview-label">IMAGE ATTACHED — NOX-PRO VISION</span>
-            </div>
             <div class="input-wrapper">
                 <label class="icon-btn img-upload-label" title="Attach image for EXIF analysis">
                     <i class="fas fa-paperclip"></i>
                     <input type="file" id="img-upload-input" accept="image/*" style="display:none">
-                </label>
-                <label class="icon-btn vision-upload-label" id="vision-upload-label" title="Attach image for NOX-PRO vision analysis">
-                    <i class="fas fa-eye"></i>
-                    <input type="file" id="vision-img-input" accept="image/*" style="display:none">
                 </label>
                 <textarea id="user-input" placeholder="Operator query..." rows="1"></textarea>
                 <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
@@ -790,14 +718,6 @@ const callEndBtn      = document.getElementById('call-btn-end');
 const callStatus      = document.getElementById('call-status');
 const themeToggleBtn  = document.getElementById('theme-toggle-btn');
 const themeLabel      = document.getElementById('theme-label');
-const modelSwitchBtn  = document.getElementById('model-switch-btn');
-const modelSwitchMenu = document.getElementById('model-switch-menu');
-const modelSwitchLabel= document.getElementById('model-switch-label');
-const visionUploadLabel = document.getElementById('vision-upload-label');
-const visionImgInput  = document.getElementById('vision-img-input');
-const visionPreviewStrip = document.getElementById('vision-preview-strip');
-const visionPreviewImg   = document.getElementById('vision-preview-img');
-const visionPreviewRemove= document.getElementById('vision-preview-remove');
 
 let cases         = [];
 let currentCaseId = null;
@@ -806,8 +726,6 @@ let isCallMode    = false;
 let network       = null;
 let mapInstances  = {};
 let currentTheme  = 'default';
-let currentModel  = 'quick';
-let attachedVisionImage = null;
 
 // ─────────────────────────────────────────────
 //  THEME SWITCHER
@@ -823,62 +741,10 @@ themeToggleBtn.addEventListener('click', () => {
 });
 
 // ─────────────────────────────────────────────
-//  MODEL SWITCHER (NOX-QUICK / NOX-PRO)
-// ─────────────────────────────────────────────
-const applyModel = (model) => {
-    currentModel = model;
-    localStorage.setItem('nox_model', model);
-    modelSwitchLabel.textContent = model === 'pro' ? 'NOX-PRO' : 'NOX-QUICK';
-    document.querySelectorAll('.model-option').forEach(opt => opt.classList.toggle('active', opt.dataset.model === model));
-    visionUploadLabel.classList.toggle('enabled', model === 'pro');
-    if (model !== 'pro') clearVisionAttachment();
-};
-modelSwitchBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    modelSwitchMenu.classList.toggle('open');
-    modelSwitchBtn.classList.toggle('menu-open');
-});
-document.querySelectorAll('.model-option').forEach(opt => {
-    opt.addEventListener('click', () => {
-        applyModel(opt.dataset.model);
-        modelSwitchMenu.classList.remove('open');
-        modelSwitchBtn.classList.remove('menu-open');
-    });
-});
-document.addEventListener('click', (e) => {
-    if (!document.getElementById('model-switcher').contains(e.target)) {
-        modelSwitchMenu.classList.remove('open');
-        modelSwitchBtn.classList.remove('menu-open');
-    }
-});
-
-// ─────────────────────────────────────────────
-//  VISION IMAGE ATTACH (NOX-PRO)
-// ─────────────────────────────────────────────
-const clearVisionAttachment = () => {
-    attachedVisionImage = null;
-    visionPreviewStrip.classList.remove('active');
-    visionPreviewImg.src = '';
-    visionImgInput.value = '';
-};
-visionImgInput.addEventListener('change', (e) => {
-    const file = e.target.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-        attachedVisionImage = { dataUrl: reader.result, name: file.name };
-        visionPreviewImg.src = reader.result;
-        visionPreviewStrip.classList.add('active');
-    };
-    reader.readAsDataURL(file);
-});
-visionPreviewRemove.addEventListener('click', clearVisionAttachment);
-
-// ─────────────────────────────────────────────
 //  STATE
 // ─────────────────────────────────────────────
 const init = () => {
     applyTheme(localStorage.getItem('nox_theme') || 'default');
-    applyModel(localStorage.getItem('nox_model') || 'quick');
     loadState();
     if (cases.length === 0) createNewCase();
     else { currentCaseId = localStorage.getItem('nox_active_case') || cases[0].id; renderChat(); renderArchive(); }
@@ -1055,17 +921,12 @@ STRICT rules: emails must be real email addresses literally typed. ips must be r
 //  SEND MESSAGE
 // ─────────────────────────────────────────────
 const sendMessage = async () => {
-    const message = userInput.value.trim();
-    const pendingImage = attachedVisionImage;
-    if (!message && !pendingImage) return;
+    const message = userInput.value.trim(); if (!message) return;
     const currentCase = cases.find(c => c.id === currentCaseId);
-    if (currentCase.messages.length <= 1) currentCase.title = (message || 'Image analysis').substring(0, 30);
-    const imgTag = pendingImage ? `<div class="chat-attached-img-wrap"><img class="chat-attached-img" src="${pendingImage.dataUrl}"></div>` : '';
-    const displayContent = message + imgTag;
-    currentCase.messages.push({ role:'user', content:displayContent });
-    if (!isGraphView) appendMessageUI('user', displayContent);
+    if (currentCase.messages.length <= 1) currentCase.title = message.substring(0, 30);
+    currentCase.messages.push({ role:'user', content:message });
+    if (!isGraphView) appendMessageUI('user', message);
     userInput.value = ''; userInput.style.height = 'auto';
-    clearVisionAttachment();
     if (isGraphView) renderGraph();
     const thinkingDiv = document.createElement('div');
     thinkingDiv.className = 'message assistant-msg';
@@ -1124,26 +985,11 @@ const sendMessage = async () => {
         if (mapData) contextBlocks.push(`[SPATIAL_INTERCEPT]\nPrimary: ${mapData.primary.name} | Coords: ${mapData.primary.lat.toFixed(5)},${mapData.primary.lon.toFixed(5)}${mapData.alternates.length?' | Alternates: '+mapData.alternates.map(a=>a.name).join(', '):''}`);
         const systemContent = "You are NOX, a cold, analytical digital detective. Tone: noir, concise. MANDATORY: Wrap every person, location, organization, or alias in [EVIDENCE: Name] tags.\n\nEach [BLOCK] below is a separate OSINT result — treat them independently. Do not conflate IP geolocation with spatial map data, do not attribute domain info to an IP, do not mix tools. Reference each block accurately on its own terms." + (contextBlocks.length ? '\n\n' + contextBlocks.join('\n\n') : '');
         const apiMessages = [{ role:"system", content:systemContent }];
-        currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role:m.role, content:m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'').replace(/<div class="chat-attached-img-wrap">[\s\S]*?<\/div>/g,'').trim() }));
-        let replyText;
-        if (currentModel === 'pro' && window.puter) {
-            const puterMessages = apiMessages.map(m => ({ role:m.role, content:m.content }));
-            if (pendingImage) {
-                const lastMsg = puterMessages[puterMessages.length - 1];
-                lastMsg.content = [
-                    { type:'text', text: lastMsg.content || 'Analyse this image.' },
-                    { type:'image_url', image_url:{ url: pendingImage.dataUrl } }
-                ];
-            }
-            const puterResult = await puter.ai.chat(puterMessages, { model:'gpt-4o' });
-            thinkingDiv.remove();
-            replyText = typeof puterResult === 'string' ? puterResult : (puterResult?.message?.content || puterResult?.text || String(puterResult));
-        } else {
-            const response = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages:apiMessages, temperature:0.7 }) });
-            thinkingDiv.remove();
-            const data = await response.json();
-            replyText = data.choices[0].message.content;
-        }
+        currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role:m.role, content:m.content.replace(/<!--NOXMAP:[\s\S]*?-->/g,'') }));
+        const response = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages:apiMessages, temperature:0.7 }) });
+        thinkingDiv.remove();
+        const data = await response.json();
+        const replyText = data.choices[0].message.content;
         const mapComment = mapData ? `<!--NOXMAP:${JSON.stringify(mapData)}-->` : '';
         const fullReply = replyText + injectionHTML + mapComment;
         currentCase.messages.push({ role:'assistant', content:fullReply });
@@ -1182,4 +1028,50 @@ const renderGraph = () => {
     let selectedNodeId=null;
     const hideBtn=()=>{delBtn.style.display='none';};
     network.on("click",hideBtn);network.on("dragStart",hideBtn);
-    network.on("hold",params=>{if(pa
+    network.on("hold",params=>{if(params.nodes.length>0){const nodeId=params.nodes[0];if(nodeId==='ROOT')return;selectedNodeId=nodeId;const domPos=network.canvasToDOM(network.getPositions([nodeId])[nodeId]);delBtn.style.display='flex';delBtn.style.left=(domPos.x-15)+'px';delBtn.style.top=(domPos.y-45)+'px';}});
+    delBtn.onclick=e=>{e.stopPropagation();if(selectedNodeId){if(!currentCase.blacklist)currentCase.blacklist=[];currentCase.blacklist.push(selectedNodeId);saveState();nodes.remove(selectedNodeId);hideBtn();}};
+};
+const toggleGraphView=()=>{isGraphView=!isGraphView;if(isGraphView){chatContainer.style.display='none';evidenceBoard.style.display='block';graphToggleBtn.classList.add('active');renderGraph();}else{chatContainer.style.display='flex';evidenceBoard.style.display='none';graphToggleBtn.classList.remove('active');scrollToBottom();}};
+
+// ─────────────────────────────────────────────
+//  EXPORT
+// ─────────────────────────────────────────────
+const downloadLog=()=>{const currentCase=cases.find(c=>c.id===currentCaseId);if(!currentCase)return;let log=`NOX DIGITAL DETECTIVE | INVESTIGATION LOG\n===========================================\nCASE_ID:   ${currentCase.id}\nTITLE:     ${currentCase.title}\nTIMESTAMP: ${new Date(currentCase.timestamp).toLocaleString()}\n===========================================\n\n`;currentCase.messages.forEach(msg=>{const label=msg.role==='assistant'?'[NOX_UNIT]':'[OPERATOR]';const clean=msg.content.replace(/<[^>]*>?/gm,'').replace(/<!--NOXMAP:[\s\S]*?-->/g,'');log+=`${label}\n${clean}\n\n`;});const blob=new Blob([log],{type:'text/plain'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${currentCase.id}.txt`;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);};
+
+// ─────────────────────────────────────────────
+//  SIDEBAR / EVENTS
+// ─────────────────────────────────────────────
+const toggleSidebar=()=>{sidebar.classList.toggle('open');sidebarOverlay.classList.toggle('active');document.body.classList.toggle('sidebar-open');};
+menuBtn.addEventListener('click',toggleSidebar);
+closeSidebarBtn.addEventListener('click',toggleSidebar);
+sidebarOverlay.addEventListener('click',toggleSidebar);
+newCaseBtn.addEventListener('click',createNewCase);
+sendBtn.addEventListener('click',sendMessage);
+exportBtn.addEventListener('click',downloadLog);
+graphToggleBtn.addEventListener('click',toggleGraphView);
+clearBtn.addEventListener('click',()=>{if(confirm('Purge logs?'))deleteCase(currentCaseId);});
+userInput.addEventListener('input',function(){this.style.height='auto';this.style.height=(this.scrollHeight)+'px';});
+userInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
+
+// ─────────────────────────────────────────────
+//  ARCHIVE
+// ─────────────────────────────────────────────
+const renderArchive=()=>{caseListEl.innerHTML='';cases.forEach(c=>{if(!c||!c.id)return;const li=document.createElement('li');li.className=`case-item ${c.id===currentCaseId?'active':''}`;const textSpan=document.createElement('span');textSpan.className='case-item-text';textSpan.textContent=c.title;const delBtn=document.createElement('button');delBtn.className='case-delete-btn';delBtn.innerHTML='<i class="fas fa-trash"></i>';let pressTimer;const startPress=()=>{pressTimer=setTimeout(()=>{document.querySelectorAll('.case-item').forEach(i=>i.classList.remove('show-delete'));li.classList.add('show-delete');},600);};const cancelPress=()=>clearTimeout(pressTimer);li.addEventListener('touchstart',startPress,{passive:true});li.addEventListener('mousedown',startPress);li.addEventListener('touchend',cancelPress);li.addEventListener('mouseup',cancelPress);li.addEventListener('contextmenu',e=>e.preventDefault());li.addEventListener('click',e=>{if(e.target.closest('.case-delete-btn'))return;if(li.classList.contains('show-delete')){li.classList.remove('show-delete');return;}currentCaseId=c.id;saveState();if(isGraphView){renderGraph();caseIdDisplay.textContent=currentCaseId;}else renderChat();if(window.innerWidth<768)toggleSidebar();});delBtn.addEventListener('click',e=>{e.stopPropagation();deleteCase(c.id);});li.appendChild(textSpan);li.appendChild(delBtn);caseListEl.appendChild(li);});};
+const deleteCase=(id)=>{cases=cases.filter(c=>c.id!==id);if(cases.length===0)createNewCase();else if(currentCaseId===id){currentCaseId=cases[0].id;if(isGraphView)renderGraph();else renderChat();}saveState();};
+
+// ─────────────────────────────────────────────
+//  CALL MODE
+// ─────────────────────────────────────────────
+const setupCallMode=()=>{const callTriggerBtn=document.createElement('button');callTriggerBtn.className='icon-btn';callTriggerBtn.innerHTML='<i class="fas fa-phone-alt"></i>';callTriggerBtn.title="Call Mode";document.querySelector('.header-right').prepend(callTriggerBtn);const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;let recognition=null;if(SpeechRecognition){recognition=new SpeechRecognition();recognition.continuous=false;recognition.interimResults=false;recognition.lang='en-US';callTriggerBtn.addEventListener('click',()=>{isCallMode=true;callOverlay.classList.add('active');callStatus.textContent="SECURE LINE ESTABLISHED";});callEndBtn.addEventListener('click',()=>{isCallMode=false;callOverlay.classList.remove('active');recognition.stop();window.speechSynthesis.cancel();callSpectrum.classList.remove('active');callMicBtn.classList.remove('listening');});callMicBtn.addEventListener('click',()=>{if(callMicBtn.classList.contains('listening'))recognition.stop();else{window.speechSynthesis.cancel();recognition.start();}});recognition.onstart=()=>{callMicBtn.classList.add('listening');callSpectrum.classList.add('active');callStatus.textContent="LISTENING...";};recognition.onresult=e=>{userInput.value=e.results[0][0].transcript;callStatus.textContent="TRANSMITTING...";sendMessage();};recognition.onerror=()=>{callMicBtn.classList.remove('listening');callSpectrum.classList.remove('active');callStatus.textContent="SIGNAL INTERRUPTED";};recognition.onend=()=>{callMicBtn.classList.remove('listening');if(isCallMode&&callStatus.textContent!=="TRANSMITTING..."){callStatus.textContent="AWAITING INPUT...";callSpectrum.classList.remove('active');}};}else{callTriggerBtn.style.display='none';}};
+
+document.getElementById('img-upload-input').addEventListener('change',async(e)=>{const file=e.target.files[0];if(!file)return;e.target.value='';const exifMsg=document.createElement('div');exifMsg.className='message assistant-msg';exifMsg.innerHTML=`<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated — processing ${escHtml(file.name)}</div>`;exifMsg.querySelector('.msg-content').appendChild(buildExifUploader(file));chatContainer.appendChild(exifMsg);scrollToBottom();});
+
+// SPLASH
+const splash=document.getElementById('splash');
+setTimeout(()=>{splash.style.transition='opacity 1.5s ease';splash.style.opacity='0';splash.style.pointerEvents='none';setTimeout(()=>splash.remove(),1500);},3500);
+
+setupCallMode();
+init();
+</script>
+</body>
+            </html>
