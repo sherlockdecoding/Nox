@@ -1088,7 +1088,8 @@ const sendMessage = async () => {
     if (isGraphView) renderGraph();
     const thinkingDiv = document.createElement('div');
     thinkingDiv.className = 'message assistant-msg';
-    thinkingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content"><div class="thinking-dots"><span></span><span></span><span></span></div></div>`;
+    const thinkingLabel = (currentModel === 'pro' && !pendingImage) ? 'ANALYZING · WEB ACCESS ENABLED' : '';
+    thinkingDiv.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">${thinkingLabel ? `<div style="font-size:0.7rem;letter-spacing:1px;color:var(--text-secondary);margin-bottom:6px;">${thinkingLabel}</div>` : ''}<div class="thinking-dots"><span></span><span></span><span></span></div></div>`;
     if (!isGraphView) { chatContainer.appendChild(thinkingDiv); scrollToBottom(); }
     if (isCallMode) { callStatus.textContent = "ANALYZING..."; callSpectrum.classList.remove('active'); }
     let injectionHTML = "";
@@ -1155,7 +1156,8 @@ if (currentModel === 'pro' && window.puter) {
             { type:'image_url', image_url:{ url: pendingImage.dataUrl } }
         ];
     }
-    const puterResult = await puter.ai.chat(puterMessages, { model:'gpt-4o' });
+    const puterOpts = pendingImage ? { model:'gpt-4o' } : { model:'openai/gpt-4o', tools:[{ type:'web_search' }] };
+    const puterResult = await puter.ai.chat(puterMessages, puterOpts);
     thinkingDiv.remove();
     replyText = typeof puterResult === 'string' ? puterResult : (puterResult?.message?.content || puterResult?.text || String(puterResult));
 } else {
