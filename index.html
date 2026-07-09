@@ -1127,10 +1127,11 @@ currentCase.messages.slice(-6).forEach(m => apiMessages.push({ role:m.role, cont
 let replyText;
 if (currentModel === 'pro' && window.puter) {
     const puterMessages = apiMessages.map(m => ({ role:m.role, content:m.content }));
+    const lastMsg = puterMessages[puterMessages.length - 1];
+    lastMsg.content = `${systemContent}\n\n---\nOPERATOR: ${lastMsg.content || 'Analyse this image.'}`;
     if (pendingImage) {
-        const lastMsg = puterMessages[puterMessages.length - 1];
         lastMsg.content = [
-            { type:'text', text: lastMsg.content || 'Analyse this image.' },
+            { type:'text', text: lastMsg.content },
             { type:'image_url', image_url:{ url: pendingImage.dataUrl } }
         ];
     }
