@@ -1059,9 +1059,8 @@ Reply ONLY with raw JSON, no markdown, no explanation:
 STRICT rules: emails must be real email addresses literally typed. ips must be real IPv4. domains standalone only, never from email addresses, never gmail/yahoo/hotmail/protonmail. usernames only if operator explicitly asks to find social presence. wants_exif only if operator asks about image/photo metadata. wants_spatial only if operator mentions real-world location to find on map.`;
     const spatialFallback = /\b(nearby|near me|near\s|find it|find the|where('?s| is)|closest|locate|map it)\b/i.test(text);
     try {
-        const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"NousResearch/Hermes-3-Llama-3.1-8B", messages:[{role:"system",content:systemPrompt},{role:"user",content:text}], temperature:0.0, max_tokens:300 }) });
-        const data = await r.json();
-        const raw = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
+        const content = await llmComplete(systemPrompt, text);
+        const raw = content.trim().replace(/```json|```/g,'').trim();
         const parsed = JSON.parse(raw);
         return { emails:Array.isArray(parsed.emails)?parsed.emails:[], ips:Array.isArray(parsed.ips)?parsed.ips:[], domains:Array.isArray(parsed.domains)?parsed.domains:[], usernames:Array.isArray(parsed.usernames)?parsed.usernames:[], wants_exif:!!parsed.wants_exif, wants_spatial:!!parsed.wants_spatial || spatialFallback };
     } catch(e) {
