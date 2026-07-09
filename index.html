@@ -973,7 +973,7 @@ If no place lookup needed set needs_map false and places [].
 Common OSM tags: fountain→{"amenity":"fountain"},cafe→{"amenity":"cafe"},restaurant→{"amenity":"restaurant"},hospital→{"amenity":"hospital"},park→{"leisure":"park"},museum→{"tourism":"museum"},hotel→{"tourism":"hotel"},bar→{"amenity":"bar"},pharmacy→{"amenity":"pharmacy"},police→{"amenity":"police"},library→{"amenity":"library"},school→{"amenity":"school"},church→{"amenity":"place_of_worship"},beach→{"natural":"beach"},supermarket→{"shop":"supermarket"},cinema→{"amenity":"cinema"},stadium→{"leisure":"stadium"},train station→{"railway":"station"},airport→{"aeroway":"aerodrome"}`;
     for (let attempt = 0; attempt < 2; attempt++) {
         try {
-            const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages:[{role:"system",content:systemPrompt},{role:"user",content:userText}], temperature:0.0, max_tokens:300 }) });
+            const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"NousResearch/Hermes-3-Llama-3.1-8B", messages:[{role:"system",content:systemPrompt},{role:"user",content:userText}], temperature:0.0, max_tokens:300 }) });
             const data = await r.json();
             if (!data?.choices?.[0]?.message?.content) { window.__NOX_DEBUG = { badResponse: data }; continue; }
             const raw = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
@@ -1044,7 +1044,7 @@ Reply ONLY with raw JSON, no markdown, no explanation:
 STRICT rules: emails must be real email addresses literally typed. ips must be real IPv4. domains standalone only, never from email addresses, never gmail/yahoo/hotmail/protonmail. usernames only if operator explicitly asks to find social presence. wants_exif only if operator asks about image/photo metadata. wants_spatial only if operator mentions real-world location to find on map.`;
     const spatialFallback = /\b(nearby|near me|near\s|find it|find the|where('?s| is)|closest|locate|map it)\b/i.test(text);
     try {
-        const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages:[{role:"system",content:systemPrompt},{role:"user",content:text}], temperature:0.0, max_tokens:300 }) });
+        const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"NousResearch/Hermes-3-Llama-3.1-8B", messages:[{role:"system",content:systemPrompt},{role:"user",content:text}], temperature:0.0, max_tokens:300 }) });
         const data = await r.json();
         const raw = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
         const parsed = JSON.parse(raw);
@@ -1146,7 +1146,7 @@ if (currentModel === 'pro' && window.puter) {
     thinkingDiv.remove();
     replyText = typeof puterResult === 'string' ? puterResult : (puterResult?.message?.content || puterResult?.text || String(puterResult));
 } else {
-    const response = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"adamo1139/Hermes-3-Llama-3.1-8B-FP8-Dynamic", messages:apiMessages, temperature:0.7 }) });
+    const response = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"NousResearch/Hermes-3-Llama-3.1-8B", messages:apiMessages, temperature:0.7 }) });
     thinkingDiv.remove();
     const data = await response.json();
     replyText = data.choices[0].message.content;
