@@ -962,6 +962,23 @@ const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 const scrollToBottom = () => chatContainer.scrollTop = chatContainer.scrollHeight;
 
 // ─────────────────────────────────────────────
+//  SHARED LLM CALL (routes to Puter on Pro, Hermes otherwise)
+// ─────────────────────────────────────────────
+const llmComplete = async (systemPrompt, userText) => {
+    if (currentModel === 'pro' && window.puter) {
+        const puterResult = await puter.ai.chat(
+            [{ role:"system", content:systemPrompt }, { role:"user", content:userText }],
+            { model:'gpt-4o' }
+        );
+        return typeof puterResult === 'string' ? puterResult : (puterResult?.message?.content || puterResult?.text || String(puterResult));
+    }
+    const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"NousResearch/Hermes-3-Llama-3.1-8B", messages:[{role:"system",content:systemPrompt},{role:"user",content:userText}], temperature:0.0, max_tokens:300 }) });
+    const data = await r.json();
+    if (!data?.choices?.[0]?.message?.content) { window.__NOX_DEBUG = { badResponse: data }; throw new Error('empty_response'); }
+    return data.choices[0].message.content;
+};
+
+// ─────────────────────────────────────────────
 //  SPATIAL INTENT DETECTION
 // ─────────────────────────────────────────────
 const detectSpatialIntent = async (userText) => {
