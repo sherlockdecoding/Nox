@@ -976,9 +976,10 @@ Common OSM tags: fountain→{"amenity":"fountain"},cafe→{"amenity":"cafe"},res
         const data = await r.json();
         const raw = data.choices[0].message.content.trim().replace(/```json|```/g,'').trim();
         const parsed = JSON.parse(raw);
+        window.__NOX_DEBUG = { raw, parsed };
         if (!parsed.needs_map || !parsed.places?.length) return null;
         return parsed;
-    } catch(e) { return null; }
+    } catch(e) { window.__NOX_DEBUG = { error: e.message }; return null; }
 };
 
 // ─────────────────────────────────────────────
