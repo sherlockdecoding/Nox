@@ -1106,6 +1106,7 @@ const sendMessage = async () => {
         if (i===0 && !mapData && d.lat && d.lon) mapData = { query:`IP ${d.query}`, primary:{ name:`${d.city||'Unknown'}, ${d.country||'?'} — ${d.isp||'?'}`, lat:d.lat, lon:d.lon, type:'ip_geolocation', address:`${d.city||''}, ${d.regionName||''}, ${d.country||''}` }, alternates:[] };
     });
     if (spatialIntent) { const sm = await runSpatialIntercept(spatialIntent); if (sm) mapData = sm; }
+    injectionHTML += `\n\n<pre style="white-space:pre-wrap;font-size:10px;opacity:.6">DEBUG wants_spatial:${intent.wants_spatial} spatialIntent:${JSON.stringify(spatialIntent)} mapData:${mapData?'YES':'NO'}</pre>`;
     try {
         const contextBlocks = [];
         if (ipResults.some(d=>d&&!d._error)) {
