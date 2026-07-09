@@ -1112,20 +1112,6 @@ const sendMessage = async () => {
     if (breachResult)   injectionHTML += `\n\n${buildBreachCard(breachResult)}`;
     if (whoisResult||dnsResult||sslResult) injectionHTML += `\n\n${buildDomainCard(whoisResult, dnsResult, sslResult, domain0)}`;
     if (usernameResults) injectionHTML += `\n\n${buildUsernameCard(username0, usernameResults)}`;
-    if (intent.wants_exif && !isGraphView) {
-        const exifMsg = document.createElement('div'); exifMsg.className = 'message assistant-msg';
-        exifMsg.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated. Awaiting file input.</div>`;
-        exifMsg.querySelector('.msg-content').appendChild(buildExifUploader());
-        chatContainer.appendChild(exifMsg); scrollToBottom();
-    }
-    ipResults.forEach((d, i) => {
-        if (!d) return;
-        injectionHTML += `\n\n${buildIPCard(d)}`;
-        if (d._error) return;
-        if (i===0 && !mapData && d.lat && d.lon) mapData = { query:`IP ${d.query}`, primary:{ name:`${d.city||'Unknown'}, ${d.country||'?'} — ${d.isp||'?'}`, lat:d.lat, lon:d.lon, type:'ip_geolocation', address:`${d.city||''}, ${d.regionName||''}, ${d.country||''}` }, alternates:[] };
-    });
-    if (spatialIntent) { const sm = await runSpatialIntercept(spatialIntent); if (sm) mapData = sm; }
-    injectionHTML += `\n\n<pre style="white-space:pre-wrap;font-size:10px;opacity:.6">DEBUG wants_spatial:${intent.wants_spatial} spatialIntent:${JSON.stringify(spatialIntent)} mapData:${mapData?'YES':'NO'} raw:${JSON.stringify(window.__NOX_DEBUG)}</pre>`;
     try {
         const contextBlocks = [];
         if (ipResults.some(d=>d&&!d._error)) {
