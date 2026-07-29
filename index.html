@@ -954,7 +954,25 @@ const buildMapBlock = (data) => {
         L.marker([data.primary.lat, data.primary.lon], {icon:redIcon}).addTo(m).bindPopup(`<b>${data.primary.name}</b>`);
         if (data.alternates) data.alternates.forEach(a => { const gi = L.divIcon({className:'',html:`<div style="width:10px;height:10px;border-radius:50%;background:#455a64;border:1.5px solid #7a9aaa;"></div>`,iconSize:[10,10],iconAnchor:[5,5]}); L.marker([a.lat,a.lon],{icon:gi}).addTo(m).bindPopup(`<b>${a.name}</b>`); });
         mapInstances[mapId] = m; m.invalidateSize();
-    }, 100);const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"solidrust/Hermes-3-Llama-3.1-8B-AWQ", messages:[{role:"system",content:systemPrompt},{role:"user",content:userText}], temperature:0.0, max_tokens:300 }) });
+    }, 100);
+    return block;
+};
+
+const escHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const scrollToBottom = () => chatContainer.scrollTop = chatContainer.scrollHeight;
+
+// ─────────────────────────────────────────────
+//  SHARED LLM CALL (routes to Puter on Pro, Hermes otherwise)
+// ─────────────────────────────────────────────
+const llmComplete = async (systemPrompt, userText) => {
+    if (currentModel === 'pro' && window.puter) {
+        const puterResult = await puter.ai.chat(
+            [{ role:"system", content:systemPrompt }, { role:"user", content:userText }],
+            { model:'gpt-4o' }
+        );
+        return typeof puterResult === 'string' ? puterResult : (puterResult?.message?.content || puterResult?.text || String(puterResult));
+    }
+    const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"NousResearch/Hermes-3-Llama-3.1-8B", messages:[{role:"system",content:systemPrompt},{role:"user",content:userText}], temperature:0.0, max_tokens:300 }) });
     const data = await r.json();
     if (!data?.choices?.[0]?.message?.content) { window.__NOX_DEBUG = { badResponse: data }; throw new Error('empty_response'); }
     return data.choices[0].message.content;
@@ -1143,7 +1161,8 @@ if (currentModel === 'pro' && window.puter) {
     thinkingDiv.remove();
     replyText = typeof puterResult === 'string' ? puterResult : (puterResult?.message?.content || puterResult?.text || String(puterResult));
 } else {
-    const response = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"solidrust/Hermes-3-Llama-3.1-8B-AWQ", messages:apiMessages, temperature:0.7 }) });    thinkingDiv.remove();
+    const response = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"NousResearch/Hermes-3-Llama-3.1-8B", messages:apiMessages, temperature:0.7 }) });
+    thinkingDiv.remove();
     const data = await response.json();
     replyText = data.choices[0].message.content;
     }
@@ -1231,4 +1250,4 @@ setupCallMode();
 init();
 </script>
 </body>
-                                </html>
+                        </html>
