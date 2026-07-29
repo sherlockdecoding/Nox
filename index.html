@@ -1143,8 +1143,7 @@ if (currentModel === 'pro' && window.puter) {
     thinkingDiv.remove();
     replyText = typeof puterResult === 'string' ? puterResult : (puterResult?.message?.content || puterResult?.text || String(puterResult));
 } else {
-    const response = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"​solidrust/Hermes-3-Llama-3.1-8B-AWQ", messages:apiMessages, temperature:0.7 }) });
-    thinkingDiv.remove();
+    const response = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ model:"solidrust/Hermes-3-Llama-3.1-8B-AWQ", messages:apiMessages, temperature:0.7 }) });    thinkingDiv.remove();
     const data = await response.json();
     replyText = data.choices[0].message.content;
     }
