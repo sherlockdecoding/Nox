@@ -1062,8 +1062,7 @@ Reply ONLY with raw JSON, no markdown, no explanation:
         const content = await llmComplete(systemPrompt, text);
         const raw = content.trim().replace(/```json|```/g,'').trim();
         const parsed = JSON.parse(raw);
-        return { emails:Array.isArray(parsed.emails)?parsed.emails:[], ips:Array.isArray(parsed.ips)?parsed.ips:[], domains:Array.isArray(parsed.domains)?parsed.domains:[], usernames:Array.isArray(parsed.usernames)?parsed.usernames:[], wants_exif:!!parsed.wants_exif, wants_spatial:!!parsed.wants_spatial || spatialFallback };
-    } catch(e) {
+        return { emails:Array.isArray(parsed.emails)?parsed.emails:[], ips:Array.isArray(parsed.ips)?parsed.ips:[], domains:Array.isArray(parsed.domains)?parsed.domains:[], usernames:Array.isArray(parsed.usernames)?parsed.usernames:[], wants_exif:!!parsed.wants_exif, wants_spatial:!!parsed.wants_spatial || spatialFallback, database_query: typeof parsed.database_query==='string'?parsed.database_query:null };    } catch(e) {
         const emailFallback = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g)||[];
         const ipFallback    = [...text.matchAll(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g)].map(m=>m[0]);
         return { emails:emailFallback, ips:ipFallback, domains:[], usernames:[], wants_exif:false, wants_spatial:spatialFallback };
