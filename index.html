@@ -1096,7 +1096,10 @@ const sendMessage = async () => {
     let injectionHTML = "";
     let mapData = null;
     const intent = await classifyIntent(message);
-    const spatialIntent = intent.wants_spatial ? await detectSpatialIntent(message) : null;
+    if (intent.database_query && !isGraphView) {
+        const dbLabel = thinkingDiv.querySelector('.msg-content');
+        dbLabel.insertAdjacentHTML('afterbegin', `<div class="db-search-indicator"><i class="fas fa-shield-halved db-shield-icon"></i><span>SEARCHING INTERNAL DATABASE — ${escHtml(intent.database_query.toUpperCase())}</span></div>`);
+    }    const spatialIntent = intent.wants_spatial ? await detectSpatialIntent(message) : null;
     const email0    = intent.emails[0]    || null;
     const domain0   = intent.domains[0]   || null;
     const username0 = intent.usernames[0] || null;
