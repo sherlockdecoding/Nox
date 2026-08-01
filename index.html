@@ -1056,7 +1056,7 @@ const buildGDELTCard=(result)=>{if(!result)return'';if(!result.articles.length)r
 const classifyIntent = async (text) => {
     const systemPrompt = `You are a strict OSINT intent classifier. Extract ONLY what the operator is explicitly asking to investigate.
 Reply ONLY with raw JSON, no markdown, no explanation:
-{"emails":[],"ips":[],"domains":[],"usernames":[],"wants_exif":false,"wants_spatial":false,"database_query":null}STRICT rules: emails must be real email addresses literally typed. ips must be real IPv4. domains standalone only, never from email addresses, never gmail/yahoo/hotmail/protonmail. usernames only if operator explicitly asks to find social presence. wants_exif only if operator asks about image/photo metadata. wants_spatial only if operator mentions real-world location to find on map.`;
+{"emails":[],"ips":[],"domains":[],"usernames":[],"wants_exif":false,"wants_spatial":false,"database_query":null}STRICT rules: emails must be real email addresses literally typed. ips must be real IPv4. domains standalone only, never from email addresses, never gmail/yahoo/hotmail/protonmail. usernames only if operator explicitly asks to find social presence. wants_exif only if operator asks about image/photo metadata. wants_spatial only if operator mentions real-world location to find on map. database_query is a short search string (a person's name, organization, or topic) ONLY if the operator explicitly asks to search records, archives, news history, or "the database" about that entity — otherwise null.`;
     const spatialFallback = /\b(nearby|near me|near\s|find it|find the|where('?s| is)|closest|locate|map it)\b/i.test(text);
     try {
         const content = await llmComplete(systemPrompt, text);
