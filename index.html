@@ -1098,13 +1098,14 @@ const sendMessage = async () => {
     const domain0   = intent.domains[0]   || null;
     const username0 = intent.usernames[0] || null;
     const publicIPs = intent.ips.filter(ip => !PRIVATE_IP.test(ip));
-    const [gravatarResult, breachResult, whoisResult, dnsResult, sslResult, usernameResults, ...ipResults] = await Promise.all([
+    const [gravatarResult, breachResult, whoisResult, dnsResult, sslResult, usernameResults, gdeltResult, ...ipResults] = await Promise.all([
         email0    ? fetchGravatar(email0)    : Promise.resolve(null),
         email0    ? checkBreaches(email0)    : Promise.resolve(null),
         domain0   ? lookupWHOIS(domain0)     : Promise.resolve(null),
         domain0   ? lookupDNS(domain0)       : Promise.resolve(null),
         domain0   ? lookupSSL(domain0)       : Promise.resolve(null),
         username0 ? searchUsername(username0): Promise.resolve(null),
+        intent.database_query ? lookupGDELT(intent.database_query) : Promise.resolve(null),
         ...publicIPs.map(ip => lookupIP(ip))
     ]);
     if (gravatarResult) injectionHTML += `\n\n<div class="gravatar-info"><img src="${gravatarResult.image}" class="gravatar-img"><div class="gravatar-name">IDENTITY_MATCH: ${gravatarResult.name}</div></div>`;
