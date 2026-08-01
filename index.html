@@ -1112,7 +1112,7 @@ const sendMessage = async () => {
     if (breachResult)   injectionHTML += `\n\n${buildBreachCard(breachResult)}`;
     if (whoisResult||dnsResult||sslResult) injectionHTML += `\n\n${buildDomainCard(whoisResult, dnsResult, sslResult, domain0)}`;
     if (usernameResults) injectionHTML += `\n\n${buildUsernameCard(username0, usernameResults)}`;
-    if (intent.wants_exif && !isGraphView) {
+    if (gdeltResult) injectionHTML += `\n\n${buildGDELTCard(gdeltResult)}`;    if (intent.wants_exif && !isGraphView) {
         const exifMsg = document.createElement('div'); exifMsg.className = 'message assistant-msg';
         exifMsg.innerHTML = `<div class="msg-header">NOX_UNIT</div><div class="msg-content">EXIF extraction module activated. Awaiting file input.</div>`;
         exifMsg.querySelector('.msg-content').appendChild(buildExifUploader());
